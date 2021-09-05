@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#define ALL(c) std::begin(c), std::end(c)
 using namespace std;
 
 template <typename T>
@@ -37,14 +38,76 @@ int main() {
     // 末尾から削除
     v.pop_back();
     print_v(v);
+    // v[2] の位置に挿入
+    v.insert(v.begin() + 2, -5);
+    print_v(v);
+    // v[2] の位置を削除
+    v.erase(v.begin() + 2);
+    print_v(v);
+
+    // 要素数と要素の値が全て等しいか
+    cout << "eq: " << (v == v) << endl;
 
     // sort (std::sort($1,$2) は [$1,$2) の昇順ソート)
     std::sort(v.begin(), v.end());
     print_v(v);
     // 降順ソート
+    // std::sort(v.rbegin(), v.rend()); でもよい
     std::sort(v.begin(), v.end(), greater<int>());
     print_v(v);
     // 範囲限定ソート
     std::sort(v.begin() + 2, v.end() - 3);
+    print_v(v);
+    // マクロsort
+    sort(ALL(v));
+    print_v(v);
+    // lambda sort
+    auto comp = [](int a, int b) { return std::abs(a) < std::abs(b); };
+    std::sort(v.begin(), v.end(), comp);
+    print_v(v);
+
+    // 配列の各要素が条件を満たすか
+    auto is_even = [](int a) { return a % 2 == 0; };
+    cout << "all: " << std::all_of(v.begin(), v.end(), is_even) << endl;
+    cout << "any: " << std::any_of(v.begin(), v.end(), is_even) << endl;
+    cout << "none: " << std::none_of(v.begin(), v.end(), is_even) << endl;
+
+    // min
+    cout << std::min(2, -3) << endl;  // 引数は 2 つしかとれない
+    cout << std::min({3, -4, 6, 8}) << endl;  // 配列はとれる
+    cout << *(std::min_element(ALL(v)))
+         << endl;  // min_elementは参照を返すことに注意
+    // min, max を同時に出せるやつもいる
+    auto minmax_pair = std::minmax({3, -4, 6, 8});
+    cout << "min: " << minmax_pair.first << ", max: " << minmax_pair.second
+         << endl;
+    auto minmax_pair_iter = std::minmax_element(ALL(v));
+    cout << "min: " << *(minmax_pair_iter.first)
+         << ", max: " << *(minmax_pair_iter.second) << endl;
+
+    // count 系
+    v.push_back(1);
+    sort(ALL(v));
+    print_v(v);
+    cout << "count 1: " << std::count(v.begin(), v.end(), 1) << endl;
+    cout << "count even: " << std::count_if(v.begin(), v.end(), is_even)
+         << endl;
+    // find 系
+    // found_iter は 最初に見つけた iter (*found_iter は当然 1)
+    auto found_iter = std::find(v.begin(), v.end(), 1);
+    cout << "first index: " << found_iter - v.begin() << endl;
+    found_iter = std::find_if(ALL(v), is_even);
+    cout << "first index: " << found_iter - v.begin() << endl;
+
+    print_v(v);
+    // reverse
+    std::reverse(v.begin() + 2, v.end() - 1);
+    print_v(v);
+    // remove (以下の動作をする)
+    // [v.begin(), result) には value 以外の要素が格納され
+    // [result, v.end()) には value の要素が格納される
+    auto result = std::remove(v.begin(), v.end(), 1);
+    // そのため, value 1 を削除するには [result, v.end()) の erase が必要
+    v.erase(result, v.end());
     print_v(v);
 }
