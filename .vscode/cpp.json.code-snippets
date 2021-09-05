@@ -20,13 +20,17 @@
 		"body": [
 			"#include <bits/stdc++.h>",
 			"using namespace std;",
-			"",			
+			"",
 			"int main()",
 			"{",
+			"\tstd::cin.tie(nullptr);",
+			"\tstd::ios::sync_with_stdio(false);",
+			"",
 			"\tint n;",
 			"\tcin >> n;",
 			"\tcout << n << endl;",
 			"}"
-		]
+		],
+		"description": "AtCoderのひな形"
 	}
 }

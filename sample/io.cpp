@@ -5,7 +5,12 @@ using namespace std;
 
 int main()
 {
+    // 入出力高速化
+    std::cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    // 入力
     int n;
     cin >> n;
+    // 出力
     cout << n << endl;
 }

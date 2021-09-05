@@ -16,7 +16,11 @@ g++.exe (MinGW.org GCC-8.2.0-3) 8.2.0
 - [C/C++ for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
   - format: Shift+Alt+F
 - その他:
-  - [参考になりそうな記事](https://qiita.com/AokabiC/items/af685bfd205dda44ec45)
+
+## 参考になりそうな記事
+
+- [VSCode拡張機能](https://qiita.com/AokabiC/items/af685bfd205dda44ec45)
+- [競技プログラミング(C++)](https://koturn.hatenablog.com/entry/2018/07/29/180000)
 
 ## C++ 実行
 
