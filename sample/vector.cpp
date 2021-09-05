@@ -99,6 +99,7 @@ int main() {
     found_iter = std::find_if(ALL(v), is_even);
     cout << "first index: " << found_iter - v.begin() << endl;
 
+    v.push_back(-1);
     print_v(v);
     // reverse
     std::reverse(v.begin() + 2, v.end() - 1);
@@ -110,4 +111,45 @@ int main() {
     // そのため, value 1 を削除するには [result, v.end()) の erase が必要
     v.erase(result, v.end());
     print_v(v);
+
+    // unique
+    // set にしてから vector に戻す
+    std::set<int> setv(ALL(v));
+    std::vector<int> v2(ALL(setv));
+    print_v(v2);
+    // もしくは unique を使う
+    sort(ALL(v));                    // 事前にsortする必要がある
+    auto res = std::unique(ALL(v));  // 正確には隣り合う重複要素を末尾に飛ばす
+    v.erase(res, v.end());  // なので, remove 同様に erase が必要
+    print_v(v);
+
+    // copy
+    // [第1, 第2) の範囲を [第3, ) にコピーする
+    vector<int> v3(3);
+    std::copy(v.begin() + 1, v.begin() + 4, v3.begin());
+    print_v(v3);
+
+    // transform (Javascriptのmapのような感じ)
+    // 第1,2,3 は copy と同じ, 第4 は変換関数
+    vector<int> v4(v.size());
+    std::transform(v.begin(), v.end(), v4.begin(), [](int a) { return a * a; });
+    print_v(v4);
+
+    // 順列を返す (n!回のループ)
+    do {
+        print_v(v3);
+    } while (std::next_permutation(ALL(v3)));
+
+    // sum (最終引数は初期値なので 0)
+    cout << "sum: " << std::accumulate(v3.begin(), v3.end(), 0) << endl;
+    // 内積
+    // 第1,2,3 は copy と同じ (最終引数は初期値なので 0)
+    cout << "inner: " << std::inner_product(v3.begin(), v3.end(), v3.begin(), 0)
+         << endl;
+
+    // 累積和
+    print_v(v3);
+    vector<int> v5(v3.size());
+    std::partial_sum(v3.begin(), v3.end(), v5.begin());
+    print_v(v5);
 }
