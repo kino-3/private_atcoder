@@ -15,4 +15,18 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
+	"AtCoder initialize": {
+		"prefix": "init",
+		"body": [
+			"#include <bits/stdc++.h>",
+			"using namespace std;",
+			"",			
+			"int main()",
+			"{",
+			"\tint n;",
+			"\tcin >> n;",
+			"\tcout << n << endl;",
+			"}"
+		]
+	}
 }
