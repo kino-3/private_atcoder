@@ -38,8 +38,47 @@
 			"\tint n;",
 			"\tcin >> n;",
 			"\tcout << n << endl;",
-			"}"
+			"}",
 		],
 		"description": "AtCoderのひな形"
+	},
+	"simple_template": {
+		"prefix": "simple_template",
+		"body": [
+			"#include <bits/stdc++.h>",
+			"using namespace std;",
+			"",
+			"int main() {",
+			"\t",
+			"}",
+		],
+		"description": "AtCoderのひな形"
+	},
+	"input_vector": {
+		"prefix": "input_vi",
+		"body": [
+			"int n;",
+			"cin >> n;",
+			"vector<int> v(n, -1);",
+			"for (auto &&i : v) {",
+			"\tcin >> i;",
+			"}",
+		],
+		"description": "read vector<int>"
+	}
+	"print_vector": {
+		"prefix": "print_v",
+		"body": [
+			"template <typename T>",
+			"void print_v(const vector<T> vec) {",
+			"\tcout << \"size: \" << vec.size() << endl;",
+			"\tcout << \"[\";",
+			"\tfor (auto &&item : vec) {",
+			"\t\tcout << item << \",\";",
+			"\t}",
+			"\tcout << \"]\" << endl;",
+			"}",
+		],
+		"description": "print vector"
 	}
 }
