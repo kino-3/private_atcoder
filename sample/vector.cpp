@@ -152,4 +152,14 @@ int main() {
     vector<int> v5(v3.size());
     std::partial_sum(v3.begin(), v3.end(), v5.begin());
     print_v(v5);
+
+    // binary search
+    // 事前に sort されている必要がある
+    sort(ALL(v));
+    print_v(v);
+    cout << std::binary_search(v.begin(), v.end(), 3) << endl;  // bool を返す
+    cout << std::lower_bound(v.begin(), v.end(), 5) - v.begin()
+         << endl;  // 3 を挿入できる index
+    cout << std::upper_bound(v.begin(), v.end(), 5) - v.begin()
+         << endl;  // 3 を挿入できる index
 }
