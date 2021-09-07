@@ -61,11 +61,25 @@ int main() {
         cout << d.empty() << endl;
     }
 
-    { // priority_queue
-
+    {
+        // priority_queue
+        std::priority_queue<int> p;
+        cout << "priority queue" << endl;
+        cout << p.empty() << endl;
+        p.push(2);
+        p.push(4);
+        p.push(3);
+        cout << p.top() << endl; // デフォルトは大きい方から
+        p.pop();
+        cout << p.top() << endl;
+        // pair を比較すると, first の値でまず比較されるので
+        std::priority_queue<pair<int, string>> pp;
+        pp.push({1, "a"});
+        pp.push({3, "b"});
+        pp.push({2, "c"});
+        cout << pp.top().second << endl;
     }
 
     {  // string
-    
     }
 }
