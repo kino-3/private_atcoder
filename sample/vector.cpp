@@ -94,6 +94,7 @@ int main() {
          << endl;
     // find 系
     // found_iter は 最初に見つけた iter (*found_iter は当然 1)
+    // 見つからなかった場合は iter は last となる (ここではv.end())
     auto found_iter = std::find(v.begin(), v.end(), 1);
     cout << "first index: " << found_iter - v.begin() << endl;
     found_iter = std::find_if(ALL(v), is_even);
