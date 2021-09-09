@@ -5,14 +5,14 @@ using ll = long long;
 // TODO: 動作未検証
 // O(V^2)
 // 条件: edge の重みは非負
-class Dijkstra2 {
+class Dijkstra {
     int V;                    // 頂点の個数
     vector<vector<ll>> cost;  // コスト
     vector<ll> dist;          // dist[v]: v までの最短距離
     const ll INF = numeric_limits<ll>::max();
 
    public:
-    Dijkstra2(int v) : V(v), cost(v, vector<ll>(v, INF)), dist(v) {}
+    Dijkstra(int v) : V(v), cost(v, vector<ll>(v, INF)), dist(v) {}
 
     void add_edge(int from, int to, ll edge_cost) {
         cost[from][to] = edge_cost;
