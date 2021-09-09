@@ -17,12 +17,14 @@ class BellmanFord {
     int E;  // 辺の個数
     vector<edge> edges;
     vector<ll> dist;  // dist[v]: v までの最短距離
-    vector<bool>
-        negative;  // negative[v]: 始点からvまでの経路中に負の閉路がある
+    // negative[v]: 始点からvまでの経路中に負の閉路がある
+    vector<bool> negative;
+    vector<int> prev;  // 最短経路における直前の node
+
     const ll INF = numeric_limits<ll>::max();
 
    public:
-    BellmanFord(int v, int e) : V(v), E(e), dist(v), negative(v) {}
+    BellmanFord(int v, int e) : V(v), E(e), dist(v), negative(v), prev(v) {}
 
     void add_edge(int from, int to, ll cost) {
         edges.push_back({from, to, cost});
@@ -33,6 +35,7 @@ class BellmanFord {
         for (int i = 0; i < V; ++i) {
             dist[i] = INF;
             negative[i] = false;
+            prev[i] = -1;
         }
         dist[start_node] = 0;
         for (int i = 0; i < V; ++i) {
@@ -42,6 +45,7 @@ class BellmanFord {
                 if (dist[edge.from] != INF &&
                     dist[edge.to] > dist[edge.from] + edge.cost) {
                     dist[edge.to] = dist[edge.from] + edge.cost;
+                    prev[edge.to] = edge.from;
                     updated = true;
                 }
             }
@@ -86,6 +90,8 @@ class BellmanFord {
         }
         return true;
     }
+
+    int get_prev(int v) { return prev[v]; }
 };
 
 int main() {}

@@ -9,10 +9,11 @@ class Dijkstra {
     int V;                    // 頂点の個数
     vector<vector<ll>> cost;  // コスト
     vector<ll> dist;          // dist[v]: v までの最短距離
+    vector<int> prev;         // 最短経路における直前の node
     const ll INF = numeric_limits<ll>::max();
 
    public:
-    Dijkstra(int v) : V(v), cost(v, vector<ll>(v, INF)), dist(v) {}
+    Dijkstra(int v) : V(v), cost(v, vector<ll>(v, INF)), dist(v), prev(v) {}
 
     void add_edge(int from, int to, ll edge_cost) {
         cost[from][to] = edge_cost;
@@ -23,6 +24,7 @@ class Dijkstra {
         for (int i = 0; i < V; ++i) {
             dist[i] = INF;
             used[i] = false;
+            prev[i] = -1;
         }
         dist[start_node] = 0;
         while (true) {
@@ -37,13 +39,18 @@ class Dijkstra {
             }
             used[v] = true;
             for (int u = 0; u < V; u++) {
-                dist[u] = std::min(dist[u], dist[v] + cost[v][u]);
+                if (dist[u] > dist[v] + cost[v][u]) {
+                    dist[u] = dist[v] + cost[v][u];
+                    prev[u] = v;
+                }
             }
         }
     }
 
     // 頂点 v までの最小コスト
     ll cost(int v) { return dist[v]; }
+
+    int get_prev(int v) { return prev[v]; }
 };
 
 int main() {}
