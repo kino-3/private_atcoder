@@ -27,6 +27,7 @@
 			"#define ALL(c) std::begin(c), std::end(c)",
 			"",
 			"using namespace std;",
+			"using ll = long long;",
 			"",
 			"// REP(idx, 3) { cout << idx; }  // 012",
 			"// REP_R(idx, 3) { cout << idx; }  // 210",
@@ -50,6 +51,7 @@
 		"body": [
 			"#include <bits/stdc++.h>",
 			"using namespace std;",
+			"using ll = long long;",
 			"",
 			"int main() {",
 			"\t",
@@ -83,5 +85,13 @@
 			"}",
 		],
 		"description": "print vector"
+	},
+	"int2longlong": {
+		"prefix": "ll_int_to_longlong",
+		"body": [
+			"#define int long long",
+			"signed main(){"
+		],
+		"description": "int を long long にしたいとき"
 	}
 }
