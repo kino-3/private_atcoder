@@ -5,13 +5,13 @@ using ll = long long;
 // TODO: 動作未検証
 // O(V^2)
 class Prim {
-    int V;                    // 頂点の個数
-    vector<vector<ll>> cost;  // コスト
-    vector<int> parent;       // prev[u] と u は最小全域木の edge
+    int V;                         // 頂点の個数
+    vector<vector<ll>> cost;       // コスト
+    vector<pair<int, int>> links;  // prev[u] と u は最小全域木の edge
     const ll INF = numeric_limits<ll>::max();
 
    public:
-    Prim(int v) : V(v), cost(v, vector<ll>(v, INF)), parent(v, -1) {}
+    Prim(int v) : V(v), cost(v, vector<ll>(v, INF)), links(0) {}
 
     void add_edge(int from, int to, ll edge_cost) {
         cost[from][to] = edge_cost;
@@ -22,6 +22,7 @@ class Prim {
         // 構築済みの部分木と v の間の辺の最小コスト
         vector<ll> mincost(V, INF);
         vector<bool> used(V, false);  // 構築済みの部分木に v が含まれるか
+        vector<int> parent(V, -1);
         ll total_cost = 0;
         mincost[start_node] = 0;
         while (true) {
@@ -46,9 +47,13 @@ class Prim {
                 }
             }
         }
+        for (int u = 0; u < V; u++) {
+            if (u == start_node) {
+                continue;
+            }
+            links.push_back({u, parent[u]});
+        }
     }
-
-    int get_parent(int v) { return parent[v]; }
 };
 
 int main() {}
