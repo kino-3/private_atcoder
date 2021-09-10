@@ -5,13 +5,13 @@ using ll = long long;
 // TODO: 動作未検証
 // O(V^2)
 class Prim {
-    int V;                         // 頂点の個数
-    vector<vector<ll>> cost;       // コスト
-    vector<pair<int, int>> links;  // prev[u] と u は最小全域木の edge
+    int V;                    // 頂点の個数
+    vector<vector<ll>> cost;  // コスト
+    vector<pair<int, int>> links;
     const ll INF = numeric_limits<ll>::max();
 
    public:
-    Prim(int v) : V(v), cost(v, vector<ll>(v, INF)), links(0) {}
+    Prim(int v) : V(v), cost(v, vector<ll>(v, INF)) {}
 
     void add_edge(int from, int to, ll edge_cost) {
         cost[from][to] = edge_cost;
