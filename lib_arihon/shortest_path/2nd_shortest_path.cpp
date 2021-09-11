@@ -53,6 +53,8 @@ class Dijkstra2 {
                     prev[edge.to] = node;
                 }
                 if (dist2[edge.to] > distance && dist[edge.to] < distance) {
+                    // dist[edge.to] < distance は 最短距離 == 2番目に短い距離
+                    // とならないようにするため
                     dist2[edge.to] = distance;
                     que.push({dist2[edge.to], edge.to});
                     prev2[edge.to] = node;
