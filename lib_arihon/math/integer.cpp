@@ -133,6 +133,21 @@ void print_m(map<ll, ll> m) {
     cout << "}" << endl;
 }
 
+// 剰余
+
+ll mod_pow(ll x, ll n, ll mod) {
+    // x^n % mod を返す
+    ll res = 1;
+    while (n > 0) {
+        if (n & 1) {
+            res = res * x % mod;
+        }
+        x = x * x % mod;
+        n >>= 1;
+    }
+    return res;
+}
+
 int main() {
     cout << gcd(30, 48) << endl;
     ll x, y;
@@ -149,4 +164,5 @@ int main() {
     print_v(list_factor(2));
     print_v(list_factor(1000));
     print_v(list_factor(2021));
+    cout << mod_pow(123, 456, 123456) << endl; // 17505
 }
