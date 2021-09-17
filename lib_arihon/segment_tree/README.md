@@ -23,3 +23,11 @@
   - 初期化 O(n)
   - 値の更新 O(log n)
   - 区間の最小値 O(log n)
+
+## Sparse Table
+
+- T_i,j は index = i, i+1, ..., i+2^j-1 の最小値
+- 計算量
+  - 初期化 O(n log n)
+  - 値の更新 不可能
+  - 区間の最小値 O(log log n)
