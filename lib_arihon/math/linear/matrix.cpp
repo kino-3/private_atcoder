@@ -4,21 +4,22 @@ using ll = long long;
 
 // 行列積は O(n^3)
 // m 乗は O(n^3 log m)
+template <class T>
 class Matrix {
    public:
-    vector<vector<ll>> matrix;
-    ll line;
-    ll row;
+    vector<vector<T>> matrix;
+    int line;
+    int row;
 
-    Matrix(vector<vector<ll>> matrix)
+    Matrix(vector<vector<T>> matrix)
         : matrix(matrix), line(matrix.size()), row(matrix.at(0).size()) {}
 
     Matrix mul(Matrix m) {
-        vector<vector<ll>> res(line, vector<ll>(m.row, 0));
-        for (ll l = 0; l < line; l++) {
-            for (ll r = 0; r < m.row; r++) {
-                ll sum = 0;
-                for (ll k = 0; k < row; k++) {
+        vector<vector<T>> res(line, vector<T>(m.row, 0));
+        for (int l = 0; l < line; l++) {
+            for (int r = 0; r < m.row; r++) {
+                T sum = 0;
+                for (int k = 0; k < row; k++) {
                     sum += matrix[l][k] * m.matrix[k][r];
                 }
                 res[l][r] = sum;
@@ -28,11 +29,11 @@ class Matrix {
     }
 
     Matrix mul_mod(Matrix m, ll mod) {
-        vector<vector<ll>> res(line, vector<ll>(m.row, 0));
-        for (ll l = 0; l < line; l++) {
-            for (ll r = 0; r < m.row; r++) {
-                ll sum = 0;
-                for (ll k = 0; k < row; k++) {
+        vector<vector<T>> res(line, vector<T>(m.row, 0));
+        for (int l = 0; l < line; l++) {
+            for (int r = 0; r < m.row; r++) {
+                T sum = 0;
+                for (int k = 0; k < row; k++) {
                     sum += (matrix[l][k] * m.matrix[k][r]) % mod;
                 }
                 res[l][r] = sum % mod;
@@ -43,9 +44,9 @@ class Matrix {
 
     Matrix pow(ll n) {
         // 正方行列の n 乗
-        vector<vector<ll>> identity;
+        vector<vector<T>> identity;
         for (int i = 0; i < line; i++) {
-            vector<ll> v(row, 0);
+            vector<T> v(row, 0);
             v[i] = 1;
             identity.push_back(v);
         }
@@ -63,9 +64,9 @@ class Matrix {
 
     Matrix pow_mod(ll n, ll mod) {
         // 正方行列の n 乗
-        vector<vector<ll>> identity;
+        vector<vector<T>> identity;
         for (int i = 0; i < line; i++) {
-            vector<ll> v(row, 0);
+            vector<T> v(row, 0);
             v[i] = 1;
             identity.push_back(v);
         }
@@ -95,12 +96,12 @@ class Matrix {
 };
 
 int main() {
-    Matrix m = Matrix({{0, 1}, {2, 3}, {4, 5}});
+    Matrix<int> m = Matrix<int>({{0, 1}, {2, 3}, {4, 5}});
     m.print();
-    Matrix m2 = Matrix({{0, 1, 2}, {3, 4, 5}});
+    Matrix<int> m2 = Matrix<int>({{0, 1, 2}, {3, 4, 5}});
     m.mul(m2).print();
     m.mul_mod(m2, 3).print();
-    Matrix m3 = Matrix({{2, 0}, {0, 3}});
+    Matrix<int> m3 = Matrix<int>({{2, 0}, {0, 3}});
     m3.pow(6).print();
     m3.pow_mod(6, 20).print();
 }
