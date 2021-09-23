@@ -141,6 +141,46 @@ class Matrix {
         return Matrix<Real>(res);
     }
 
+    // Ax=b の解を返す
+    // 複数ある場合は1つだけ返す
+    // 解がないときは size が 0 の vector を返す
+    vector<Real> solve(vector<Real> b) {
+        assert(row == b.size());
+        Matrix<Real> Ab = this->deepcopy();
+        for (int r = 0; r < row; r++) {
+            Ab.matrix[r].push_back(b[r]);
+            Ab.col += 1;
+        }
+        int rank = Ab.gauss_jordan_real(true);
+        vector<Real> x;
+        for (int r = rank; r < row; r++) {
+            if (abs(Ab.matrix[r][col]) > EPS) return x;  // 解なし
+        }
+        int r = 0;
+        for (int i = 0; i < rank; i++) {
+            while (abs(Ab.matrix[i][r]) < EPS) {
+                x.push_back(0.0);  // 任意の値でよい
+                r++;
+            }
+            x.push_back(Ab.matrix[i][col]);
+            r++;
+        }
+        while (x.size() < col) {
+            x.push_back(0.0);
+        }
+        return x;
+    }
+
+    Matrix<T> deepcopy() {
+        vector<vector<T>> res(row, vector<T>(col, 0));
+        for (int r = 0; r < row; r++) {
+            for (int c = 0; c < col; c++) {
+                res[r][c] = matrix[r][c];
+            }
+        }
+        return Matrix<T>(res);
+    }
+
     void print() {
         cout << "(" << row << "," << col << ")" << endl;
         for (const auto& m_row : matrix) {
@@ -168,4 +208,9 @@ int main() {
     m4.print();
     Matrix<Real> m5 = Matrix<Real>({{3, 1, 1}, {5, 1, 3}, {2, 0, 1}});
     m5.inverse().print();
+    Matrix<Real> m6 = Matrix<Real>({{1, -2, 3}, {4, -5, 6}, {7, -8, 10}});
+    auto res = m6.solve({6, 12, 21});
+    for (const auto i: res) {
+        cout << i << ",";
+    }
 }
