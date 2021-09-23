@@ -2,6 +2,7 @@
 using namespace std;
 using ll = long long;
 using Real = long double;
+const Real EPS = 1e-10;
 
 // 行列積は O(n^3)
 // m 乗は O(n^3 log m)
@@ -83,6 +84,41 @@ class Matrix {
         return res;
     }
 
+    // Gauss Jordan 法で matrix を破壊的に変換する
+    // rank を返す
+    // 拡大係数行列 (is_extended = true) の場合は最終列は変換しない
+    int gauss_jordan_real(bool is_extended = false) {
+        int rank = 0;
+        // matrix の要素が Real ではない場合はここでエラーを吐く
+        vector<vector<Real>>& M = matrix;
+        for (int c = 0; c < col; c++) {
+            if (is_extended && c == col - 1) break;
+            int pivot_row = -1;
+            Real pivot_value = EPS;
+            for (int r = rank; r < row; r++) {
+                if (abs(M[r][c]) > pivot_value) {
+                    pivot_value = M[r][c];
+                    pivot_row = r;
+                }
+            }
+            if (pivot_row == -1) continue;
+            swap(M[pivot_row], M[rank]);
+            for (int c2 = 0; c2 < col; c2++) {
+                M[rank][c2] /= pivot_value;
+            }
+            for (int r = 0; r < row; r++) {
+                if (r != rank && abs(M[r][c]) > EPS) {
+                    Real v = M[r][c];
+                    for (int c2 = 0; c2 < col; c2++) {
+                        M[r][c2] -= M[rank][c2] * v;
+                    }
+                }
+            }
+            rank++;
+        }
+        return rank;
+    }
+
     void print() {
         cout << "(" << row << "," << col << ")" << endl;
         for (const auto& m_row : matrix) {
@@ -105,4 +141,7 @@ int main() {
     Matrix<int> m3 = Matrix<int>({{2, 0}, {0, 3}});
     m3.pow(6).print();
     m3.pow_mod(6, 20).print();
+    Matrix<Real> m4 = Matrix<Real>({{0, 1, 2}, {3, 4, 5}});
+    m4.gauss_jordan_real();
+    m4.print();
 }
