@@ -119,6 +119,28 @@ class Matrix {
         return rank;
     }
 
+    // (正則な正方行列であれば)逆行列を返す
+    Matrix<Real> inverse() {
+        assert(row == col);
+        vector<vector<Real>> extended_matrix;
+        for (int r = 0; r < row; r++) {
+            vector<Real> v(col * 2, 0.0);
+            copy(matrix[r].begin(), matrix[r].end(), v.begin());
+            v[col + r] = 1.0;
+            extended_matrix.push_back(v);
+        }
+        auto M = Matrix<Real>(extended_matrix);
+        int rank = M.gauss_jordan_real();
+        if (rank < col) return M;  // 正則ではない
+        vector<vector<Real>> res(row, vector<Real>(col, 0.0));
+        for (int r = 0; r < row; r++) {
+            for (int c = 0; c < col; c++) {
+                res[r][c] = M.matrix[r][c + col];
+            }
+        }
+        return Matrix<Real>(res);
+    }
+
     void print() {
         cout << "(" << row << "," << col << ")" << endl;
         for (const auto& m_row : matrix) {
@@ -144,4 +166,6 @@ int main() {
     Matrix<Real> m4 = Matrix<Real>({{0, 1, 2}, {3, 4, 5}});
     m4.gauss_jordan_real();
     m4.print();
+    Matrix<Real> m5 = Matrix<Real>({{3, 1, 1}, {5, 1, 3}, {2, 0, 1}});
+    m5.inverse().print();
 }
