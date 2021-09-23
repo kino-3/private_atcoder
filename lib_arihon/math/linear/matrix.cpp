@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
+using Real = long double;
 
 // 行列積は O(n^3)
 // m 乗は O(n^3 log m)
@@ -8,18 +9,18 @@ template <class T>
 class Matrix {
    public:
     vector<vector<T>> matrix;
-    int line;
     int row;
+    int col;
 
     Matrix(vector<vector<T>> matrix)
-        : matrix(matrix), line(matrix.size()), row(matrix.at(0).size()) {}
+        : matrix(matrix), row(matrix.size()), col(matrix.at(0).size()) {}
 
     Matrix mul(Matrix m) {
-        vector<vector<T>> res(line, vector<T>(m.row, 0));
-        for (int l = 0; l < line; l++) {
-            for (int r = 0; r < m.row; r++) {
+        vector<vector<T>> res(row, vector<T>(m.col, 0));
+        for (int l = 0; l < row; l++) {
+            for (int r = 0; r < m.col; r++) {
                 T sum = 0;
-                for (int k = 0; k < row; k++) {
+                for (int k = 0; k < col; k++) {
                     sum += matrix[l][k] * m.matrix[k][r];
                 }
                 res[l][r] = sum;
@@ -29,11 +30,11 @@ class Matrix {
     }
 
     Matrix mul_mod(Matrix m, ll mod) {
-        vector<vector<T>> res(line, vector<T>(m.row, 0));
-        for (int l = 0; l < line; l++) {
-            for (int r = 0; r < m.row; r++) {
+        vector<vector<T>> res(row, vector<T>(m.col, 0));
+        for (int l = 0; l < row; l++) {
+            for (int r = 0; r < m.col; r++) {
                 T sum = 0;
-                for (int k = 0; k < row; k++) {
+                for (int k = 0; k < col; k++) {
                     sum += (matrix[l][k] * m.matrix[k][r]) % mod;
                 }
                 res[l][r] = sum % mod;
@@ -45,8 +46,8 @@ class Matrix {
     Matrix pow(ll n) {
         // 正方行列の n 乗
         vector<vector<T>> identity;
-        for (int i = 0; i < line; i++) {
-            vector<T> v(row, 0);
+        for (int i = 0; i < row; i++) {
+            vector<T> v(col, 0);
             v[i] = 1;
             identity.push_back(v);
         }
@@ -65,8 +66,8 @@ class Matrix {
     Matrix pow_mod(ll n, ll mod) {
         // 正方行列の n 乗
         vector<vector<T>> identity;
-        for (int i = 0; i < line; i++) {
-            vector<T> v(row, 0);
+        for (int i = 0; i < row; i++) {
+            vector<T> v(col, 0);
             v[i] = 1;
             identity.push_back(v);
         }
@@ -83,10 +84,10 @@ class Matrix {
     }
 
     void print() {
-        cout << "(" << line << "," << row << ")" << endl;
-        for (const auto& m_line : matrix) {
+        cout << "(" << row << "," << col << ")" << endl;
+        for (const auto& m_row : matrix) {
             cout << "{";
-            for (const auto& value : m_line) {
+            for (const auto& value : m_row) {
                 cout << value << ",";
             }
             cout << "}" << endl;
