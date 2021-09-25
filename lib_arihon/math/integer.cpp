@@ -35,6 +35,16 @@ ll extgcd(ll a, ll b, ll& x, ll& y) {
     return d;
 }
 
+// mod を法とする a の逆元
+ll mod_inverse(ll a, ll mod) {
+    ll x, y;
+    ll gcd = extgcd(a, mod, x, y);
+    if (gcd == 1)
+        return (mod + x) % mod;
+    else
+        return -1;
+}
+
 // 素数
 
 bool is_prime(ll n) {
@@ -164,5 +174,7 @@ int main() {
     print_v(list_factor(2));
     print_v(list_factor(1000));
     print_v(list_factor(2021));
-    cout << mod_pow(123, 456, 123456) << endl; // 17505
+    assert(mod_pow(123, 456, 123456) == 17505);
+    assert(mod_inverse(123, 10007) == 8868);
+    assert(mod_inverse(123, 30021) == -1);
 }
