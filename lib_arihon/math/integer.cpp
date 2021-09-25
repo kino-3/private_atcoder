@@ -45,6 +45,28 @@ ll mod_inverse(ll a, ll mod) {
         return -1;
 }
 
+// 素数 mod を法とする i の逆元 res[i] (i<=n)
+// 計算量 O(n)
+vector<ll> mod_inverse_list(ll n, ll mod) {
+    vector<ll> res(n + 1);
+    res[0] = 0;
+    res[1] = 1;
+    for (ll i = 2; i <= n; i++) {
+        // mod = i*(mod/i) + mod%i
+        // 0 ≡ i*(mod/i) + mod%i
+        // i*(mod/i) ≡ -mod%i
+        // mod%i < i より, res[mod%i] は既知で,
+        // i*(mod/i)*res[mod%i] ≡ -1
+        // (-1)*(-1) ≡ 1 より
+        // i*(mod/i)*res[mod%i]*(-1) ≡ 1
+        // よって,
+        // res[i] ≡ (mod/i)*res[mod%i]*(-1)
+        // (mod/i)*res[mod%i] > 0 なので,
+        res[i] = mod - ((mod / i) * res[mod % i]) % mod;
+    }
+    return res;
+}
+
 // 素数
 
 bool is_prime(ll n) {
@@ -177,4 +199,5 @@ int main() {
     assert(mod_pow(123, 456, 123456) == 17505);
     assert(mod_inverse(123, 10007) == 8868);
     assert(mod_inverse(123, 30021) == -1);
+    print_v(mod_inverse_list(10, 11));
 }
