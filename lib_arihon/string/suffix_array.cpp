@@ -35,18 +35,22 @@ class SuffixArray {
     };
 
    public:
-    vector<ll> sa;  // index = sa[i] は辞書順で i 番目の文字列の開始位置
-    vector<ll> rank;  // i = rank[index] は開始位置 index の文字列の辞書順
+    vector<ll> sa;  // index = sa[i] は辞書順で i 番目の接尾辞文字列の開始位置
+    vector<ll> rank;  // i = rank[index] は開始位置 index の接尾辞文字列の辞書順
+    // lcp[i] は辞書順で i 番目と i+1 番目の接尾辞文字列の先頭一致文字数
+    vector<ll> lcp;
 
     SuffixArray(vector<T> v) {
         len = v.size();
         vec.resize(len);
         sa.resize(len + 1);
         rank.resize(len + 1);
+        lcp.resize(len);
         copy(v.begin(), v.end(), vec.begin());
     }
 
-    void exec() {
+    // O(n (log n)^2)
+    vector<ll> exec() {
         vector<ll> tmp_rank(len + 1);
         for (ll i = 0; i < len; i++) {
             sa[i] = i;
@@ -71,6 +75,25 @@ class SuffixArray {
             }
             copy(tmp_rank.begin(), tmp_rank.end(), rank.begin());
         }
+        return sa;
+    }
+
+    // O(n)
+    vector<ll> exec_lcp() {
+        ll height = 0;
+        lcp[0] = 0;  // 空文字列と文字列は先頭一致しない
+        for (ll idx = 0; idx < len; idx++) {
+            // 辞書順で「位置 idx から始まる文字列」の 1 個前の文字列の開始位置
+            // rank[len] = 0 かつ idx != len より, rank[idx] > 0
+            ll pre_idx = sa[rank[idx] - 1];
+            if (height > 0) height--;
+            while (idx + height < len && pre_idx + height < len) {
+                if (vec[idx + height] != vec[pre_idx + height]) break;
+                height++;
+            }
+            lcp[rank[idx] - 1] = height;
+        }
+        return lcp;
     }
 };
 
@@ -90,4 +113,5 @@ int main() {
     sa.exec();
     print_v(sa.sa);
     print_v(sa.rank);
+    print_v(sa.exec_lcp());
 }
