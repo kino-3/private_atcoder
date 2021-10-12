@@ -35,7 +35,7 @@ int main() {
     A.push_back(L);
     vector<ll> div;
     REP(idx, N+1) { div.push_back(A[idx + 1] - A[idx]); }
-    ll maxL = L / (K + 1);
+    ll maxL = L / (K + 1) + 1;
 
     ll ub = maxL;
     ll lb = 1;
