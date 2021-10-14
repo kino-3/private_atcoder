@@ -31,7 +31,7 @@ class Tree {
             if (child == parent_of_v) continue;  // 隣接リストなので
             size += calc_subtree_size(child, v);
         }
-        subtree_size[size];
+        subtree_size[v] = size;
         return size;
     }
 
@@ -52,7 +52,7 @@ class Tree {
             if (subtree_size[child] > V / 2) is_centroid = false;
             subtree_size[v] += subtree_size[child];
         }
-        if (subtree_size[v] < V / 2) {
+        if (subtree_size[v] < (V + 1) / 2) {
             // v を親としたときの parent_of_v のサイズが V / 2 より大きい
             is_centroid = false;
         }
