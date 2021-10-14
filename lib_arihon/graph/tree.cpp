@@ -13,6 +13,7 @@ class Tree {
     vector<ll> depth;         // ある点からの距離
     vector<ll> sub;           // どの sub の部分木か
     vector<ll> sub_list;      // sub の種類を集めたもの
+    vector<vector<pair<ll, ll>>> child_info;
 
     Tree(ll v) : V(v), graph(v), parent(v, -1), subtree_size(v, -1) {}
 
@@ -61,6 +62,29 @@ class Tree {
                 sub[child] = sub[v];
             }
         }
+    }
+
+    // 木を root で吊ったときの木の深さに関する情報を調べる
+    // - 戻り値は, v を含む v 以下の部分木の深さ
+    // - child_info[v] に以下の情報を格納する
+    // 全ての v の子 child について,
+    // {child 以下の部分木の深さ, child} を要素とする vector
+    // https://atcoder.jp/contests/typical90/tasks/typical90_c で動作確認済み
+    ll calc_child_info(ll v, ll parent_of_v = -1) {
+        if (parent_of_v == -1) {
+            child_info.clear();
+            for (ll i = 0; i < V; i++) {
+                child_info.push_back(vector<pair<ll, ll>>(0));
+            }
+        }
+        ll max_depth = 1;  // child がいないときの深さは 1
+        for (const auto& child : graph[v]) {
+            if (child == parent_of_v) continue;
+            ll depth = calc_child_info(child, v);
+            child_info[v].push_back({depth, child});
+            max_depth = max(max_depth, depth + 1);
+        }
+        return max_depth;
     }
 
     // calc_subtree_size + 重心分解
