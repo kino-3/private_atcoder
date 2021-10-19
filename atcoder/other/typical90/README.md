@@ -1,6 +1,6 @@
 # 競プロ典型 90 問
 
-https://atcoder.jp/contests/typical90
+[問題](https://atcoder.jp/contests/typical90)
 
 ## 001: 答で二分探索
 
@@ -113,3 +113,12 @@ pass
 - 2: union-find 木
 - 15: 実装
 - 25: indexのバグ修正
+
+同解法。
+
+## 013: Dijkstra
+
+- 2: Dijkstra 2 回
+- 7: 実装
+
+同解法。
