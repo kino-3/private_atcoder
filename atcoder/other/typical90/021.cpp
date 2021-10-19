@@ -1,8 +1,20 @@
 #include <bits/stdc++.h>
+#define REP(var, n) for (decltype(n) var = 0; var < (n); var++)
+#define REP_R(var, n) \
+    for (auto var = (n)-1; var != static_cast<decltype(var)>(-1); var--)
+#define FOR(var, a, b) for (auto var = (a); var < (b); var++)
+#define FOR_R(var, a, b) for (auto var = (b - 1); var > (a - 1); var--)
+#define ALL(c) std::begin(c), std::end(c)
+
 using namespace std;
 using ll = long long;
 
-// https://atcoder.jp/contests/typical90/tasks/typical90_u で確認済み
+// REP(idx, 3) { cout << idx; }  // 012
+// REP_R(idx, 3) { cout << idx; }  // 210
+// FOR(idx, 4, 7) { cout << idx; }  // 456
+// FOR_R(idx, 4, 7) { cout << idx; }  // 654
+// sort(ALL(v));
+
 class StronglyConnectedComponents {
     int V;  // 頂点の個数
     vector<vector<ll>> graph;
@@ -62,36 +74,25 @@ class StronglyConnectedComponents {
     vector<vector<ll>> get_scc() { return scc; }
 };
 
-template <typename T>
-void print_v(const vector<T> vec) {
-    cout << "[";
-    for (auto&& item : vec) {
-        cout << item << ",";
-    }
-    cout << "]" << endl;
-}
+ll N, M, i, j, k;
 
 int main() {
-    StronglyConnectedComponents scc = StronglyConnectedComponents(12);
-    scc.add_edge(0, 6);
-    scc.add_edge(6, 7);
-    scc.add_edge(6, 1);
-    scc.add_edge(1, 7);
-    scc.add_edge(7, 2);
-    scc.add_edge(2, 1);
-    scc.add_edge(2, 8);
-    scc.add_edge(8, 3);
-    scc.add_edge(3, 9);
-    scc.add_edge(9, 8);
-    scc.add_edge(3, 4);
-    scc.add_edge(3, 10);
-    scc.add_edge(10, 4);
-    scc.add_edge(10, 11);
-    scc.add_edge(5, 4);
-    scc.add_edge(4, 5);
-    print_v(scc.exec());
-    vector<vector<ll>> result = scc.get_scc();
-    for (int i = 0; i < result.size(); i++) {
-        print_v(result[i]);
+    std::cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+
+    cin >> N >> M;
+    StronglyConnectedComponents scc = StronglyConnectedComponents(N);
+    REP(i, M) {
+        cin >> j >> k;
+        scc.add_edge(j - 1, k - 1);
     }
+    scc.exec();
+
+    ll ans = 0;
+    vector<vector<ll>> result = scc.get_scc();
+    for (const auto& res : result) {
+        ll size = res.size();
+        ans += size * (size - 1) / 2;
+    }
+    cout << ans << endl;
 }
