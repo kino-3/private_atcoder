@@ -200,3 +200,10 @@ pass
 
 類似解法。木は必ず 2 部グラフ。
 TODO: ./lib_arihon/graph/tree.cpp の修正
+
+## 027
+
+- 1: set
+- 4: 実装
+
+同解法。
