@@ -1,6 +1,19 @@
 #include <bits/stdc++.h>
+#define REP(var, n) for (decltype(n) var = 0; var < (n); var++)
+#define REP_R(var, n) \
+    for (auto var = (n)-1; var != static_cast<decltype(var)>(-1); var--)
+#define FOR(var, a, b) for (auto var = (a); var < (b); var++)
+#define FOR_R(var, a, b) for (auto var = (b - 1); var > (a - 1); var--)
+#define ALL(c) std::begin(c), std::end(c)
+
 using namespace std;
 using ll = long long;
+
+// REP(idx, 3) { cout << idx; }  // 012
+// REP_R(idx, 3) { cout << idx; }  // 210
+// FOR(idx, 4, 7) { cout << idx; }  // 456
+// FOR_R(idx, 4, 7) { cout << idx; }  // 654
+// sort(ALL(v));
 
 class Tree {
     ll V;                      // 頂点の個数
@@ -120,27 +133,52 @@ class Tree {
     }
 };
 
-template <typename T>
-void print_v(const vector<T> vec) {
-    cout << "size: " << vec.size() << endl;
-    cout << "[";
-    for (auto&& item : vec) {
-        cout << item << ",";
-    }
-    cout << "]" << endl;
-}
+ll N, i, j, k;
 
 int main() {
-    Tree tree = Tree(8);
-    tree.add_edge(0, 1);
-    tree.add_edge(0, 2);
-    tree.add_edge(1, 3);
-    tree.add_edge(1, 4);
-    tree.add_edge(2, 5);
-    tree.add_edge(4, 6);
-    tree.add_edge(4, 7);
-    tree.find_centroid(0);
-    print_v(tree.centroids);
-    print_v(tree.parent);
-    print_v(tree.subtree_size);
+    std::cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+
+    cin >> N;
+    Tree tree = Tree(N);
+    REP(i, N - 1) {
+        cin >> j >> k;
+        tree.add_edge(j - 1, k - 1);
+    }
+    tree.calc_depth(0);
+    ll even = 0;
+    REP(i, N) {
+        if (tree.depth[i] % 2 == 0) {
+            even++;
+        }
+    }
+    ll counter = 0;
+
+    if (even < N / 2) {
+        REP(i, N) {
+            if (tree.depth[i] % 2 == 1) {
+                counter++;
+                cout << i + 1;
+                if (counter == N / 2) {
+                    cout << endl;
+                    return 0;
+                } else {
+                    cout << " ";
+                }
+            }
+        }
+    } else {
+        REP(i, N) {
+            if (tree.depth[i] % 2 == 0) {
+                counter++;
+                cout << i + 1;
+                if (counter == N / 2) {
+                    cout << endl;
+                    return 0;
+                } else {
+                    cout << " ";
+                }
+            }
+        }
+    }
 }
