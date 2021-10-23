@@ -84,20 +84,25 @@ bool is_prime(ll n) {
 
 vector<ll> list_primes(ll n) {
     // n 以下の素数を列挙する
-    vector<ll> primes;
+    // 素数で割れるか考えるよりも, エラトステネスの篩の方が速かった
+    // https://atcoder.jp/contests/typical90/tasks/typical90_ad
     if (n == 1) {
-        return primes;
+        return vector<ll>(0);
     }
-    primes.push_back(2);
-    for (ll i = 3; i <= n; i++) {
-        for (const auto& prime : primes) {
-            if (prime * prime > i) {
-                primes.push_back(i);
-                break;
+    vector<bool> is_prime(n + 1, true);
+    is_prime[0] = false;
+    is_prime[1] = false;
+    for (ll i = 2; i <= n; i++) {
+        if (is_prime[i]) {
+            for (ll idx = i * i; idx <= n; idx += i) {
+                is_prime[idx] = false;
             }
-            if (i % prime == 0) {
-                break;
-            }
+        }
+    }
+    vector<ll> primes;
+    for (ll i = 2; i <= n; i++) {
+        if (is_prime[i]) {
+            primes.push_back(i);
         }
     }
     return primes;
