@@ -32,40 +32,51 @@ int main() {
         B.push_back(j);
     }
     unsigned int total_grundy = 0;
+
+    vector<vector<unsigned>> grundy_w_b(51, vector<unsigned>(51));
+    for (ll white = 0; white <= 10; white++) {
+        for (ll blue = 0; blue <= 50; blue++) {
+            if (white == 0 && blue == 0) {
+                continue;
+            }
+            ll max_blue = blue + white * (white + 1) / 2;
+            vector<vector<ll>> grundy(white + 1);  // grundy[w][b]
+            for (ll w = 0; w <= white; w++) {
+                // b < 2
+                if (w == 0) {
+                    grundy[0].push_back(0);  // b == 0
+                    grundy[0].push_back(0);  // b == 1
+                } else {
+                    grundy[w].push_back(grundy[w - 1][w] == 0 ? 1 : 0);
+                    grundy[w].push_back(grundy[w - 1][w + 1] == 0 ? 1 : 0);
+                }
+                // b >= 2
+                for (ll b = 2; b <= max_blue; b++) {
+                    set<ll> g;
+                    for (ll bb = (b + 1) / 2; bb < b; bb++) {
+                        g.insert(grundy[w][bb]);
+                    }
+                    if (w > 0) {
+                        g.insert(grundy[w - 1][w + b]);
+                    }
+                    ll c = 0;
+                    while (true) {
+                        if (g.count(c) == 0) {
+                            break;
+                        }
+                        c++;
+                    }
+                    grundy[w].push_back(c);
+                }
+            }
+            grundy_w_b[white][blue] = unsigned(grundy[white][blue]);
+        }
+    }
+
     REP(i, N) {
         ll blue = B[i];
         ll white = W[i];
-        ll max_blue = blue + white * (white + 1) / 2;
-        vector<vector<ll>> grundy(white + 1);  // grundy[w][b]
-        for (ll w = 0; w <= white; w++) {
-            // b < 2
-            if (w == 0) {
-                grundy[0].push_back(0);  // b == 0
-                grundy[0].push_back(0);  // b == 1
-            } else {
-                grundy[w].push_back(grundy[w - 1][w] == 0 ? 1 : 0);  // b == 0
-                grundy[w].push_back(grundy[w - 1][w + 1] == 0 ? 1 : 0);
-            }
-            // b >= 2
-            for (ll b = 2; b <= max_blue; b++) {
-                set<ll> g;
-                for (ll bb = (b + 1) / 2; bb < b; bb++) {
-                    g.insert(grundy[w][bb]);
-                }
-                if (w > 0) {
-                    g.insert(grundy[w - 1][w + b]);
-                }
-                ll c = 0;
-                while (true) {
-                    if (g.count(c) == 0) {
-                        break;
-                    }
-                    c++;
-                }
-                grundy[w].push_back(c);
-            }
-        }
-        total_grundy ^= unsigned(grundy[white][blue]);
+        total_grundy ^= grundy_w_b[white][blue];
     }
     if (total_grundy == 0) {
         cout << "Second" << endl;
