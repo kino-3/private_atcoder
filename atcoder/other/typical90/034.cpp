@@ -30,26 +30,42 @@ int main() {
 
     ll begin = 0;
     ll end = 0;
-    set<ll> data;
+    map<ll, ll> counter;
     while (end < N) {
-        data.insert(A[end]);
-        if (data.size() > K) {
+        if (counter.count(A[end]) > 0) {
+            counter[A[end]] ++;
+        } else {
+            counter[A[end]] = 1;
+        }
+        if (counter.size() > K) {
+            counter.erase(A[end]);
             break;
         }
         end += 1;
     }
     ll ans = end - begin;
     while (end < N) {
-        // cout << begin << " " << end << endl;
-        ll removed = A[begin];
-        ll appended = A[end];
-        data.erase(A[begin]);
-        data.insert(A[end]);
-        while (A[begin] == removed) {
-            begin++;
+        while (true) {
+            if (counter[A[begin]] > 1) {
+                counter[A[begin]] --;
+            } else {
+                counter.erase(A[begin]);
+                begin ++;
+                break;
+            }
+            begin ++;
         }
-        while (data.count(A[end]) > 0) {
-            end++;
+        while (end < N) {
+            if (counter.count(A[end]) > 0) {
+                counter[A[end]] ++;
+            } else {
+                counter[A[end]] = 1;
+            }
+            if (counter.size() > K) {
+                counter.erase(A[end]);
+                break;
+            }
+            end += 1;
         }
         ans = max(ans, end - begin);
     }
