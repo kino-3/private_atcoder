@@ -1,19 +1,20 @@
 #include <bits/stdc++.h>
+#define REP(var, n) for (decltype(n) var = 0; var < (n); var++)
+#define REP_R(var, n) \
+    for (auto var = (n)-1; var != static_cast<decltype(var)>(-1); var--)
+#define FOR(var, a, b) for (auto var = (a); var < (b); var++)
+#define FOR_R(var, a, b) for (auto var = (b - 1); var > (a - 1); var--)
+#define ALL(c) std::begin(c), std::end(c)
+
 using namespace std;
 using ll = long long;
 
-template <typename T>
-void print_v(const vector<T> vec) {
-    cout << "size: " << vec.size() << endl;
-    cout << "[";
-    for (auto &&item : vec) {
-        cout << item << ",";
-    }
-    cout << "]" << endl;
-}
+// REP(idx, 3) { cout << idx; }  // 012
+// REP_R(idx, 3) { cout << idx; }  // 210
+// FOR(idx, 4, 7) { cout << idx; }  // 456
+// FOR_R(idx, 4, 7) { cout << idx; }  // 654
+// sort(ALL(v));
 
-// 最小値を考えるセグメント木
-// 動作確認済: https://atcoder.jp/contests/typical90/tasks/typical90_ak
 class SegmentTree {
     ll n;  // 要素数
     ll N;  // n 以上の最小の 2 の累乗
@@ -75,12 +76,38 @@ class SegmentTree {
     vector<ll> get_node() { return node; }
 };
 
+ll W, N, i, j, k, l, r, v, w;
+ll INF = 10000000000000000;
+vector<ll> L, R, V;
+
 int main() {
-    SegmentTree seg = SegmentTree(6);
-    seg.init({10, 20, 30, 40, 50, 60});
-    print_v(seg.get_node());
-    cout << seg.query(1, 4) << endl;
-    seg.update(3, 8);
-    print_v(seg.get_node());
-    cout << seg.query(1, 4) << endl;
+    std::cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+
+    cin >> W >> N;
+    REP(i, N) {
+        cin >> j >> k >> l;
+        L.push_back(j);
+        R.push_back(k);
+        V.push_back(l);
+    }
+    vector<ll> value(W + 1, INF);
+    value[0] = 0;
+    REP(i, N) {
+        l = L[i];
+        r = R[i];
+        v = V[i];
+        SegmentTree seg = SegmentTree(W + 1);
+        seg.init(value);
+        REP_R(w, W + 1) {
+            // この時点で, (i-1) 番目までで w の重さの最大価値が -value[w]
+            // (w - r ~ w - l の最小値) - v で更新
+            ll left = max(w - r, 0LL);
+            ll right = max(w - l + 1, 0LL);
+            ll new_value = seg.query(left, right);
+            new_value -= v;
+            value[w] = min(new_value, value[w]);
+        }
+    }
+    cout << (value[W] > 0 ? -1 : -value[W]) << endl;
 }
