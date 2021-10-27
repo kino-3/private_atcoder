@@ -36,6 +36,7 @@ int main() {
 
     cin >> H >> W;
     vector<vector<ll>> count(H, vector<ll>(W, INF));
+    vector<vector<ll>> direction(H, vector<ll>(W, 0));  // row: 1, col: 0
     cin >> rs >> cs;
     cin >> rt >> ct;
     rs -= 1;
@@ -56,6 +57,10 @@ int main() {
         r = P.first + 1;
         c = P.second;
         while (r < H && board[r][c] == '.') {
+            if (direction[r][c] == 1) {
+                break;
+            }
+            direction[r][c] = 1;
             if (step < count[r][c]) {
                 count[r][c] = step;
                 que.push_back({r, c});
@@ -65,6 +70,10 @@ int main() {
         r = P.first - 1;
         c = P.second;
         while (r >= 0 && board[r][c] == '.') {
+            if (direction[r][c] == 1) {
+                break;
+            }
+            direction[r][c] = 1;
             if (step < count[r][c]) {
                 count[r][c] = step;
                 que.push_back({r, c});
@@ -74,6 +83,10 @@ int main() {
         r = P.first;
         c = P.second + 1;
         while (c < W && board[r][c] == '.') {
+            if (direction[r][c] == -1) {
+                break;
+            }
+            direction[r][c] = -1;
             if (step < count[r][c]) {
                 count[r][c] = step;
                 que.push_back({r, c});
@@ -83,6 +96,10 @@ int main() {
         r = P.first;
         c = P.second - 1;
         while (c >= 0 && board[r][c] == '.') {
+            if (direction[r][c] == -1) {
+                break;
+            }
+            direction[r][c] = -1;
             if (step < count[r][c]) {
                 count[r][c] = step;
                 que.push_back({r, c});
