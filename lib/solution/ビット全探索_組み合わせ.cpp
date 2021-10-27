@@ -15,17 +15,18 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-int N, i;
+int N, K, i, j;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N;
-    REP(i, 1 << N) {
-        // i = 0...2^N-1 (N 桁の辞書順)
-        std::bitset<100> bs(i);
-        ll j;
+    cin >> N >> K;
+    ll comb = (1 << K) - 1;
+    ll end_comb = 1 << N;
+    while (comb < end_comb) {
+        // (N 桁の辞書順)
+        std::bitset<100> bs(comb);
         // 上位桁からループ
         REP_R(j, N) {
             if (bs[j]) {
@@ -44,5 +45,9 @@ int main() {
             }
         }
         cout << endl;
+        // 後処理
+        ll x = comb & -comb;
+        ll y = comb + x;
+        comb = ((comb & ~y) / x >> 1) | y;
     }
 }
