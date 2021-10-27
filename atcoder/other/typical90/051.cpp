@@ -73,7 +73,7 @@ ll count(const vector<ll>& list1, const vector<ll>& list2, ll total) {
     return ans;
 }
 
-int N, K, P, i, j, k, n;
+ll N, K, P, i, j, k, n;
 vector<ll> A, B;
 
 int main() {
@@ -110,6 +110,7 @@ int main() {
             ll y = comb + x;
             comb = ((comb & ~y) / x >> 1) | y;
         }
+        PA[k].push_back(P + 1);
     }
 
     // 後半
@@ -132,11 +133,12 @@ int main() {
             ll y = comb + x;
             comb = ((comb & ~y) / x >> 1) | y;
         }
+        PB[k].push_back(P + 1);
     }
     ll ans = 0;
     PA[0].push_back(0);
     PB[0].push_back(0);
-    REP(k, K+1) {
+    REP(k, K + 1) {
         if (PA[k].size() * PB[K - k].size() == 0) continue;
         ans += count(PA[k], PB[K - k], P);
     }
