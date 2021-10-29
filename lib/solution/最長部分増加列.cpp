@@ -15,6 +15,16 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
+template <typename T>
+void print_v(const vector<T> vec) {
+    cout << "size: " << vec.size() << endl;
+    cout << "[";
+    for (auto &&item : vec) {
+        cout << item << ",";
+    }
+    cout << "]" << endl;
+}
+
 ll N, i, j, k;
 vector<ll> A;
 
@@ -27,12 +37,17 @@ int main() {
         cin >> j;
         A.push_back(j);
     }
-    // 長さ i の増加列の末尾の値
-    vector<ll> dpl;
-    vector<ll> dp;
+
+    // 最長部分増加列(LIS)
+    // O(N log N)
+    // https://atcoder.jp/contests/typical90/tasks/typical90_bh で検証済み
+    vector<ll> dpl;  // dpl[idx] は idx 番目を最終要素とするLISの長さ
+    vector<ll> dp;  // dp[idx] は現時点で長さ (idx+1) の LIS
+                    // の末尾要素としてありうる最小値
     dp.push_back(A[0]);
     dpl.push_back(1);
     FOR(i, 1, N) {
+        // A[i] までの情報を反映
         ll idx = distance(dp.begin(), lower_bound(ALL(dp), A[i]));
         if (idx == dp.size()) {
             dp.push_back(A[i]);
@@ -41,28 +56,7 @@ int main() {
         }
         dpl.push_back(idx + 1);
     }
-    //
-    reverse(ALL(A));
-    dp.clear();
-    vector<ll> dpr;
-    dp.push_back(A[0]);
-    dpr.push_back(1);
-    FOR(i, 1, N) {
-        ll idx = distance(dp.begin(), lower_bound(ALL(dp), A[i]));
-        if (idx == dp.size()) {
-            dp.push_back(A[i]);
-        } else {
-            dp[idx] = A[i];
-        }
-        dpr.push_back(idx + 1);
-    }
-    reverse(ALL(dpr));
-
-    ll ans = 1;
-    REP(i, N) {
-        // i が頂点
-        // cout << i << ": " << dpl[i] << "," << dpr[i] << endl;
-        ans = max(ans, dpl[i] + dpr[i] - 1);
-    }
-    cout << ans << endl;
+    // - dp.size(): LIS の長さ
+    // - dpl を先頭から見て各valueのkeyの最小値を調べると,
+    //   A[0:idx] のみを用いた LIS の長さがわかる。
 }
