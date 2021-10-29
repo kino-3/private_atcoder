@@ -15,7 +15,7 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-int N, K, i, j;
+ll N, K, i, j;
 
 int main() {
     std::cin.tie(nullptr);

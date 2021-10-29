@@ -64,11 +64,11 @@ ll count(const vector<ll>& list1, const vector<ll>& list2, ll total) {
     for (const auto& v : list_1) {
         while (list_2[idx] + v > total) {
             idx++;
-            if (idx == list_2.size()) {
+            if (idx == ll(list_2.size())) {
                 return ans;
             }
         }
-        ans += list_2.size() - idx;
+        ans += ll(list_2.size()) - idx;
     }
     return ans;
 }
@@ -139,7 +139,7 @@ int main() {
     PA[0].push_back(0);
     PB[0].push_back(0);
     REP(k, K + 1) {
-        if (PA[k].size() * PB[K - k].size() == 0) continue;
+        if (PA[k].size() == 0 || PB[K - k].size() == 0) continue;
         ans += count(PA[k], PB[K - k], P);
     }
     cout << ans << endl;
