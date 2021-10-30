@@ -16,6 +16,7 @@ using ll = long long;
 // sort(ALL(v));
 
 ll N, K, i, j;
+string Ns;
 
 template <typename T>
 void print_v(const vector<T> vec) {
@@ -31,28 +32,27 @@ int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N >> K;
+    cin >> Ns;
+    cin >> K;
     ll pow;
     REP(i, K) {
-        ll tmp_N = 0;
+        N = 0;
         pow = 1;
-        while (N > 0) {
-            tmp_N += pow * (N % 10);
-            N /= 10;
+        REP_R(j, Ns.size()) {
+            N += pow * (Ns[j] - '0');
             pow *= 8;
         }
-        N = tmp_N;
         vector<int> tmp;
         while (N > 0) {
             tmp.push_back(N % 9 != 8 ? N % 9 : 5);
             N /= 9;
         }
-        // print_v(tmp);
-        pow = 1;
-        REP(j, tmp.size()) {
-            N += tmp[j] * pow;
-            pow *= 10;
-        }
+        Ns = "";
+        REP(j, tmp.size()) { Ns = to_string(tmp[j]) + Ns; }
     }
-    cout << N << endl;
+    if (Ns.empty()) {
+        cout << 0 << endl;
+    } else {
+        cout << Ns << endl;
+    }
 }
