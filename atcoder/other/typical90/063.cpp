@@ -53,17 +53,15 @@ int main() {
                 }
             }
         }
-        multiset<ll> counter;
-        set<ll> index;
+        map<ll, ll> counter;
         REP(k, W) {
             if (flg[k]) {
-                index.insert(value[k]);
-                counter.insert(value[k]);
+                counter[value[k]] += 1;
             }
         }
         ll w = 0;
-        for (auto it = index.begin(), e = index.end(); it != e; ++it) {
-            w = max(w, ll(counter.count(*it)));
+        for (auto it = counter.begin(), e = counter.end(); it != e; ++it) {
+            w = max(w, it->second);
         }
         ans = max(ans, h * w);
     }
