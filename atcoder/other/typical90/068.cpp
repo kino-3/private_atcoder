@@ -122,9 +122,9 @@ int main() {
         ll v = V[i];
         if (T[i] == 0) {
             if (x % 2 == 0) {
-                bit.add(x, v);
+                bit.add(x, v - bit.sum(x, x));
             } else {
-                bit.add(x, -v);
+                bit.add(x, -v - bit.sum(x, x));
             }
             uf.unite(x, x + 1);
         } else {
@@ -138,7 +138,7 @@ int main() {
                 if ((y - x) % 2 == 0) {
                     cout << ans << endl;
                 } else {
-                    cout << - ans << endl;
+                    cout << -ans << endl;
                 }
             } else {
                 cout << "Ambiguous" << endl;
