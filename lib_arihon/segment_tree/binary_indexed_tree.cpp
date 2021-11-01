@@ -2,6 +2,8 @@
 using namespace std;
 using ll = long long;
 
+// 呼び出しは 0-indexed (範囲の取り方に注意)
+// 動作確認: https://atcoder.jp/contests/typical90/tasks/typical90_bp
 class BIT {
     ll n;             // 要素数
     vector<ll> node;  // node[0] (=0) は使用しない
@@ -11,6 +13,7 @@ class BIT {
 
     ll sum(ll index) {
         // [1,index] の index 個の和
+        index++;
         ll res = 0;
         while (index > 0) {
             res += node[index];
@@ -29,6 +32,7 @@ class BIT {
     }
 
     void add(ll index, ll value) {
+        index++;
         // index 番目に value を加える
         while (index <= n) {
             node[index] += value;
@@ -67,12 +71,21 @@ class RangeBIT {
 };
 
 int main() {
+    // テスト
+    BIT test_bit = BIT(10);
+    test_bit.add(0, 10);
+    test_bit.add(1, 20);
+    test_bit.add(2, 3);
+    assert(test_bit.sum(1, 1) == 20);
+    assert(test_bit.sum(0, 2) == 33);
+    assert(test_bit.sum(1) == 30);
+
     // 反転数
-    // 1,2,...,n を並び替えた配列 v_1,v_2,...,v_n のバブルソートに必要な回数
+    // 0,1,...,n-1 を並び替えた配列 v_0,v_1,...,v_n-1 のバブルソートに必要な回数
     // i < j & v_i > v_j の個数に同じ
     int ans = 0;
     int n = 5;
-    vector<int> v = {4, 2, 1, 5, 3};
+    vector<int> v = {3, 1, 0, 4, 2};
 
     BIT bit = BIT(5);
     for (int j = 0; j < n; j++) {
@@ -84,7 +97,7 @@ int main() {
     // RangeBIT
     RangeBIT rangeBit = RangeBIT(7);
     rangeBit.add(3, 5, 100);
-    for (int i = 1; i <= 7; i++) {
+    for (int i = 0; i <= 6; i++) {
         cout << rangeBit.sum(i) << endl;
     }
 }
