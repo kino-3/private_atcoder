@@ -126,6 +126,27 @@
 		],
 		"description": "print vector"
 	},
+	"print_2d_vector": {
+		"prefix": "print_vv",
+		"body": [
+			"template <typename T>",
+			"void print_v(const vector<T> vec) {",
+			"\tcout << \"[\";",
+			"\tfor (auto &&item : vec) {",
+			"\t\tcout << item << \",\";",
+			"\t}",
+			"\tcout << \"]\" << endl;",
+			"}",
+			"",
+			"template <typename T>",
+			"void print_vv(const vector<T> vec) {",
+			"\tfor (auto &&item : vec) {",
+			"\t\tprint_v(item);",
+			"\t}",
+			"}",
+		],
+		"description": "print vector"
+	},
 	"int2longlong": {
 		"prefix": "ll_int_to_longlong",
 		"body": [
