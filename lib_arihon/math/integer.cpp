@@ -154,8 +154,9 @@ vector<ll> create_product(map<ll, ll> m) {
     return result;
 }
 
+// n の約数を列挙する (上3個の関数が必要)
+// 動作確認: https://atcoder.jp/contests/typical90/tasks/typical90_cg
 vector<ll> list_factor(ll n) {
-    // n 以下の約数を列挙する
     vector<ll> list_factor = create_product(get_prime_factor(n));
     sort(list_factor.begin(), list_factor.end());
     return list_factor;
