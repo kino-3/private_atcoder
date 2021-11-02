@@ -29,7 +29,7 @@ ll sigma(ll num) {
 ll count(ll num) {
     ll ans = 0;
     ll pow = 1;
-    FOR(i, 1, 18) {
+    FOR(i, 1, 19) {
         // i 桁
         pow *= 10;  // (i+1)桁
         if (num >= pow) {
