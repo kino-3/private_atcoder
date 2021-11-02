@@ -2,10 +2,10 @@
 using namespace std;
 using ll = long long;
 
-// TODO: 動作未検証
 // O(V^3)
 // edge の重みは負でもよい
 // 全点対の最短距離がわかる
+// 動作確認: https://atcoder.jp/contests/typical90/tasks/typical90_ci
 class WarshallFloyd {
     int V;                    // 頂点の個数
     vector<vector<ll>> dist;  // コスト
