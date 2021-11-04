@@ -72,7 +72,7 @@ class LazySegmentTree {
     // [left, right) の区間を value に更新する
     // 外部から idx, l, r を指定することはない
     // 内部的には node[idx] を value 更新後の区間最小値に更新する
-    // (lazy[idx] はfalseになる)
+    // (flag[idx] はfalseになる)
     void update(ll left, ll right, ll value, ll idx = 0, ll l = 0, ll r = -1) {
         // トップダウンに見ていく (外部から呼び出されたときは, [0,N) から始まる)
         if (r < 0) r = N;  // 外部から呼び出されたとき
