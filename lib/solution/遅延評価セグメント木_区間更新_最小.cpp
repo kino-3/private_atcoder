@@ -26,7 +26,7 @@ class LazySegmentTree {
     // (値が一様かは不問) の最小値を持つ
     // flag[idx] == true の場合, この値は保証されない
     vector<ll> node;
-    // node[idx]: (flag[idx] == true の場合) idx の示す区間の値は一様である
+    // lazy[idx]: (flag[idx] == true の場合) idx の示す区間の値は一様である
     // ことを保証し, その一様な値を持つ (一様なので当然区間の最小値でもある)
     // flag[idx] == false の場合, この値は保証されない
     vector<ll> lazy;
@@ -40,7 +40,7 @@ class LazySegmentTree {
             N *= 2;
         }
         node = vector<ll>(2 * N - 1, INF);
-        lazy = vector<ll>(2 * N - 1, INF);
+        lazy = vector<ll>(2 * N - 1);
         flag = vector<bool>(2 * N - 1, false);
         // 葉ノードの初期化
         for (ll i = 0; i < values.size(); i++) {
@@ -129,7 +129,7 @@ int main() {
 
     {  // test:
        // https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=DSL_2_F
-       // https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=6029891#1
+       // https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=6029963#1
         cin >> N >> Q;
         REP(i, Q) {
             cin >> j;
