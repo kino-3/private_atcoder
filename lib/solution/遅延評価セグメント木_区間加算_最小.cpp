@@ -93,13 +93,13 @@ class LazySegmentTree {
         // これは ※※ のためである
         propagate(idx, l, r);
         if (right <= l || r <= left) {
-            // idx の区間が更新区間外
+            // idx の区間が検査対象区間外
             return INF;
         } else if (left <= l && r <= right) {
-            // idx の区間が更新区間に完全に含まれている場合
+            // idx の区間が検査対象区間に完全に含まれている場合
             return node[idx];  // ※※
         } else {
-            // idx の区間が更新区間に一部だけ含まれている場合
+            // idx の区間が検査対象区間に一部だけ含まれている場合
             ll value_l = query(left, right, 2 * idx + 1, l, (l + r) / 2);
             ll value_r = query(left, right, 2 * idx + 2, (l + r) / 2, r);
             return min(value_l, value_r);
