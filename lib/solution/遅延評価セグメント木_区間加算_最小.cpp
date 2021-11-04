@@ -89,7 +89,7 @@ class LazySegmentTree {
     // 内部的には [left,right) かつ [l,r) を満たす区間の最小値を返す
     ll query(ll left, ll right, ll idx = 0, ll l = 0, ll r = -1) {
         if (r < 0) r = N;  // 外部から呼び出されたとき
-        // flg[idx] == true なら (i.e. lazy が有効なら) node を更新
+        // lazy != 0 なら node を更新
         // これは ※※ のためである
         propagate(idx, l, r);
         if (right <= l || r <= left) {
