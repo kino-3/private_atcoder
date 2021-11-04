@@ -15,22 +15,15 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-// 再帰型遅延評価セグメント木(区間更新・区間最小)
-// ref. https://tsutaj.hatenablog.com/entry/2017/03/30/224339
-// ref. https://smijake3.hatenablog.com/entry/2018/11/03/100133
+// 再帰型遅延評価セグメント木(区間加算・区間最小)
 class LazySegmentTree {
     ll n;  // 要素数
     ll N;  // n 以上の最小の 2 の累乗
     const ll INF = numeric_limits<ll>::max();
-    // node[idx]: (flag[idx] == false の場合) idx の示す区間
-    // (値が一様かは不問) の最小値を持つ
-    // flag[idx] == true の場合, この値は保証されない
+    // node[idx] + lazy[idx]: idx の示す区間の最小値
     vector<ll> node;
-    // lazy[idx]: (flag[idx] == true の場合) idx の示す区間の値は一様である
-    // ことを保証し, その一様な値を持つ (一様なので当然区間の最小値でもある)
-    // flag[idx] == false の場合, この値は保証されない
+    // lazy[idx]: idx の示す区間に一様に加算された値
     vector<ll> lazy;
-    vector<bool> flag;  // lazy に必要な情報が入っているか
 
    public:
     LazySegmentTree(vector<ll> values) {
@@ -40,8 +33,7 @@ class LazySegmentTree {
             N *= 2;
         }
         node = vector<ll>(2 * N - 1, INF);
-        lazy = vector<ll>(2 * N - 1);
-        flag = vector<bool>(2 * N - 1, false);
+        lazy = vector<ll>(2 * N - 1, 0);
         // 葉ノードの初期化
         for (ll i = 0; i < values.size(); i++) {
             node[i + N - 1] = values[i];
@@ -53,42 +45,39 @@ class LazySegmentTree {
     }
 
     // lazy[idx] を node に移した後, 子ノードに lazy を伝播させる
-    // flag[idx] を false にする
     // これ自体は伝播処理をまとめただけなので,
     // 前処理・後処理は適切に行われる必要がある
     // なお, lazy[idx] が 区間[l,r) を示すように l, r が与えられなければならない
     void propagate(ll idx, ll l, ll r) {
-        if (flag[idx]) {
-            node[idx] = lazy[idx];
+        if (lazy[idx] != 0) {
+            node[idx] += lazy[idx];
             if (r - l > 1) {
                 // 伝播させるのは idx が葉ノードではないときのみ
-                lazy[idx * 2 + 1] = lazy[idx * 2 + 2] = lazy[idx];
-                flag[idx * 2 + 1] = flag[idx * 2 + 2] = true;
+                lazy[idx * 2 + 1] += lazy[idx];
+                lazy[idx * 2 + 2] += lazy[idx];
             }
-            flag[idx] = false;
+            lazy[idx] = 0;
         }
     }
 
-    // [left, right) の区間を value に更新する
+    // [left, right) の区間に value を加算する
     // 外部から idx, l, r を指定することはない
-    // 内部的には node[idx] を value 更新後の区間最小値に更新する
-    // (lazy[idx] はfalseになる)
-    void update(ll left, ll right, ll value, ll idx = 0, ll l = 0, ll r = -1) {
+    // 内部的には node[idx] を value 加算後の区間最小値に更新する
+    void add(ll left, ll right, ll value, ll idx = 0, ll l = 0, ll r = -1) {
         // トップダウンに見ていく (外部から呼び出されたときは, [0,N) から始まる)
         if (r < 0) r = N;  // 外部から呼び出されたとき
         if (right <= l || r <= left) {
-            // idx の区間が更新区間外
+            // idx の区間が加算区間外
             propagate(idx, l, r);  // ※の処理ために node を更新
         } else if (left <= l && r <= right) {
-            // idx の区間が更新区間に完全に含まれている場合
-            lazy[idx] = value;
-            flag[idx] = true;
+            // idx の区間が加算区間に完全に含まれている場合
+            lazy[idx] += value;
             propagate(idx, l, r);  // ※の処理ために node を更新
         } else {
-            // idx の区間が更新区間に一部だけ含まれている場合
+            // idx の区間が加算区間に一部だけ含まれている場合
             propagate(idx, l, r);  // 子ノードに伝播するため
-            update(left, right, value, 2 * idx + 1, l, (l + r) / 2);
-            update(left, right, value, 2 * idx + 2, (l + r) / 2, r);
+            add(left, right, value, 2 * idx + 1, l, (l + r) / 2);
+            add(left, right, value, 2 * idx + 2, (l + r) / 2, r);
             // ここまでで, 子ノードの node は更新された
             node[idx] = min(node[2 * idx + 1], node[2 * idx + 2]);  // ※
         }
@@ -96,7 +85,7 @@ class LazySegmentTree {
 
     // [left, right) の最小値を返す
     // 外からは query(left, right) と呼び出す
-    // 他の引数は update と同じ
+    // 他の引数は add と同じ
     // 内部的には [left,right) かつ [l,r) を満たす区間の最小値を返す
     ll query(ll left, ll right, ll idx = 0, ll l = 0, ll r = -1) {
         if (r < 0) r = N;  // 外部から呼び出されたとき
@@ -128,8 +117,8 @@ int main() {
     std::ios::sync_with_stdio(false);
 
     {  // test:
-       // https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=DSL_2_F
-       // https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=6029963#1
+       // https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=DSL_2_H
+       // https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=6030017#1
         cin >> N >> Q;
         REP(i, Q) {
             cin >> j;
@@ -147,10 +136,10 @@ int main() {
                 X.push_back(0);
             }
         }
-        LazySegmentTree seg = LazySegmentTree(vector<ll>(N, (1LL << 31) - 1));
+        LazySegmentTree seg = LazySegmentTree(vector<ll>(N, 0));
         REP(i, Q) {
             if (A[i] == 0) {
-                seg.update(S[i], T[i], X[i]);
+                seg.add(S[i], T[i], X[i]);
             } else {
                 cout << seg.query(S[i], T[i]) << endl;
             }
