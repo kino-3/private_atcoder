@@ -18,6 +18,27 @@ using ll = long long;
 ll mod = 1000000007;
 ll N, i, j, k, l;
 vector<ll> A;
+vector<vector<ll>> memo;
+
+ll dfs(ll left, ll right) {
+    if (memo[left][right] >= 0) {
+        return memo[left][right];
+    }
+    if (right - left == 1) {
+        memo[left][right] = abs(A[left] - A[right]);
+        return memo[left][right];
+    }
+    ll ans = abs(A[left] - A[right]) + dfs(left + 1, right - 1);
+    // cout << ans << endl;
+    // cout << left << " " << right << endl;
+    ll mid = left + 1;
+    while (mid < right) {
+        ans = min(ans, dfs(left, mid) + dfs(mid+1, right));
+        mid += 2;
+    }
+    memo[left][right] = ans;
+    return ans;
+};
 
 int main() {
     std::cin.tie(nullptr);
@@ -27,20 +48,8 @@ int main() {
     REP(i, 2 * N) {
         cin >> j;
         A.push_back(j);
+        memo.push_back(vector<ll>(2 * N, -1));
     }
     ll ans = 0;
-    REP(i, N) {
-        ll diff = 100000000000;
-        ll idx = -1;
-        REP(j, 2 * (N - i) - 1) {
-            if (diff > abs(A[j] - A[j + 1])) {
-                diff = abs(A[j] - A[j + 1]);
-                idx = j;
-            }
-        }
-        ans += diff;
-        A.erase(A.begin() + idx);
-        A.erase(A.begin() + idx);
-    }
-    cout << ans << endl;
+    cout << dfs(0, 2 * N - 1) << endl;
 }
