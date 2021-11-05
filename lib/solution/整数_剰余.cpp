@@ -73,7 +73,8 @@ ll mod_pow(ll x, ll n, ll mod) {
     return res;
 }
 
-// 剰余
+// 組み合わせ
+// 動作確認: https://atcoder.jp/contests/typical90/tasks/typical90_o
 class Combination {
     ll mod;
     vector<ll> factorial;
@@ -82,7 +83,7 @@ class Combination {
     // n は n_C_k の n の最大値
     Combination(ll n, ll _mod = 1000000007) {
         mod = _mod;
-        factorial.push_back(-1);  // ダミー
+        factorial.push_back(1);
         factorial.push_back(1);
         for (ll i = 2; i <= n; i++) {
             factorial.push_back(factorial[i - 1] * i % mod);
