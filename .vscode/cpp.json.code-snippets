@@ -154,5 +154,28 @@
 			"signed main(){"
 		],
 		"description": "int を long long にしたいとき"
+	},
+	"deep_copy": {
+		"prefix": "deep_copy",
+		"body": [
+			"template <typename T>",
+			"vector<T> deep_copy_1d(const vector<T> vec) {",
+			"\tvector<T> tmp(vec.size());",
+			"\tfor (const auto &item : vec) {",
+			"\t\ttmp.push_back(item);",
+			"\t}",
+			"\treturn vec;",
+			"}",
+			"",
+			"template <typename T>",
+			"vector<vector<T>> deep_copy_2d(const vector<vector<T>> vec) {",
+			"\tvector<vector<T>> tmp(vec.size());",
+			"\tfor (const auto &item : vec) {",
+			"\t\ttmp.push_back(deep_copy_1d(item));",
+			"\t}",
+			"\treturn vec;",
+			"}"
+		],
+		"description": "vector の deep copy"
 	}
 }
