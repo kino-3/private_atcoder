@@ -45,6 +45,7 @@ void dfs(ll i, ll j, ll count = -1) {
         count = 1;
     }
     // print_vv(checked);
+    // cout << count << endl;
     ll ii, jj;
     ii = i - 1;
     jj = j;
@@ -53,6 +54,8 @@ void dfs(ll i, ll j, ll count = -1) {
         checked[ii][jj] = true;
         count++;
         dfs(ii, jj, count);
+        checked[ii][jj] = false;
+        count--;
     }
     ii = i + 1;
     jj = j;
@@ -61,6 +64,8 @@ void dfs(ll i, ll j, ll count = -1) {
         checked[ii][jj] = true;
         count++;
         dfs(ii, jj, count);
+        checked[ii][jj] = false;
+        count--;
     }
     ii = i;
     jj = j - 1;
@@ -69,6 +74,8 @@ void dfs(ll i, ll j, ll count = -1) {
         checked[ii][jj] = true;
         count++;
         dfs(ii, jj, count);
+        checked[ii][jj] = false;
+        count--;
     }
     ii = i;
     jj = j + 1;
@@ -77,6 +84,8 @@ void dfs(ll i, ll j, ll count = -1) {
         checked[ii][jj] = true;
         count++;
         dfs(ii, jj, count);
+        checked[ii][jj] = false;
+        count--;
     }
 }
 
@@ -100,6 +109,7 @@ int main() {
             ei = i;
             ej = j;
             dfs(i, j);
+            // break;
         }
     }
     cout << (ans < 4 ? -1 : ans) << endl;
