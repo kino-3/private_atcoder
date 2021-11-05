@@ -12,61 +12,6 @@ void print_v(const vector<T> vec) {
     cout << "]" << endl;
 }
 
-// 約数関連
-
-ll gcd(ll a, ll b) {
-    if (b == 0) {
-        return a;
-    }
-    return gcd(b, a % b);
-}
-
-ll extgcd(ll a, ll b, ll& x, ll& y) {
-    // ax + by = gcd(a,b) を満たす解を x, y に代入し,
-    // gcd(a, b) を返す
-    int d = a;
-    if (b != 0) {
-        d = extgcd(b, a % b, y, x);
-        y -= (a / b) * x;
-    } else {
-        x = 1;
-        y = 0;
-    }
-    return d;
-}
-
-// mod を法とする a の逆元
-ll mod_inverse(ll a, ll mod) {
-    ll x, y;
-    ll gcd = extgcd(a, mod, x, y);
-    if (gcd == 1)
-        return (mod + x) % mod;
-    else
-        return -1;
-}
-
-// 素数 mod を法とする i の逆元 res[i] (i<=n)
-// 計算量 O(n)
-vector<ll> mod_inverse_list(ll n, ll mod) {
-    vector<ll> res(n + 1);
-    res[0] = 0;
-    res[1] = 1;
-    for (ll i = 2; i <= n; i++) {
-        // mod = i*(mod/i) + mod%i
-        // 0 ≡ i*(mod/i) + mod%i
-        // i*(mod/i) ≡ -mod%i
-        // mod%i < i より, res[mod%i] は既知で,
-        // i*(mod/i)*res[mod%i] ≡ -1
-        // (-1)*(-1) ≡ 1 より
-        // i*(mod/i)*res[mod%i]*(-1) ≡ 1
-        // よって,
-        // res[i] ≡ (mod/i)*res[mod%i]*(-1)
-        // (mod/i)*res[mod%i] > 0 なので,
-        res[i] = mod - ((mod / i) * res[mod % i]) % mod;
-    }
-    return res;
-}
-
 // 素数
 
 bool is_prime(ll n) {
@@ -171,26 +116,7 @@ void print_m(map<ll, ll> m) {
     cout << "}" << endl;
 }
 
-// 剰余
-
-ll mod_pow(ll x, ll n, ll mod) {
-    // x^n % mod を返す
-    ll res = 1;
-    while (n > 0) {
-        if (n & 1) {
-            res = res * x % mod;
-        }
-        x = x * x % mod;
-        n >>= 1;
-    }
-    return res;
-}
-
 int main() {
-    cout << gcd(30, 48) << endl;
-    ll x, y;
-    cout << extgcd(30, 48, x, y) << endl;
-    cout << x << " " << y << endl;
     print_v(list_primes(1));
     print_v(list_primes(2));
     print_v(list_primes(50));
@@ -202,8 +128,4 @@ int main() {
     print_v(list_factor(2));
     print_v(list_factor(1000));
     print_v(list_factor(2021));
-    assert(mod_pow(123, 456, 123456) == 17505);
-    assert(mod_inverse(123, 10007) == 8868);
-    assert(mod_inverse(123, 30021) == -1);
-    print_v(mod_inverse_list(10, 11));
 }
