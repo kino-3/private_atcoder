@@ -28,6 +28,7 @@ void print_v(const vector<T> vec) {
 // N 個の集合を K 個の部分集合に分割し,
 // 部分集合に対して定義されるスコア(score)について,
 // K 個のスコアの関数(total_score)の結果を最大・最小を得る
+// 類題で動作確認済み: https://atcoder.jp/contests/typical90/tasks/typical90_as
 //
 // スコアの計算(ビット全探索)の計算量は O(2^N)
 // 最適分割の計算(ビットDP)の計算量は O(3^N)

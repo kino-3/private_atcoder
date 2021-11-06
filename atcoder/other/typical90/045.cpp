@@ -31,14 +31,10 @@ int main() {
     // ここから解説参照
 
     // スコアの計算(ビット全探索)
-    vector<ll> A_max;
-    vector<ll> A_min;
-    vector<ll> score;
-    REP(i, 1 << N) {  // i = 0...2^N-1 (N 桁の辞書順)
+    vector<ll> score;  // 距離
+    REP(i, 1 << N) {   // i = 0...2^N-1 (N 桁の辞書順)
         if (i == 0) {
             // 空集合のスコアを仮定義
-            A_max.push_back(numeric_limits<ll>::min());
-            A_min.push_back(numeric_limits<ll>::max());
             score.push_back(0);
         }
         std::bitset<100> bs(i);
@@ -49,9 +45,16 @@ int main() {
                 // 000100000 = (1 << j) のスコアと
                 // 000001101 = other のスコアで決まる
                 ll other = i - (1 << j);
-                A_max.push_back(max(A[j], A_max[other]));
-                A_min.push_back(min(A[j], A_min[other]));
-                score.push_back(A_max[i] - A_min[i]);
+                ll new_max = -1;
+                std::bitset<100> bs(other);
+                REP(l, N) {
+                    if (bs[l]) {
+                        ll dist = (X[l] - X[j]) * (X[l] - X[j]) +
+                                  (Y[l] - Y[j]) * (Y[l] - Y[j]);
+                        new_max = max(new_max, dist);
+                    }
+                }
+                score.push_back(max(new_max, score[other]));
                 break;
             }
         }
