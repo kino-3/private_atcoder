@@ -15,16 +15,17 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-ll N, i;
+ll N, sup;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
     cin >> N;
-    REP(i, 1 << N) {
-        // i = 0...2^N-1 (N 桁の辞書順)
-        std::bitset<100> bs(i);
+    cin >> sup;  // これをビット表記したときの全探索
+    ll sub = sup;
+    do {  // 辞書と逆順にループ
+        std::bitset<100> bs(sub);
         ll j;
         // 上位桁からループ
         REP_R(j, N) {
@@ -34,9 +35,15 @@ int main() {
                 cout << 0;
             }
         }
-        cout << " ";
-        // 下位桁からループ
-        REP(j, N) {
+        cout << endl;
+        sub = (sub - 1) & sup;  // see. 蟻本 p.144
+    } while (sub != sup);
+
+    do {  // 辞書順にループ
+        std::bitset<100> bs(sup - sub); // 違いはここだけ
+        ll j;
+        // 上位桁からループ
+        REP_R(j, N) {
             if (bs[j]) {
                 cout << 1;
             } else {
@@ -44,5 +51,6 @@ int main() {
             }
         }
         cout << endl;
-    }
+        sub = (sub - 1) & sup;  // see. 蟻本 p.144
+    } while (sub != sup);
 }
