@@ -35,19 +35,8 @@ class Graph {
     }
 };
 
-template <typename T>
-void print_v(const vector<T> vec) {
-    cout << "size: " << vec.size() << endl;
-    cout << "[";
-    for (auto &&item : vec) {
-        cout << item << ",";
-    }
-    cout << "]" << endl;
-}
-
 ll mod = 1000000007;
-ll N, M, Q, i, j, k, l;
-vector<ll> X, Y;
+ll N, M, i, j, k, l;
 
 int main() {
     std::cin.tie(nullptr);
@@ -55,23 +44,8 @@ int main() {
 
     cin >> N >> M;
     Graph graph = Graph(N);
-    vector<ll> color(N, 1);
     REP(i, M) {
         cin >> j >> k;
-        graph.add_undirected_edge(j - 1, k - 1);
-    }
-    cin >> Q;
-    REP(i, Q) {
-        cin >> j >> k;
-        X.push_back(j - 1);
-        Y.push_back(k);
-    }
-    REP(i, Q) {
-        // print_v(color);
-        cout << color[X[i]] << endl;
-        color[X[i]] = Y[i];
-        for (const auto v : graph.conn[X[i]]) {
-            color[v] = Y[i];
-        }
+        graph.add_directed_edge(j - 1, k - 1);
     }
 }
