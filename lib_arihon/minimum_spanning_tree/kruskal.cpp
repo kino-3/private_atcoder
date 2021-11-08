@@ -8,13 +8,13 @@ class UnionFind {
     // 根ノードなら -(データ数)
     // それ以外なら親ノード
     // が格納される
-    std::vector<int> data;
+    std::vector<ll> data;
 
-    UnionFind(int size) : data(size, -1) {}
+    UnionFind(ll size) : data(size, -1) {}
 
     // 集合を併合する
     // 併合できたかを返す(すでに同じ木に属するなら併合不要なのでfalse)
-    bool unite(int x, int y) {
+    bool unite(ll x, ll y) {
         x = root(x);
         y = root(y);
         if (x != y) {
@@ -27,44 +27,45 @@ class UnionFind {
     }
 
     // 同じ木に属するか
-    bool find(int x, int y) { return root(x) == root(y); }
+    bool find(ll x, ll y) { return root(x) == root(y); }
 
     // 属する木の根を返す
     // (その過程で根まで辿ったノードを根に付ける)
-    int root(int x) { return (data[x] < 0) ? x : data[x] = root(data[x]); }
+    ll root(ll x) { return (data[x] < 0) ? x : data[x] = root(data[x]); }
 
     // 集合の要素数を返す
-    int size(int x) { return -data[root(x)]; }
+    ll size(ll x) { return -data[root(x)]; }
 };
 
+// from, to の区別はない(無向グラフ)
 struct edge {
-    int from;
-    int to;
+    ll from;
+    ll to;
     ll cost;
 };
 
-// TODO: 動作未検証
+bool comp(const edge& e1, const edge& e2) { return e1.cost < e2.cost; }
+
+// 動作確認: https://atcoder.jp/contests/typical90/tasks/typical90_aw
 // O(E logV)
 class Kruskal {
-    int V;  // 頂点の個数
-    int E;  // 辺の個数
+    ll V;  // 頂点の個数
+    ll E;  // 辺の個数
     vector<edge> edges;
-    vector<pair<int, int>> links;
+    vector<pair<ll, ll>> links;
 
     const ll INF = numeric_limits<ll>::max();
 
-   private:
-    bool comp(const edge& e1, const edge& e2) { return e1.cost < e2.cost; }
-
    public:
-    Kruskal(int v, int e) : V(v), E(e) {}
+    Kruskal(ll v, ll e) : V(v), E(e) {}
 
-    void add_edge(int from, int to, ll cost) {
+    // from, to の区別はない(無向グラフ)
+    void add_edge(ll from, ll to, ll cost) {
         edges.push_back({from, to, cost});
     }
 
-    int exec() {
-        int total_cost = 0;
+    ll exec() {
+        ll total_cost = 0;
         sort(edges.begin(), edges.end(), comp);  // コストの小さい順にソート
         UnionFind union_find = UnionFind(V);
         for (const auto& edge : edges) {
