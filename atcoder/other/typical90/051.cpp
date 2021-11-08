@@ -94,6 +94,10 @@ int main() {
     vector<vector<ll>> PA(K + 1);
     n = N / 2;
     FOR(k, 1, K + 1) {
+        if (k > n) {
+            PA[k].push_back(P + 1);
+            continue;
+        }
         ll comb = (1 << k) - 1;
         ll end_comb = 1 << n;
         while (comb < end_comb) {
@@ -117,6 +121,10 @@ int main() {
     vector<vector<ll>> PB(K + 1);
     n = N - N / 2;
     FOR(k, 1, K + 1) {
+        if (k > n) {
+            PB[k].push_back(P + 1);
+            continue;
+        }
         ll comb = (1 << k) - 1;
         ll end_comb = 1 << n;
         while (comb < end_comb) {
