@@ -45,7 +45,7 @@ void print_v(const vector<T> vec) {
     cout << "]" << endl;
 }
 
-ll mod = 1000000007;
+ll threshold = 500;
 ll N, M, Q, i, j, k, l;
 vector<ll> X, Y;
 
@@ -55,10 +55,23 @@ int main() {
 
     cin >> N >> M;
     Graph graph = Graph(N);
-    vector<ll> color(N, 1);
+    // 解説参照
+    vector<ll> query_color(N, 1);  // node がクエリで指定された色
+    vector<ll> query_time(N, -1);  // node がクエリで指定された時刻
+    vector<bool> is_main(N, false);  // 多くの edge を持つ node か
+    vector<ll> main_color(N, 1);  // (is_main に限り保証される)現在の色
+    vector<vector<ll>> conn_main(N, vector<ll>(0));  // 隣接する is_main
     REP(i, M) {
         cin >> j >> k;
         graph.add_undirected_edge(j - 1, k - 1);
+    }
+    REP(i, N) {
+        if (graph.conn[i].size() > threshold) is_main[i] = true;
+    }
+    REP(i, N) {
+        for (const auto v : graph.conn[i]) {
+            if (is_main[v]) conn_main[i].push_back(v);
+        }
     }
     cin >> Q;
     REP(i, Q) {
@@ -67,11 +80,26 @@ int main() {
         Y.push_back(k);
     }
     REP(i, Q) {
-        // print_v(color);
-        cout << color[X[i]] << endl;
-        color[X[i]] = Y[i];
-        for (const auto v : graph.conn[X[i]]) {
-            color[v] = Y[i];
+        ll node = X[i];
+        ll next_color = Y[i];
+        if (is_main[node]) {
+            cout << main_color[node] << endl;
+            main_color[node] = next_color;
+        } else {
+            ll latest = query_time[node];
+            ll latest_color = query_color[node];
+            for (const auto v : graph.conn[node]) {
+                if (latest < query_time[v]) {
+                    latest = query_time[v];
+                    latest_color = query_color[v];
+                }
+            }
+            cout << latest_color << endl;
+        }
+        query_time[node] = i;
+        query_color[node] = next_color;
+        for (const auto v : conn_main[node]) {
+            main_color[v] = next_color;
         }
     }
 }
