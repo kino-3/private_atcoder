@@ -71,12 +71,15 @@ int main() {
     // mod 2 の掃き出し
     ll idx = 0;
     REP(i, M) {
+        bool flg = true;
         FOR(j, idx, N) {
             if (matrix[j][i]) {
                 swap(matrix[j], matrix[idx]);
+                flg = false;
                 break;
             }
         }
+        if (flg) continue;
         REP(j, N) {
             if (j == idx) continue;
             if (matrix[j][i]) {
