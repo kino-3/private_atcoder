@@ -40,9 +40,9 @@ int main() {
         }
         std::bitset<100> bs2(tmp);
         if (bs.count() % 2 == 0) {
-            ans += (1 << (D - bs2.count()));
+            ans += (1LL << (D - bs2.count()));
         } else {
-            ans -= (1 << (D - bs2.count()));
+            ans -= (1LL << (D - bs2.count()));
         }
     }
     cout << ans << endl;
