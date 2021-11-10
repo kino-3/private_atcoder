@@ -1,18 +1,19 @@
 #include <bits/stdc++.h>
 using namespace std;
+using ll = long long;
 
 class UnionFind {
    public:
     // 根ノードなら -(データ数)
     // それ以外なら親ノード
     // が格納される
-    std::vector<int> data;
+    std::vector<ll> data;
 
-    UnionFind(int size) : data(size, -1) {}
+    UnionFind(ll size) : data(size, -1) {}
 
     // 集合を併合する
     // 併合できたかを返す(すでに同じ木に属するなら併合不要なのでfalse)
-    bool unite(int x, int y) {
+    bool unite(ll x, ll y) {
         x = root(x);
         y = root(y);
         if (x != y) {
@@ -25,14 +26,14 @@ class UnionFind {
     }
 
     // 同じ木に属するか
-    bool find(int x, int y) { return root(x) == root(y); }
+    bool find(ll x, ll y) { return root(x) == root(y); }
 
     // 属する木の根を返す
     // (その過程で根まで辿ったノードを根に付ける)
-    int root(int x) { return (data[x] < 0) ? x : data[x] = root(data[x]); }
+    ll root(ll x) { return (data[x] < 0) ? x : data[x] = root(data[x]); }
 
     // 集合の要素数を返す
-    int size(int x) { return -data[root(x)]; }
+    ll size(ll x) { return -data[root(x)]; }
 };
 
 int main() {
