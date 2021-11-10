@@ -83,17 +83,13 @@ int main() {
         set<ll> roots;
         REP(i, N) { roots.insert(uf.root(i)); }
         set<ll> loop_roots;
-        if (loop.size() != roots.size()) {
-            cout << 0 << endl;
-            return 0;
+        for (const auto v : loop) {
+            loop_roots.insert(uf.root(v));
+        }
+        if (roots == loop_roots) {
+            cout << mod_pow(2, roots.size(), mod) << endl;
         } else {
-            for (const auto v : loop) {
-                if (roots.count(uf.root(v)) == 0) {
-                    cout << 0 << endl;
-                    return 0;
-                }
-            }
-            cout << mod_pow(2, loop.size(), mod) << endl;
+            cout << 0 << endl;
         }
     } else {
         cout << 0 << endl;
