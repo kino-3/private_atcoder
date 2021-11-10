@@ -177,5 +177,15 @@
 			"}"
 		],
 		"description": "vector の deep copy"
-	}
+	},
+	"primes": {
+		"prefix": "primes",
+		"body": [
+			"ll mod17 = 131071",
+			"ll mod19 = 524287",
+			"ll mod31 = 2147483647",
+			"ll mod61 = 2305843009213693951"
+		],
+		"description": "modN は 2^N - 1 のメルセンヌ素数"
+	},
 }
