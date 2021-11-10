@@ -15,79 +15,36 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-struct edge {
-    int to;
-    ll cost;
-};
-
-// O(E logV)
-// 条件: edge の重みは非負
-// https://atcoder.jp/contests/typical90/tasks/typical90_m で検証済み
-class Dijkstra {
-    int V;                       // 頂点の個数
-    vector<vector<edge>> edges;  // edges[v] の要素は, v から 要素.to への edge
-    vector<ll> dist;             // dist[v]: v までの最短距離
-    vector<int> prev;            // 最短経路における直前の node
-    const ll INF = numeric_limits<ll>::max();
-
-   public:
-    Dijkstra(int v) : V(v), edges(v, vector<edge>(0)), dist(v), prev(v) {}
-
-    void add_edge(int from, int to, ll edge_cost) {
-        edges[from].push_back({to, edge_cost});
-    }
-
-    void exec(int start_node) {
-        typedef pair<ll, int> P;  // first は最短距離, second は node
-        priority_queue<P, vector<P>, greater<P>> que;
-        for (int i = 0; i < V; ++i) {
-            dist[i] = INF;
-            prev[i] = -1;
-        }
-        dist[start_node] = 0;
-        que.push({0, start_node});
-        while (!que.empty()) {
-            P p = que.top();  // ノード p.second には距離 p.first で到達可能
-            que.pop();
-            int node = p.second;
-            if (dist[node] < p.first) {
-                continue;
-            }
-            for (auto&& edge : edges[node]) {
-                if (dist[edge.to] > dist[node] + edge.cost) {
-                    dist[edge.to] = dist[node] + edge.cost;
-                    que.push({dist[edge.to], edge.to});
-                    prev[edge.to] = node;
-                }
-            }
-        }
-    }
-
-    // 頂点 v までの最小コスト
-    ll cost(int v) { return dist[v]; }
-
-    int get_prev(int v) { return prev[v]; }
-};
-
 ll N, i, j, k, l, f;
-
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
     cin >> N;
-    Dijkstra dij = Dijkstra(N + 1);
+    vector<ll> cost(N);
+    vector<vector<ll>> tech(N, vector<ll>(0));
+    vector<ll> possible(N, false);
+    stack<ll> stk;
+    stk.push(N - 1);
     REP(i, N) {
         cin >> j >> k;
+        cost[i] = j;
         REP(f, k) {
             cin >> l;
-            dij.add_edge(i, l - 1, j);
-        }
-        if (k == 0) {
-            dij.add_edge(i, N, j);
+            tech[i].push_back(l - 1);
         }
     }
-    dij.exec(N - 1);
-    cout << dij.cost(N) << endl;
+    ll ans = 0;
+    while (!stk.empty()) {
+        auto cnt = stk.top();
+        stk.pop();
+        if (possible[cnt]) continue;
+        ans += cost[cnt];
+        possible[cnt] = true;
+        for (const auto v : tech[cnt]) {
+            stk.push(v);
+        }
+    }
+    cout << ans << endl;
 }
