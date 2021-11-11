@@ -29,6 +29,21 @@ void print_v(const vector<T> vec) {
     cout << "]" << endl;
 }
 
+void task(ll i, ll w, ll p) {
+    // w + 1 の重さの荷物を p + 1 の人に持たせる
+    if (w < p) {
+        ll count = min(A[i][w], B[i][p]);
+        A[i][w] -= count;
+        B[i][p] -= count;
+        B[i][p - w - 1] += count;
+    }
+    if (w == p) {
+        ll count = min(A[i][w], B[i][w]);
+        A[i][w] -= count;
+        B[i][w] -= count;
+    }
+}
+
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
@@ -47,21 +62,24 @@ int main() {
         }
     }
     REP(i, T) {
-        auto bag = A[i];
-        auto man = B[i];
-        REP_R(j, 5) {         // の荷物 43210
-            FOR_R(k, j, 5) {  // の人
-                ll count = min(man[k], bag[j]);
-                bag[j] -= count;
-                man[k] -= count;
-                if (k - j > 0) {
-                    man[k - j - 1] += count;
-                }
-            }
-        }
+        task(i, 4, 4);
+        task(i, 3, 3);
+        task(i, 3, 4);
+        task(i, 2, 2);
+        task(i, 2, 4);  // point はここの
+        task(i, 2, 3);  // 2 つの順番
+        task(i, 1, 4);
+        task(i, 1, 3);
+        task(i, 1, 2);
+        task(i, 1, 1);
+        task(i, 0, 4);
+        task(i, 0, 3);
+        task(i, 0, 2);
+        task(i, 0, 1);
+        task(i, 0, 0);
         bool poss = true;
         REP(j, 5) {
-            if (bag[j] > 0) poss = false;
+            if (A[i][j] > 0) poss = false;
         }
         if (poss) {
             cout << "Yes" << endl;
