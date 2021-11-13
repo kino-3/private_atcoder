@@ -34,7 +34,7 @@ int main() {
     ll test = (A[0][0] - 1) % 7 + 1;
     bool yes = true;
     REP(i, M) {
-        if ((A[0][i] - 1) % 7 + 1) {
+        if (((A[0][i] - 1) % 7 + 1) == test) {
             test++;
         } else {
             yes = false;
@@ -46,7 +46,7 @@ int main() {
         }
     }
     REP(i, N - 1) {
-        if (A[i + 1][0] != A[i][j] + 7) yes = false;
+        if (A[i + 1][0] != A[i][0] + 7) yes = false;
     }
     if (yes) {
         cout << "Yes" << endl;
