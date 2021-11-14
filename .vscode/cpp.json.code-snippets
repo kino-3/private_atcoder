@@ -229,4 +229,17 @@
 		],
 		"description": "modN は 2^N - 1 のメルセンヌ素数"
 	},
+	"yesno": {
+		"prefix": "yesno_print",
+		"body": [
+			"bool ans = true;",
+			"",
+			"if (ans) {",
+			"\tcout << \"Yes\" << endl;",
+			"} else {",
+			"\tcout << \"No\" << endl;",
+			"}",
+		],
+		"description": "Yes と No の出力"
+	}
 }
