@@ -83,4 +83,13 @@ int main() {
         cout << " or:" << (bs1 | bs2) << endl;
         cout << "xor:" << (bs1 ^ bs2) << endl;
     }
+    {
+        // 文字列の動作
+        string S = "abc";
+        string T = S;  // 値渡し
+        string& U = S;
+        S[0] = 5 + '0';      // 書き換え可能
+        assert(S == "5bc");  // 文字列の値の比較
+        assert(T == "abc");
+    }
 }
