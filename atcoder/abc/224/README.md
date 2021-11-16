@@ -8,6 +8,14 @@
   - `string state = "201456783"` で, 場所 `i` にコマ `state[i]` がいることを表す。
   - `map<string, int>` などで, その状態に対応する手数などを管理するとよい。
 - F: 具体例で考える。
+- pair の lower_bound, upper_bound
+
+```cpp
+// make_pair<ll, ll>(2, -10000) で型の指定が必要?
+vector<pair<ll, ll>> vec = {{1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}};
+auto iter = lower_bound(vec.begin(), vec.end(), make_pair<ll, ll>(2, -10000));
+ll idx = distance(vec.begin(), iter);
+```
 
 ## D
 
@@ -20,6 +28,7 @@
 ## E
 
 - 問題は見た。BFS のような要領で埋めていけば良いが, 計算量的に間に合う方針がすぐに思いつかなかったので後回しにした。
+- 間に合うと思った方針(70min)で TLE した。PASS
 
 ## F
 
