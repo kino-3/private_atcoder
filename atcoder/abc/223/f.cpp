@@ -186,15 +186,18 @@ int main() {
             seg.add(i, N, -1);
         }
     }
+    // REP(i, N) debug_print(bit.sum(i, i));
     // REP(i, N) debug_print(seg.query(i, i + 1));
 
     REP(i, Q) {
         if (query[i] == 1) {
             if (bit.sum(L[i], L[i]) * bit.sum(R[i], R[i]) < 0) {
+                seg.add(L[i], R[i], -bit.sum(L[i], L[i]) * 2);
                 bit.add(L[i], -bit.sum(L[i], L[i]) * 2);
                 bit.add(R[i], -bit.sum(R[i], R[i]) * 2);
-                seg.add(L[i], R[i], -bit.sum(L[i], L[i]) * 2);
             }
+            // REP(i, N) debug_print(bit.sum(i, i));
+            // REP(i, N) debug_print(seg.query(i, i + 1));
         } else {
             bool flg = bit.sum(L[i], R[i]) == 0;
             if (bit.sum(L[i], L[i]) < 0) flg = false;
