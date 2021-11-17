@@ -39,6 +39,12 @@ class BIT {
             index += index & (-index);
         }
     }
+
+    // この関数は未検証
+    void update(ll index, ll value) {
+        ll cnt = sum(index, index);
+        add(index, value - cnt);
+    }
 };
 
 class RangeBIT {

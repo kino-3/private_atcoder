@@ -41,6 +41,18 @@ class SegmentTree {
         }
     }
 
+    // この関数のみ未検証
+    void add(ll idx, ll value) {
+        // 葉ノードの更新
+        idx += N - 1;
+        node[idx] += value; // ここが違う
+        // 葉ノードの以外の更新
+        while (idx > 0) {
+            idx = (idx - 1) / 2;
+            node[idx] = min(node[2 * idx + 1], node[2 * idx + 2]);
+        }
+    }
+
     void update(ll idx, ll value) {
         // 葉ノードの更新
         idx += N - 1;
