@@ -36,14 +36,19 @@ bool check(ll i, ll j, ll k) {
     ll iy = (i - 1) / Y + 1;
     ll jy = (j - 1) / Y + 1;
     ll ky = (k - 1) / Y + 1;
-    ll jx2 = (j - 1) / (X - iy) + 1;
-    ll kx2 = (k - 1) / (X - iy) + 1;
-    ll jy2 = (j - 1) / (Y - ix) + 1;
-    ll ky2 = (k - 1) / (Y - ix) + 1;
     if (ix + jx + kx <= Y) return true;
     if (iy + jy + ky <= X) return true;
-    if (jx2 + kx2 <= Y) return true;
-    if (jy2 + ky2 <= X) return true;
+    if (X - iy > 0) {
+        ll jx2 = (j - 1) / (X - iy) + 1;
+        ll kx2 = (k - 1) / (X - iy) + 1;
+        if (jx2 + kx2 <= Y) return true;
+    }
+    if (Y - ix > 0) {
+        ll jy2 = (j - 1) / (Y - ix) + 1;
+        ll ky2 = (k - 1) / (Y - ix) + 1;
+        if (jy2 + ky2 <= X) return true;
+    }
+
     return false;
 }
 
