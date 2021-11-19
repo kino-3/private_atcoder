@@ -80,44 +80,10 @@ map<ll, ll> get_prime_factor(ll n) {
     return prime_factor;
 }
 
-vector<ll> create_product(map<ll, ll> m) {
-    // {3: 1, 5: 2} なら
-    // [1*1, 3*1, 1*5, 3*5, 1*25, 3*25] を返す
-    vector<ll> result;
-    if (m.size() == 0) {
-        result.push_back(1);
-        return result;
-    }
-    auto itr = m.begin();
-    ll prime = itr->first;
-    ll count = itr->second;
-    m.erase(itr);
-    ll p = 1;
-    for (int i = 0; i <= count; i++) {
-        for (const auto& q : create_product(m)) {
-            result.push_back(p * q);
-        }
-        p *= prime;
-    }
-    return result;
-}
-
-// x^n % mod を返す
-ll mod_pow(ll x, ll n, ll mod) {
-    ll res = 1;
-    while (n > 0) {
-        if (n & 1) {
-            res = res * x % mod;
-        }
-        x = x * x % mod;
-        n >>= 1;
-    }
-    return res;
-}
-
-// 1 以上 n 以下の自然数のうち, n と互いに素である任意の自然数 b について
-// b^n ≡ 1 (mod modulo) となる最小の n
-ll carmichael(ll modulo) {
+// base^n ≡ 1 (mod modulo) となる最小の n を返す。
+// 存在しなければ -1 を返す
+ll carmichael(ll base, ll modulo) {
+    if (__gcd(base, modulo) > 1) return -1;
     auto primes = get_prime_factor(modulo);
     if (primes.size() == 1) {
         ll pp = (primes.begin())->first;
@@ -144,36 +110,10 @@ ll carmichael(ll modulo) {
         ll nn = it->second;
         ll pow = 1;
         REP(i, nn) pow *= pp;
-        ll cc = carmichael(pow);
+        ll cc = carmichael(base, pow);
         lcm = lcm * cc / __gcd(cc, lcm);
     }
     return lcm;
-}
-
-// n と互いに素である任意の自然数 b について
-// b^n ≡ 1 (mod modulo) となる n (最小とは限らない)
-ll euler(ll modulo) {
-    auto primes = get_prime_factor(modulo);
-    ll res = 1;
-    for (auto it = primes.begin(); it != primes.end(); ++it) {
-        ll pp = it->first;
-        ll nn = it->second;
-        res *= pp - 1;
-        REP(i, nn - 1) res *= pp;
-    }
-    return res;
-}
-
-// base^n ≡ 1 (mod modulo) となる n の最小値
-ll euler_withbase(ll base, ll modulo) {
-    if (__gcd(base, modulo) > 1) return -1;
-    ll tmp = euler(modulo);
-    auto divisors = create_product(get_prime_factor(tmp));
-    sort(divisors.begin(), divisors.end());
-    for (const auto div : divisors) {
-        if (mod_pow(base, div, modulo) == 1) return div;
-    }
-    assert (false);
 }
 
 int main() {
@@ -188,11 +128,10 @@ int main() {
     REP(i, N) {
         ll a = A[i];
         if (a % 2 == 0) a = a / 2;
-        a *= 9;
         if (a == 1) {  // 1, 2
             cout << 1 << endl;
             continue;
         }
-        cout << euler_withbase(10, a) << endl;
+        cout << carmichael(10, a) << endl;
     }
 }

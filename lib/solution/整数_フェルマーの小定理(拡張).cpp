@@ -25,10 +25,50 @@ void debug_print_count() {
     DEBUG_PRINT_COUNT++;
     assert(DEBUG_PRINT_COUNT < 10);
 }
+template <typename T>
+void print_v(const vector<T> vec) {
+    cout << "[";
+    for (auto&& item : vec) {
+        cout << item << ",";
+    }
+    cout << "]" << endl;
+}
+template <typename T>
+void print_vv(const vector<T> vec) {
+    for (auto&& item : vec) {
+        print_v(item);
+    }
+}
+template <typename K, typename V>
+void print_map(const map<K, V> dict) {
+    for (auto it = dict.begin(); it != dict.end(); ++it) {
+        cout << it->first << ":" << it->second << ", ";
+    }
+    cout << endl;
+}
+template <typename T>
+void print_set(const set<T> data) {
+    for (auto it = data.begin(); it != data.end(); ++it) {
+        cout << *it << ", ";
+    }
+    cout << endl;
+}
+template <typename T1, typename T2>
+void print_pair(const pair<T1, T2> data) {
+    cout << "(" << data.first << "," << data.second << ")";
+    // cout << endl;
+}
+template <typename T1, typename T2, typename T3>
+void print_tuple(const tuple<T1, T2, T3> data) {
+    cout << "(";
+    cout << get<0>(data) << "," << get<1>(data) << "," << get<2>(data);
+    cout << ")";
+    // cout << endl;
+}
 
-ll mod = 1000000007;
-ll N, i, j, k, l;
-vector<ll> A, B;
+const ll mod = 998244353;
+ll N, i;
+string S;
 
 vector<ll> list_primes(ll n) {
     // n 以下の素数を列挙する
@@ -152,6 +192,7 @@ ll carmichael(ll modulo) {
 
 // n と互いに素である任意の自然数 b について
 // b^n ≡ 1 (mod modulo) となる n (最小とは限らない)
+// いわゆるオイラー関数である
 ll euler(ll modulo) {
     auto primes = get_prime_factor(modulo);
     ll res = 1;
@@ -165,6 +206,7 @@ ll euler(ll modulo) {
 }
 
 // base^n ≡ 1 (mod modulo) となる n の最小値
+// 動作確認: https://atcoder.jp/contests/abc222/tasks/abc222_g
 ll euler_withbase(ll base, ll modulo) {
     if (__gcd(base, modulo) > 1) return -1;
     ll tmp = euler(modulo);
@@ -181,18 +223,5 @@ int main() {
     std::ios::sync_with_stdio(false);
 
     cin >> N;
-    REP(i, N) {
-        cin >> j;
-        A.push_back(j);
-    }
-    REP(i, N) {
-        ll a = A[i];
-        if (a % 2 == 0) a = a / 2;
-        a *= 9;
-        if (a == 1) {  // 1, 2
-            cout << 1 << endl;
-            continue;
-        }
-        cout << euler_withbase(10, a) << endl;
-    }
+    cout << N << endl;
 }
