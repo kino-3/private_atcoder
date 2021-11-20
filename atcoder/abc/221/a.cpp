@@ -67,13 +67,15 @@ void print_tuple(const tuple<T1, T2, T3> data) {
 }
 
 const ll mod = 998244353;
-ll N, i;
+ll A, B, i;
 string S;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N;
-    cout << N << endl;
+    cin >> A >> B;
+    ll ans = 1;
+    REP(i, A - B) ans *= 32;
+    cout << ans << endl;
 }
