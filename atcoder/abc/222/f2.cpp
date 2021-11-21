@@ -187,6 +187,13 @@ class Tree {
             }
         }
         parent_i[v].ans = parent_i[v].best.second;
+        ll vl = D[v];
+        if (vl > parent_i[v].best.second) {
+            parent_i[v].best2 = parent_i[v].best;
+            parent_i[v].best = {v, vl};
+        } else if (vl > parent_i[v].best2.second) {
+            parent_i[v].best2 = {v, vl};
+        }
         // DFS
         for (const auto &child : children[v]) {
             compute_ans(child);
