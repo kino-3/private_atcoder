@@ -91,6 +91,7 @@ class Tree {
         parent.resize(V);
         children.resize(V);
         depth.resize(V, -1);
+        max_depth = {-1, -1};
     }
 
     // 頂点 v で吊ったときの木探索(DFS)
@@ -153,14 +154,12 @@ int main() {
     auto diameter = tree.calc_diameter();
     ll d = diameter.first;
     if (d % 2 == 1) {
-        ll c1, c2;
-        REP(i, N) {
-            if (tree.depth[i] == d / 2) {
-                c1 = i;
-            } else if (tree.depth[i] == d / 2 + 1) {
-                c2 = i;
-            }
+        ll tmp = diameter.second.second;
+        REP(i, d / 2) {
+            tmp = tree.parent[tmp];
         }
+        ll c1 = tmp;
+        ll c2 = tree.parent[tmp];
         tree.reset();
         tree.depth[c1] = 0;
         tree.exec(c1, c2);

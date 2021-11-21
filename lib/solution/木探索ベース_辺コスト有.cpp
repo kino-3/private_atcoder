@@ -91,6 +91,7 @@ class Tree {
         parent.resize(V);
         children.resize(V);
         depth.resize(V, -1);
+        max_depth = {-1, -1};
     }
 
     // 頂点 v で吊ったときの木探索(DFS)
