@@ -136,7 +136,7 @@ class Tree {
 
 const ll mod = 998244353;
 ll N, i, j, k, l;
-vector<ll> A, B;
+vector<ll> A, B, C;
 
 int main() {
     std::cin.tie(nullptr);
@@ -145,57 +145,9 @@ int main() {
     cin >> N;
     A.resize(N - 1);
     B.resize(N - 1);
-    REP(i, N - 1) cin >> A[i] >> B[i];
+    C.resize(N - 1);
+    REP(i, N - 1) cin >> A[i] >> B[i] >> C[i];
 
     Tree tree = Tree(N);
-    REP(i, N - 1) tree.add_edge(A[i] - 1, B[i] - 1);
-
-    auto diameter = tree.calc_diameter();
-    ll d = diameter.first;
-    if (d % 2 == 1) {
-        ll c1, c2;
-        REP(i, N) {
-            if (tree.depth[i] == d / 2) {
-                c1 = i;
-            } else if (tree.depth[i] == d / 2 + 1) {
-                c2 = i;
-            }
-        }
-        tree.reset();
-        tree.depth[c1] = 0;
-        tree.exec(c1, c2);
-        ll tmp1 = count(ALL(tree.depth), d / 2);
-        tree.reset();
-        tree.depth[c2] = 0;
-        tree.exec(c2, c1);
-        ll tmp2 = count(ALL(tree.depth), d / 2);
-        cout << tmp1 * tmp2 % mod << endl;
-    } else {
-        ll c;
-        REP(i, N) {
-            if (tree.depth[i] == d / 2) {
-                c = i;
-            }
-        }
-        tree.exec(c);
-        vector<ll> cn = tree.children[c];
-        vector<ll> counts;
-        for (const auto cv : cn) {
-            tree.reset();
-            tree.depth[cv] = 0;
-            tree.exec(cv, c);
-            counts.push_back(count(ALL(tree.depth), d / 2 - 1));
-            // debug_print(d / 2 - 1);
-        }
-        // print_v(counts);
-        ll ans = 1;
-        for (auto v : counts) {
-            ans *= v + 1;
-            ans %= mod;
-        }
-        ans += mod;
-        ans -= 1 + counts.size();
-        ans %= mod;
-        cout << ans << endl;
-    }
+    REP(i, N - 1) tree.add_edge(A[i] - 1, B[i] - 1, C[i]);
 }

@@ -84,16 +84,21 @@ class Tree {
         graph[n2][n1] = cost;
     }
 
+    void reset() {
+        parent.clear();
+        children.clear();
+        depth.clear();
+        parent.resize(V);
+        children.resize(V);
+        depth.resize(V, -1);
+    }
+
     // 頂点 v で吊ったときの木探索(DFS)
     // O(V)
     void exec(ll v, ll parent_of_v = -1) {
         if (parent_of_v == -1) {
-            parent.clear();
-            children.clear();
-            depth.clear();
-            parent.resize(V);
-            children.resize(V);
-            depth.resize(V, 0);
+            reset();
+            depth[v] = 0;
         }
         parent[v] = parent_of_v;
         for (const auto &child : graph[v]) {
