@@ -111,17 +111,14 @@ class Tree {
     void exec() {
         // 頂点数が 2 以下のとき
         if (V == 1) {
-            reset_data();
-            compute_subtree(0);
-            compute_ans(0);
+            // TODO
+            assert(false);
             return;
         } else if (V == 2) {
+            // TODO
             reset_data();
-            compute_subtree(0);
-            compute_ans(0);
-            reset_data();
-            compute_subtree(1);
-            compute_ans(1);
+            parent_i[0].ans = graph[0][1];
+            parent_i[1].ans = graph[0][1];
             return;
         }
         reset_data();
