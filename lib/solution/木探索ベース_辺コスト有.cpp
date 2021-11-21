@@ -66,6 +66,7 @@ void print_tuple(const tuple<T1, T2, T3> data) {
     // cout << endl;
 }
 
+// 動作確認: https://atcoder.jp/contests/abc222/tasks/abc222_f
 class Tree {
    public:
     ll V;                                // 頂点の個数
@@ -109,6 +110,9 @@ class Tree {
 
     // {直径, {s,t}} を返す
     // O(N)
+    // 動作確認: https://atcoder.jp/contests/abc222/tasks/abc222_f
+    // 全始点最長経路の場合は, このあと exec(s), exec(t) を行い,
+    // 各 i について depth[i] の大きい方
     pair<ll, pair<ll, ll>> calc_diameter() {
         exec(0);
         ll s = max_depth.second;

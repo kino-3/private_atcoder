@@ -126,7 +126,7 @@ class Tree {
 
 const ll mod = 998244353;
 ll N, i, j, k, l;
-vector<ll> A, B, C;
+vector<ll> A, B, C, D;
 
 int main() {
     std::cin.tie(nullptr);
@@ -136,8 +136,31 @@ int main() {
     A.resize(N - 1);
     B.resize(N - 1);
     C.resize(N - 1);
+    D.resize(N);
     REP(i, N - 1) cin >> A[i] >> B[i] >> C[i];
+    REP(i, N) cin >> D[i];
 
-    Tree tree = Tree(N);
+    Tree tree = Tree(N * 2);
     REP(i, N - 1) tree.add_edge(A[i] - 1, B[i] - 1, C[i]);
+    REP(i, N) tree.add_edge(i, N + i, D[i]);
+
+    auto dinfo = tree.calc_diameter();
+
+    vector<ll> s_dist, t_dist;
+    tree.exec(dinfo.second.first);
+    REP(i, N) s_dist.push_back(tree.depth[i]);
+    tree.exec(dinfo.second.second);
+    REP(i, N) t_dist.push_back(tree.depth[i]);
+
+    // print_pair(dinfo.second);
+
+    REP(i, N) {
+        if (i == dinfo.second.first - N) {
+            cout << t_dist[i] << endl;
+        } else if (i == dinfo.second.second - N) {
+            cout << s_dist[i] << endl;
+        } else {
+            cout << max(s_dist[i], t_dist[i]) << endl;
+        }
+    }
 }
