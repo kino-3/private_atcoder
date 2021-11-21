@@ -66,6 +66,8 @@ void print_tuple(const tuple<T1, T2, T3> data) {
     // cout << endl;
 }
 
+ll radius = 0;
+
 // 動作確認: https://atcoder.jp/contests/abc222/tasks/abc222_f
 class Tree {
    public:
@@ -76,6 +78,7 @@ class Tree {
     vector<vector<ll>> children;  // 子ノード
     vector<ll> depth;             // root からの距離
     pair<ll, ll> max_depth;       // {最大深さ,node}
+    ll cc;
 
     Tree(ll v) : V(v), graph(v) {}
 
@@ -113,6 +116,28 @@ class Tree {
             exec(child.first, v);
             children[v].push_back(node);
         }
+    }
+
+    vector<ll> exec2(ll v, ll parent_of_v = -1) {
+        vector<ll> ans;
+        if (parent_of_v == -1) {
+            reset();
+            depth[v] = 0;
+        }
+        parent[v] = parent_of_v;
+        for (const auto &child : graph[v]) {
+            if (parent_of_v == -1) cc = 0;
+            ll node = child.first;
+            ll cost = child.second;
+            if (node == parent_of_v) continue;
+            depth[node] = depth[v] + cost;
+            if (depth[node] == radius) {
+                cc++;
+            }
+            exec2(child.first, v);
+            ans.push_back(cc);
+        }
+        return ans;
     }
 
     // {直径, {s,t}} を返す
@@ -155,9 +180,7 @@ int main() {
     ll d = diameter.first;
     if (d % 2 == 1) {
         ll tmp = diameter.second.second;
-        REP(i, d / 2) {
-            tmp = tree.parent[tmp];
-        }
+        REP(i, d / 2) { tmp = tree.parent[tmp]; }
         ll c1 = tmp;
         ll c2 = tree.parent[tmp];
         tree.reset();
@@ -170,30 +193,22 @@ int main() {
         ll tmp2 = count(ALL(tree.depth), d / 2);
         cout << tmp1 * tmp2 % mod << endl;
     } else {
-        ll c;
-        REP(i, N) {
-            if (tree.depth[i] == d / 2) {
-                c = i;
-            }
-        }
-        tree.exec(c);
-        vector<ll> cn = tree.children[c];
-        vector<ll> counts;
-        for (const auto cv : cn) {
-            tree.reset();
-            tree.depth[cv] = 0;
-            tree.exec(cv, c);
-            counts.push_back(count(ALL(tree.depth), d / 2 - 1));
-            // debug_print(d / 2 - 1);
-        }
+        ll tmp = diameter.second.second;
+        radius = d / 2;
+        REP(i, d / 2) { tmp = tree.parent[tmp]; }
+        ll c = tmp;
+        vector<ll> counts = tree.exec2(c);
+        // print_v(tree.depth);
         // print_v(counts);
         ll ans = 1;
+        ll accum = 0;
         for (auto v : counts) {
             ans *= v + 1;
             ans %= mod;
+            accum += v;
         }
         ans += mod;
-        ans -= 1 + counts.size();
+        ans -= 1 + accum;
         ans %= mod;
         cout << ans << endl;
     }
