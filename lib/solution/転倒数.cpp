@@ -41,14 +41,14 @@ void print_vv(const vector<T> vec) {
 }
 template <typename K, typename V>
 void print_map(const map<K, V> dict) {
-    for (const auto v: dict) {
+    for (const auto v : dict) {
         cout << v.first << ":" << v.second << ", ";
     }
     cout << endl;
 }
 template <typename T>
 void print_set(const set<T> data) {
-    for (const auto v: data) {
+    for (const auto v : data) {
         cout << v << ", ";
     }
     cout << endl;
@@ -73,11 +73,11 @@ vector<ll> A, B;
 // 破壊的に座標圧縮する
 // vec の要素の種類数を返す
 ll compress(vector<ll> &vec) {
-    map<ll, ll> memo; // key: 変換前, value: 変換後
-    for (const auto v: vec) memo[v] = 0; // key 登録
+    map<ll, ll> memo;                      // key: 変換前, value: 変換後
+    for (const auto v : vec) memo[v] = 0;  // key 登録
     ll size = 0;
-    for (auto &p: memo) p.second = size++; // value 設定
-    for (auto &v: vec) v = memo[v]; // value 設定
+    for (auto &p : memo) p.second = size++;  // value 設定
+    for (auto &v : vec) v = memo[v];         // value 設定
     return size;
 }
 
@@ -93,22 +93,20 @@ class BIT {
         index++;
         ll res = 0;
         while (index > 0) {
-            res += node[index]; // 加算
+            res += node[index];  // 加算
             index -= index & (-index);
         }
         return res;
     }
 
     // [left, right] の 和
-    ll sum(ll left, ll right) {
-        return sum(right) - sum(left - 1);
-    }
+    ll sum(ll left, ll right) { return sum(right) - sum(left - 1); }
 
     // index 番目に value を加える
     void add(ll index, ll value) {
         index++;
         while (index <= n) {
-            node[index] += value; // 加算
+            node[index] += value;  // 加算
             index += index & (-index);
         }
     }
@@ -122,17 +120,36 @@ class BIT {
 
 // 動作確認: https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=6067217#1
 ll inversions(vector<ll> &A) {
-    ll n = compress(A); // 座標圧縮
+    ll n = compress(A);  // 座標圧縮
     BIT bit = BIT(n);
     ll ans = 0;
     REP(j, N) {
         // 既に i < j を満たす A[i] は bit に反映されている
         // i < j かつ A[i] <= A[j] を満たす i の個数を考える
-        ans += bit.sum(A[j]); // A[j] 以下の A[i] を考慮
-        bit.add(A[j], 1); // 個数なので足すのは 1
+        ans += bit.sum(A[j]);  // A[j] 以下の A[i] を考慮
+        bit.add(A[j], 1);      // 個数なので足すのは 1
     }
     // i < j かつ A[i] > A[j] を満たす (i,j) の個数
     return N * (N - 1) / 2 - ans;
+}
+
+// i < j かつ A[i] <= A[j] となる (i,j) について
+// A[j] - A[i] の総和
+ll sum_relu(vector<ll> &A) {
+    ll n = *max_element(A.begin(), A.end()) + 1;
+    BIT bit_c = BIT(n);
+    BIT bit_d = BIT(n);
+    ll ans = 0;
+    REP(j, N) {
+        // 既に i < j を満たす A[i] は bit に反映されている
+        // i < j かつ A[i] <= A[j] を満たす i の個数を考える
+        ll pair_count = bit_c.sum(A[j]);  // ペアの個数
+        bit_c.add(A[j], 1);
+        ll pair_sum = bit_d.sum(A[j]);  // ΣA[i] (s.t. A[i] <= A[j])
+        bit_d.add(A[j], A[j]);
+        ans += pair_count * A[j] - pair_sum;
+    }
+    return ans;
 }
 
 int main() {
@@ -141,9 +158,8 @@ int main() {
 
     cin >> N;
     A.resize(N);
-    REP(i, N) {
-        cin >> A[i];
-    }
+    REP(i, N) { cin >> A[i]; }
 
-    cout << inversions(A) << endl;
+    // cout << sum_relu(A) << endl;
+    // cout << inversions(A) << endl;
 }
