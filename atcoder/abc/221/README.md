@@ -19,4 +19,9 @@
     distance(s.begin(), s.lower_bound(v));
     ```
 
+- E: `2^(-i) (mod prime)` は `2^(prime-1) ≡ 1 (mod prime)` を利用して, `2^(-i) ≡ 2^(prime-1-i)  (mod prime)` とする。
+
 ## E
+
+- 転倒数関連であることは分かったが, どうすればよいか分からなかった。PASS
+- `2^(j-i-1) = 2^j * 2^(-i-1)` と変数分離することがポイント

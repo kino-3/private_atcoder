@@ -135,6 +135,8 @@ ll inversions(vector<ll> &A) {
 
 // i < j かつ A[i] <= A[j] となる (i,j) について
 // A[j] - A[i] の総和
+// Σ_i,j (A[j] - A[i])
+// = Σ_j(A[j] * count_i - (Σ_i A[i]))
 ll sum_relu(vector<ll> &A) {
     ll n = *max_element(A.begin(), A.end()) + 1;
     BIT bit_c = BIT(n);
