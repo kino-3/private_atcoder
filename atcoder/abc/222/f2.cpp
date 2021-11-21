@@ -66,6 +66,8 @@ void print_tuple(const tuple<T1, T2, T3> data) {
     // cout << endl;
 }
 
+vector<ll> D;
+
 // 自身を root とする部分木以外が存在しない考えた時の情報
 struct subtree_info {
     ll d;
@@ -151,7 +153,7 @@ class Tree {
         // 子ノードの部分木から subtree_i を求める
         if (children[v].size() == 0) {
             // TODO: 葉の場合
-            subtree_i[v].d = 0;  // 例
+            subtree_i[v].d = D[v];  // 例
         } else {
             // TODO: 葉以外の場合
             for (const auto &cv : children[v]) {
@@ -215,7 +217,9 @@ int main() {
     A.resize(N - 1);
     B.resize(N - 1);
     C.resize(N - 1);
+    D.resize(N);
     REP(i, N - 1) cin >> A[i] >> B[i] >> C[i];
+    REP(i, N) cin >> D[i];
 
     Tree tree = Tree(N);
     REP(i, N - 1) tree.add_edge(A[i] - 1, B[i] - 1, C[i]);

@@ -105,6 +105,7 @@ class Tree {
                 max_depth = {depth[node], node};
             }
             exec(child.first, v);
+            children[v].push_back(node);
         }
     }
 
