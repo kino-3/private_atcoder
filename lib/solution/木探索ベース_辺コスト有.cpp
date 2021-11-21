@@ -70,7 +70,7 @@ void print_tuple(const tuple<T1, T2, T3> data) {
 class Tree {
    public:
     ll V;                                // 頂点の個数
-    vector<vector<pair<ll, ll>>> graph;  // 隣接リスト{node,cost}
+    vector<map<ll, ll>> graph;  // 隣接リスト{node,cost}
     // exec により更新される情報
     vector<ll> parent;            // 親ノード
     vector<vector<ll>> children;  // 子ノード
@@ -79,9 +79,9 @@ class Tree {
 
     Tree(ll v) : V(v), graph(v) {}
 
-    void add_edge(ll n1, ll n2, ll cost) {
-        graph[n1].push_back({n2, cost});
-        graph[n2].push_back({n1, cost});
+    void add_edge(ll n1, ll n2, ll cost = 1) {
+        graph[n1][n2] = cost;
+        graph[n2][n1] = cost;
     }
 
     // 頂点 v で吊ったときの木探索(DFS)
