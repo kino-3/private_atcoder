@@ -69,15 +69,18 @@ void print_tuple(const tuple<T1, T2, T3> data) {
 // 自身を root とする部分木以外が存在しない考えた時の情報
 struct subtree_info {
     ll d;
-    ll size;
 };
 // 親ノードから伝播される情報
 // 自身 -> 親 -> 自身 と伝播される可能性に注意する必要がある
 struct parent_info {
+    // first はどの接続 node 情報によるものか
+    pair<ll, ll> best;
+    pair<ll, ll> best2;
     ll ans;
 };
 
 // 全方位木DP (例は全始点最長距離)
+// 動作確認: https://atcoder.jp/contests/abc222/tasks/abc222_f
 class Tree {
    public:
     ll V;                         // 頂点の個数
@@ -129,9 +132,6 @@ class Tree {
         }
         // 部分木情報を求める
         compute_subtree(root);
-        // REP(i, V) debug_print(subtree_i[i].d);
-        // debug_print(root);
-        // print_v(parent);
         // 答を求める
         compute_ans(root);
     }
@@ -147,18 +147,13 @@ class Tree {
         // 子ノードの部分木から subtree_i を求める
         if (children[v].size() == 0) {
             // TODO: 葉の場合
-            subtree_i[v].d = 0;     // 例
-            subtree_i[v].size = 1;  // 例
+            subtree_i[v].d = 0;  // 例
         } else {
             // TODO: 葉以外の場合
-            ll d = 0;
-            ll size = 1;
             for (const auto &cv : children[v]) {
-                size += subtree_i[cv].size;
-                d += subtree_i[cv].d + subtree_i[cv].size;
+                subtree_i[v].d =
+                    max(subtree_i[v].d, subtree_i[cv].d + 1);  // 例
             }
-            subtree_i[v].size = size;
-            subtree_i[v].d = d;
         }
     }
 
@@ -167,13 +162,27 @@ class Tree {
     void compute_ans(ll v) {
         ll pv = parent[v];  // v の親ノード
         // 隣接ノードが 1 の時のための初期化
-        if (pv == -1) {
+        parent_i[v].best = {v, 0};
+        parent_i[v].best2 = {v, 0};
+        if (pv != -1) {
             // v が親ノードを持つとき, 親ノードからの伝播
-            parent_i[v].ans = subtree_i[v].d;
-            // debug_print(parent_i[v].ans);
-        } else {
-            parent_i[v].ans = parent_i[pv].ans + V - subtree_i[v].size * 2;
+            if (parent_i[pv].best.first != v) {
+                parent_i[v].best = {pv, parent_i[pv].best.second + 1};
+            } else {
+                parent_i[v].best = {pv, parent_i[pv].best2.second + 1};
+            }
         }
+        // 子ノードからの伝播
+        for (const auto cv : children[v]) {
+            ll cvl = subtree_i[cv].d + 1;
+            if (cvl > parent_i[v].best.second) {
+                parent_i[v].best2 = parent_i[v].best;
+                parent_i[v].best = {cv, cvl};
+            } else if (cvl > parent_i[v].best2.second) {
+                parent_i[v].best2 = {cv, cvl};
+            }
+        }
+        parent_i[v].ans = parent_i[v].best.second;
         // DFS
         for (const auto &child : children[v]) {
             compute_ans(child);
