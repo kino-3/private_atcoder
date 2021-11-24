@@ -79,62 +79,37 @@ int main() {
     Y.resize(N);
     C.resize(N);
     REP(i, N) { cin >> X[i] >> Y[i] >> C[i]; }
-    map<pair<ll, ll>, vector<pair<ll, ll>>> katamuki;
+    map<pair<pair<ll, ll>, ll>, vector<pair<pair<ll, ll>, ll>>> data;
     REP(i, N - 1) {
         FOR(j, i + 1, N) {
+            pair<ll, ll> mid = {X[i] + X[j], Y[i] + Y[j]};
+            pair<ll, ll> direction;
             if (X[i] == X[j])
-                katamuki[{0, 1}].push_back({i, j});
+                direction = {0, 1};
             else if (Y[i] == Y[j])
-                katamuki[{1, 0}].push_back({i, j});
+                direction = {1, 0};
             else if ((X[i] - X[j]) * (Y[i] - Y[j]) > 0) {
                 ll dx = abs(X[i] - X[j]);
                 ll dy = abs(Y[i] - Y[j]);
-                katamuki[{dx / __gcd(dx, dy), dy / __gcd(dx, dy)}].push_back(
-                    {i, j});
+                direction = {dx / __gcd(dx, dy), dy / __gcd(dx, dy)};
             } else {
                 ll dx = abs(X[i] - X[j]);
                 ll dy = abs(Y[i] - Y[j]);
-                katamuki[{dx / __gcd(dx, dy), -dy / __gcd(dx, dy)}].push_back(
-                    {i, j});
+                direction = {dx / __gcd(dx, dy), -dy / __gcd(dx, dy)};
             }
+            ll outer =
+                mid.first * direction.first + mid.second * direction.second;
+            data[{direction, outer}].push_back({mid, C[i] + C[j]});
         }
     }
     ll ans = -1;
-    for (const auto vec : katamuki) {
-        if (vec.second.size() == 1) continue;
-        ll size = vec.second.size();
+    for (const auto d : data) {
+        if (d.second.size() == 1) continue;
+        ll size = d.second.size();
         REP(i, size - 1) {
             FOR(j, i + 1, size) {
-                auto edge1 = vec.second[i];
-                auto x_11 = X[edge1.first];
-                auto y_11 = Y[edge1.first];
-                auto x_12 = X[edge1.second];
-                auto y_12 = Y[edge1.second];
-                auto edge2 = vec.second[j];
-                auto x_21 = X[edge2.first];
-                auto y_21 = Y[edge2.first];
-                auto x_22 = X[edge2.second];
-                auto y_22 = Y[edge2.second];
-                auto d_11_21 = (x_11 - x_21) * (x_11 - x_21) +
-                               (y_11 - y_21) * (y_11 - y_21);
-                auto d_12_21 = (x_12 - x_21) * (x_12 - x_21) +
-                               (y_12 - y_21) * (y_12 - y_21);
-                auto d_11_22 = (x_11 - x_22) * (x_11 - x_22) +
-                               (y_11 - y_22) * (y_11 - y_22);
-                auto d_12_22 = (x_12 - x_22) * (x_12 - x_22) +
-                               (y_12 - y_22) * (y_12 - y_22);
-                if (d_11_21 == d_12_22) {
-                    ll gs = (x_11 - x_21) * (y_12 - y_22) -
-                            (y_11 - y_21) * (x_12 - x_22);
-                    if (gs == 0) continue;
-                    ans = max(ans, C[edge1.first] + C[edge1.second] +
-                                       C[edge2.first] + C[edge2.second]);
-                } else if (d_12_21 == d_11_22) {
-                    ll gs = (x_12 - x_21) * (y_11 - y_22) -
-                            (y_12 - y_21) * (x_11 - x_22);
-                    if (gs == 0) continue;
-                    ans = max(ans, C[edge1.first] + C[edge1.second] +
-                                       C[edge2.first] + C[edge2.second]);
+                if (d.second[i].first != d.second[j].first) {
+                    ans = max(ans, d.second[i].second + d.second[j].second);
                 }
             }
         }
