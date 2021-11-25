@@ -41,14 +41,14 @@ void print_vv(const vector<T> vec) {
 }
 template <typename K, typename V>
 void print_map(const map<K, V> dict) {
-    for (const auto v: dict) {
+    for (const auto v : dict) {
         cout << v.first << ":" << v.second << ", ";
     }
     cout << endl;
 }
 template <typename T>
 void print_set(const set<T> data) {
-    for (const auto v: data) {
+    for (const auto v : data) {
         cout << v << ", ";
     }
     cout << endl;
@@ -69,22 +69,22 @@ void print_tuple(const tuple<T1, T2, T3> data) {
 // コスト無しグラフ
 class Graph {
    public:
-    ll V;                     // 頂点の個数
-    vector<vector<ll>> conn;  // 隣接リスト(vector)
-    vector<vector<ll>> prev;  // 有向グラフの場合の逆辺
+    ll V;                               // 頂点の個数
+    vector<vector<pair<ll, ll>>> conn;  // 隣接リスト(vector)
+    vector<vector<pair<ll, ll>>> prev;  // 有向グラフの場合の逆辺
 
     Graph(ll v) : V(v), conn(v), prev(v) {}
 
     // 有向グラフ
-    void add_directed_edge(ll from, ll to) {
-        conn[from].push_back(to);
-        prev[to].push_back(from);
+    void add_directed_edge(ll from, ll to, ll cost) {
+        conn[from].push_back({to, cost});
+        prev[to].push_back({from, -cost});
     }
 
     // 無向グラフ
-    void add_undirected_edge(ll v1, ll v2) {
-        add_directed_edge(v1, v2);
-        add_directed_edge(v2, v1);
+    void add_undirected_edge(ll v1, ll v2, ll cost) {
+        add_directed_edge(v1, v2, cost);
+        add_directed_edge(v2, v1, cost);
     }
 };
 
@@ -98,8 +98,8 @@ int main() {
     cin >> N >> M;
     Graph graph = Graph(N);
     REP(i, M) {
-        cin >> j >> k;
-        // graph.add_directed_edge(j - 1, k - 1);
-        // graph.add_undirected_edge(j - 1, k - 1);
+        cin >> j >> k >> l;
+        // graph.add_directed_edge(j - 1, k - 1, l);
+        // graph.add_undirected_edge(j - 1, k - 1, l);
     }
 }
