@@ -23,7 +23,7 @@ ll DEBUG_PRINT_COUNT = 0;
 void debug_print_count() {
     cout << "debug: " << DEBUG_PRINT_COUNT << endl;
     DEBUG_PRINT_COUNT++;
-    assert(DEBUG_PRINT_COUNT < 10);
+    assert(DEBUG_PRINT_COUNT < 100);
 }
 template <typename T>
 void print_v(const vector<T> vec) {
@@ -65,6 +65,11 @@ void print_tuple(const tuple<T1, T2, T3> data) {
     cout << ")";
     // cout << endl;
 }
+
+const ll mod = 998244353;
+ll N, M, i, j, k, l;
+string S;
+vector<vector<bool>> A;
 
 class UnionFind {
    public:
@@ -133,23 +138,70 @@ class UnionFind2D {
     ll size(pair<ll, ll> x) { return uf.size(convert_2d_to_1d(x)); }
 };
 
-const ll mod = 998244353;
-ll N, M, i, j, k, l;
-vector<vector<ll>> A;
+template <typename T>
+vector<vector<T>> expand(vector<vector<T>> field) {
+    T fill_value = false;  // TODO
+    ll R = field.size();
+    ll C = field[0].size();
+    vector<vector<T>> res(R + 2, vector<T>(C + 2, fill_value));
+    for (ll i = 0; i < field.size(); i++) {
+        copy(field[i].begin(), field[i].end(), res[i + 1].begin() + 1);
+    }
+    return res;
+}
+
+bool check(vector<vector<bool>> A, vector<vector<bool>> B) {
+    ll count = 0;
+    REP(j, 4) {
+        REP(k, 4) {
+            if (A[j][k] && !B[j + 1][k + 1]) return false;
+            if (B[j + 1][k + 1]) count++;
+        }
+    }
+    UnionFind2D uf = UnionFind2D(6, 6);
+    REP(j, 6) {
+        REP(k, 5) {
+            if (B[j][k] == B[j][k + 1]) uf.unite({j, k}, {j, k + 1});
+            if (B[k][j] == B[k + 1][j]) uf.unite({k, j}, {k + 1, j});
+        }
+    }
+    if (uf.size({0, 0}) != 36 - count) return false;
+    REP(j, 4) {
+        REP(k, 4) {
+            if (B[j + 1][k + 1]) {
+                if (uf.size({j + 1, k + 1}) == count) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+    assert(false);
+}
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    // N 行 M 列の行列の受け取り
-    cin >> N >> M;
+    N = M = 4;
     A.resize(N);
     REP(i, N) {
         REP(j, M) {
             cin >> k;
-            A[i].push_back(k);
+            A[i].push_back(k == 1);
         }
     }
 
-    UnionFind2D uf = UnionFind2D(N, M);
+    ll ans = 0;
+    REP(i, 1LL << 16) {
+        // i = 0...2^N-1 (N 桁の辞書順)
+        std::bitset<100> bs(i);
+        // 上位桁からループ
+        vector<vector<bool>> B(4, vector<bool>(4));
+        REP_R(j, 16) { B[j / 4][j % 4] = bool(bs[j]); }
+        B = expand(B);
+        if (check(A, B)) ans++;
+    }
+    cout << ans << endl;
 }
