@@ -94,6 +94,14 @@ pair<ll, ll> find_lu(vector<vector<bool>> m) {
     return {0, 0};
 }
 
+vector<vector<bool>> expand_lu(vector<vector<bool>> m, pair<ll, ll> p) {
+    vector<vector<bool>> res(N * 2, vector<bool>(N * 2, false));
+    REP(i, N) {
+        REP(j, N) { res[i + N - p.first][j + N - p.second] = m[i][j]; }
+    }
+    return res;
+}
+
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
@@ -112,11 +120,13 @@ int main() {
     }
     vector<vector<bool>> Bl(N, vector<bool>(N));
     vector<vector<bool>> Br(N, vector<bool>(N));
+    vector<vector<bool>> Bx(N, vector<bool>(N));
 
     REP(i, N) {
         REP(j, N) {
             Bl[i][j] = B[N - j - 1][i];
             Br[i][j] = B[j][N - i - 1];
+            Bx[i][j] = B[N - i - 1][N - j - 1];
         }
     }
 
@@ -129,46 +139,20 @@ int main() {
     pair<ll, ll> bp = find_lu(B);
     pair<ll, ll> blp = find_lu(Bl);
     pair<ll, ll> brp = find_lu(Br);
+    pair<ll, ll> bxp = find_lu(Bx);
 
-    bool tmpans;
-    ll i_e, j_e;
-    tmpans = true;
-    i_e = min(N - ap.first, N - bp.first);
-    j_e = min(N - ap.second, N - bp.second);
-    REP(i, i_e) {
-        REP(j, j_e) {
-            if (A[i + ap.first][j + ap.second] !=
-                B[i + bp.first][j + bp.second])
-                tmpans = false;
-        }
-    }
-    ans = ans || tmpans;
+    A = expand_lu(A, ap);
+    B = expand_lu(B, bp);
+    Bl = expand_lu(Bl, blp);
+    Br = expand_lu(Br, brp);
+    Bx = expand_lu(Bx, bxp);
 
-    tmpans = true;
-    i_e = min(N - ap.first, N - blp.first);
-    j_e = min(N - ap.second, N - blp.second);
-    REP(i, i_e) {
-        REP(j, j_e) {
-            if (A[i + ap.first][j + ap.second] !=
-                Bl[i + blp.first][j + blp.second])
-                tmpans = false;
-        }
-    }
-    ans = ans || tmpans;
+    // debug_print(A == B);
+    // debug_print(A == Bl);
+    // debug_print(A == Br);
+    // debug_print(A == Bx);
 
-    tmpans = true;
-    i_e = min(N - ap.first, N - brp.first);
-    j_e = min(N - ap.second, N - brp.second);
-    REP(i, i_e) {
-        REP(j, j_e) {
-            if (A[i + ap.first][j + ap.second] !=
-                Br[i + brp.first][j + brp.second])
-                tmpans = false;
-        }
-    }
-    ans = ans || tmpans;
-
-    if (ans) {
+    if (A == B || A == Bl || A == Br || A == Bx) {
         cout << "Yes" << endl;
     } else {
         cout << "No" << endl;
