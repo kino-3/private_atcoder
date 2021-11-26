@@ -81,26 +81,19 @@ int main() {
         cin >> A[i] >> B[i];
     }
 
-    map<ll, vector<ll>> X;
-    map<ll, vector<ll>> Y;
+    map<ll, vector<ll>> XY;
     REP(i, N) {
-        X[A[i]].push_back(i);
-        Y[B[i]].push_back(i);
+        XY[A[i]].push_back(B[i]);
     }
 
     ll ans = 0;
-    for (auto xl: X) {
-        for(auto xr: X) {
+    for (auto xl: XY) {
+        for(auto xr: XY) {
             if (xl.first >= xr.first) continue;
-            vector<ll> sl, sr;
             vector<ll> uni;
-            for (auto v: xl.second) {
-                sl.push_back(B[v]);
-            }
-            for (auto v: xr.second) {
-                sr.push_back(B[v]);
-            }
-            set_intersection(sl.begin(), sl.end(), sr.begin(), sr.end(), back_inserter(uni));
+            sort(ALL(xl.second));
+            sort(ALL(xr.second));
+            set_intersection(xl.second.begin(), xl.second.end(), xr.second.begin(), xr.second.end(), back_inserter(uni));
             ll cc = uni.size();
             ans += cc * (cc - 1) / 2;
         }
