@@ -198,6 +198,8 @@ int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
+    // see: https://atcoder.jp/contests/abc219/submissions/27555020
+
     cin >> N >> M >> Q;
 
     Graph graph = Graph(N);
