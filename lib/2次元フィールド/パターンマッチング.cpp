@@ -66,9 +66,9 @@ void print_tuple(const tuple<T1, T2, T3> data) {
     // cout << endl;
 }
 
-// angle: 90, 180, 270
+// angle: 90, 180, 270 で回転した全領域を返す
 template <typename T>
-vector<vector<T>> rotate(vector<vector<T>> field, ll angle) {
+vector<vector<T>> rotate_field(vector<vector<T>> field, ll angle) {
     if (angle == 90) {
         ll C = field.size();
         ll R = field[0].size();
@@ -103,6 +103,7 @@ vector<vector<T>> rotate(vector<vector<T>> field, ll angle) {
     assert(false);
 }
 
+// bounding box を返す
 // return [row1, row2), [col1, col2)
 template <typename T>
 pair<pair<ll, ll>, pair<ll, ll>> get_bbox(vector<vector<T>> field) {
@@ -134,7 +135,7 @@ pair<pair<ll, ll>, pair<ll, ll>> get_bbox(vector<vector<T>> field) {
             {cols[0], cols[cols.size() - 1] + 1}};
 }
 
-// return [row1, row2), [col1, col2)
+// field を [row1, row2), [col1, col2) で切り取った長方形領域を返す。
 template <typename T>
 vector<vector<T>> clip(vector<vector<T>> field,
                        pair<pair<ll, ll>, pair<ll, ll>> box) {
@@ -166,8 +167,8 @@ int main() {
         REP(j, M) { A[i].push_back(S[j] == '#'); }
     }
     // print_vv(A);
-    // print_vv(rotate(A, 90));
-    // print_vv(rotate(A, 180));
-    // print_vv(rotate(A, 270));
+    // print_vv(rotate_field(A, 90));
+    // print_vv(rotate_field(A, 180));
+    // print_vv(rotate_field(A, 270));
     print_vv(clip(A, get_bbox(A)));
 }
