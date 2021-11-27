@@ -1,0 +1,173 @@
+#include <bits/stdc++.h>
+#define REP(var, n) for (decltype(n) var = 0; var < (n); var++)
+#define REP_R(var, n) \
+    for (auto var = (n)-1; var != static_cast<decltype(var)>(-1); var--)
+#define FOR(var, a, b) for (auto var = (a); var < (b); var++)
+#define FOR_R(var, a, b) for (auto var = (b - 1); var > (a - 1); var--)
+#define ALL(c) std::begin(c), std::end(c)
+
+using namespace std;
+using ll = long long;
+
+// REP(idx, 3) { cout << idx; }  // 012
+// REP_R(idx, 3) { cout << idx; }  // 210
+// FOR(idx, 4, 7) { cout << idx; }  // 456
+// FOR_R(idx, 4, 7) { cout << idx; }  // 654
+// sort(ALL(v));
+
+template <typename T>
+void debug_print(const T item) {
+    cout << item << endl;
+}
+ll DEBUG_PRINT_COUNT = 0;
+void debug_print_count() {
+    cout << "debug: " << DEBUG_PRINT_COUNT << endl;
+    DEBUG_PRINT_COUNT++;
+    assert(DEBUG_PRINT_COUNT < 10);
+}
+template <typename T>
+void print_v(const vector<T> vec) {
+    cout << "[";
+    for (auto &&item : vec) {
+        cout << item << ",";
+    }
+    cout << "]" << endl;
+}
+template <typename T>
+void print_vv(const vector<T> vec) {
+    for (auto &&item : vec) {
+        print_v(item);
+    }
+}
+template <typename K, typename V>
+void print_map(const map<K, V> dict) {
+    for (const auto v : dict) {
+        cout << v.first << ":" << v.second << ", ";
+    }
+    cout << endl;
+}
+template <typename T>
+void print_set(const set<T> data) {
+    for (const auto v : data) {
+        cout << v << ", ";
+    }
+    cout << endl;
+}
+template <typename T1, typename T2>
+void print_pair(const pair<T1, T2> data) {
+    cout << "(" << data.first << "," << data.second << ")";
+    // cout << endl;
+}
+template <typename T1, typename T2, typename T3>
+void print_tuple(const tuple<T1, T2, T3> data) {
+    cout << "(";
+    cout << get<0>(data) << "," << get<1>(data) << "," << get<2>(data);
+    cout << ")";
+    // cout << endl;
+}
+
+// angle: 90, 180, 270
+template <typename T>
+vector<vector<T>> rotate(vector<vector<T>> field, ll angle) {
+    if (angle == 90) {
+        ll C = field.size();
+        ll R = field[0].size();
+        vector<vector<T>> res(R, vector<T>(C));
+        for (ll r = 0; r < R; r++) {
+            for (ll c = 0; c < C; c++) {
+                res[r][c] = field[c][R - r - 1];
+            }
+        }
+        return res;
+    } else if (angle == 180) {
+        ll R = field.size();
+        ll C = field[0].size();
+        vector<vector<T>> res(R, vector<T>(C));
+        for (ll r = 0; r < R; r++) {
+            for (ll c = 0; c < C; c++) {
+                res[r][c] = field[R - r - 1][C - c - 1];
+            }
+        }
+        return res;
+    } else if (angle == 270) {
+        ll C = field.size();
+        ll R = field[0].size();
+        vector<vector<T>> res(R, vector<T>(C));
+        for (ll r = 0; r < R; r++) {
+            for (ll c = 0; c < C; c++) {
+                res[r][c] = field[C - c - 1][r];
+            }
+        }
+        return res;
+    }
+    assert(false);
+}
+
+// return [row1, row2), [col1, col2)
+template <typename T>
+pair<pair<ll, ll>, pair<ll, ll>> get_bbox(vector<vector<T>> field) {
+    T outside = false;
+    vector<ll> rows;
+    vector<ll> cols;
+    ll R = field.size();
+    ll C = field[0].size();
+    vector<vector<T>> res(R, vector<T>(C));
+    for (ll r = 0; r < R; r++) {
+        for (ll c = 0; c < C; c++) {
+            if (field[r][c] != outside) {
+                rows.push_back(r);
+                break;
+            }
+        }
+    }
+    for (ll c = 0; c < C; c++) {
+        for (ll r = 0; r < R; r++) {
+            if (field[r][c] != outside) {
+                cols.push_back(c);
+                break;
+            }
+        }
+    }
+    sort(rows.begin(), rows.end());
+    sort(cols.begin(), cols.end());
+    return {{rows[0], rows[rows.size() - 1] + 1},
+            {cols[0], cols[cols.size() - 1] + 1}};
+}
+
+// return [row1, row2), [col1, col2)
+template <typename T>
+vector<vector<T>> clip(vector<vector<T>> field,
+                       pair<pair<ll, ll>, pair<ll, ll>> box) {
+    ll R = box.first.second - box.first.first;
+    ll C = box.second.second - box.second.first;
+    vector<vector<T>> res(R, vector<T>(C));
+    for (ll r = 0; r < R; r++) {
+        for (ll c = 0; c < C; c++) {
+            res[r][c] = field[r + box.first.first][c + box.second.first];
+        }
+    }
+    return res;
+}
+
+const ll mod = 998244353;
+ll N, M, i, j, k, l;
+string S;
+vector<vector<bool>> A;
+
+int main() {
+    std::cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+
+    cin >> N >> M;
+
+    A.resize(N);
+    REP(i, N) {
+        cin >> S;
+        REP(j, M) { A[i].push_back(S[j] == '#'); }
+    }
+    // print_vv(A);
+    // print_vv(rotate(A, 90));
+    // print_vv(rotate(A, 180));
+    // print_vv(rotate(A, 270));
+    print_vv(clip(A, get_bbox(A)));
+}
