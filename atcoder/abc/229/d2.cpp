@@ -66,26 +66,24 @@ void print_tuple(const tuple<T1, T2, T3> data) {
     // cout << endl;
 }
 
-
-ll search_max(ll idx) {
-    // 条件を満たす最大値を求める
-    if (num[S.size()-1] - num[idx] <= K) return S.size() - idx;
-    while (ub - lb > 1) {
-        ll mid = (ub + lb) / 2;
-        if (cond(mid)) {
-            lb = mid;
-        } else {
-            ub = mid;
-        }
-    }
-    return lb;
-}
+// ll search_max(ll idx) {
+//     // 条件を満たす最大値を求める
+//     if (num[S.size()-1] - num[idx] <= K) return S.size() - idx;
+//     while (ub - lb > 1) {
+//         ll mid = (ub + lb) / 2;
+//         if (cond(mid)) {
+//             lb = mid;
+//         } else {
+//             ub = mid;
+//         }
+//     }
+//     return lb;
+// }
 
 const ll mod = 998244353;
 ll K, i;
 string S;
-vector<bool> A;
-vector<ll> num;
+vector<ll> dc;
 
 int main() {
     std::cin.tie(nullptr);
@@ -94,17 +92,26 @@ int main() {
     cin >> S;
     cin >> K;
 
-    REP(i, S.size()) A.push_back(S[i] == '.');
-
     ll tmp = 0;
     REP(i, S.size()) {
-        if (A[i]) tmp++;
-        num.push_back(tmp);
+        if (S[i] == '.') tmp++;
+        dc.push_back(tmp);
     }
+    // print_v(dc);
+    ll ans = distance(dc.begin(), upper_bound(ALL(dc), K));
 
-    REP(i, S.size()) {
-        search_max
+    FOR(i, ans, S.size()) {
+        ll lb = -1;
+        ll ub = i;
+        while (ub - lb > 1) {
+            ll mid = (ub + lb) / 2;
+            if (dc[i] - dc[mid] <= K) {
+                ub = mid;
+            } else {
+                lb = mid;
+            }
+        }
+        ans = max(ans, i - ub);
     }
-
     cout << ans << endl;
 }

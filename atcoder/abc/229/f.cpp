@@ -161,10 +161,10 @@ int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N;
-    A.resize(N);
-    B.resize(N);
-    REP(i, N) {
-        cin >> A[i] >> B[i];
+    cin >> N >> M;
+    Graph graph = Graph(N);
+    REP(i, M) {
+        cin >> j >> k;
+        graph.add_undirected_edge(j - 1, k - 1);
     }
 }
