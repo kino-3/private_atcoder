@@ -68,7 +68,7 @@ void print_tuple(const tuple<T1, T2, T3> data) {
 
 // angle: 90, 180, 270
 template <typename T>
-vector<vector<T>> rotate(vector<vector<T>> field, ll angle) {
+vector<vector<T>> rotate_field(vector<vector<T>> field, ll angle) {
     if (angle == 90) {
         ll C = field.size();
         ll R = field[0].size();
@@ -152,22 +152,40 @@ vector<vector<T>> clip(vector<vector<T>> field,
 const ll mod = 998244353;
 ll N, M, i, j, k, l;
 string S;
-vector<vector<bool>> A;
+vector<vector<bool>> A, B;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N >> M;
+    cin >> N;
+    M = N;
 
     A.resize(N);
     REP(i, N) {
         cin >> S;
         REP(j, M) { A[i].push_back(S[j] == '#'); }
     }
-    // print_vv(A);
-    // print_vv(rotate(A, 90));
-    // print_vv(rotate(A, 180));
-    // print_vv(rotate(A, 270));
-    print_vv(clip(A, get_bbox(A)));
+    B.resize(N);
+    REP(i, N) {
+        cin >> S;
+        REP(j, M) { B[i].push_back(S[j] == '#'); }
+    }
+
+    A = clip(A, get_bbox(A));
+    auto B1 = rotate_field(B, 90);
+    auto B2 = rotate_field(B, 180);
+    auto B3 = rotate_field(B, 270);
+    B = clip(B, get_bbox(B));
+    B1 = clip(B1, get_bbox(B1));
+    B2 = clip(B2, get_bbox(B2));
+    B3 = clip(B3, get_bbox(B3));
+
+    bool ans = (A == B || A == B1 || A == B2 || A == B3);
+
+    if (ans) {
+        cout << "Yes" << endl;
+    } else {
+        cout << "No" << endl;
+    }
 }
