@@ -41,14 +41,14 @@ void print_vv(const vector<T> vec) {
 }
 template <typename K, typename V>
 void print_map(const map<K, V> dict) {
-    for (const auto v: dict) {
+    for (const auto v : dict) {
         cout << v.first << ":" << v.second << ", ";
     }
     cout << endl;
 }
 template <typename T>
 void print_set(const set<T> data) {
-    for (const auto v: data) {
+    for (const auto v : data) {
         cout << v << ", ";
     }
     cout << endl;
@@ -67,13 +67,30 @@ void print_tuple(const tuple<T1, T2, T3> data) {
 }
 
 const ll mod = 998244353;
-ll N, i;
+ll N, M, i, j, k, l;
 string S;
+vector<vector<bool>> A;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N;
-    cout << N << endl;
+    N = M = 2;
+
+    A.resize(N);
+    REP(i, N) {
+        cin >> S;
+        REP(j, M) { A[i].push_back(S[j] == '#'); }
+    }
+
+    bool ans = true;
+
+    if (A[0][0] && A[1][1] && !A[0][1] && !A[1][0]) ans = false;
+    if (!A[0][0] && !A[1][1] && A[0][1] && A[1][0]) ans = false;
+
+    if (ans) {
+        cout << "Yes" << endl;
+    } else {
+        cout << "No" << endl;
+    }
 }
