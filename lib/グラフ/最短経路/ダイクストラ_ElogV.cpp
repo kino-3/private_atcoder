@@ -119,7 +119,7 @@ class Dijkstra {
     // 経路復元(最短経路の1つ)
     vector<ll> path(ll v) {
         vector<ll> res;
-        while (v < -1) {
+        while (v > -1) {
             res.push_back(v);
             v = prev[v];
         }

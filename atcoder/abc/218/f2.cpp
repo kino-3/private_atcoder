@@ -119,7 +119,7 @@ class Dijkstra {
     // 経路復元(最短経路の1つ)
     vector<ll> path(ll v) {
         vector<ll> res;
-        while (v < -1) {
+        while (v > -1) {
             res.push_back(v);
             v = prev[v];
         }
@@ -130,6 +130,7 @@ class Dijkstra {
 
 ll mod = 998244353;
 ll N, M, i, j, k, l;
+vector<pair<ll, ll>> edges;
 
 int main() {
     std::cin.tie(nullptr);
@@ -138,8 +139,40 @@ int main() {
     cin >> N >> M;
     Dijkstra graph = Dijkstra(N);
     REP(i, M) {
-        cin >> j >> k >> l;
-        graph.add_edge(j - 1, k - 1, l);
+        cin >> j >> k;
+        edges.push_back({j - 1, k - 1});
+    }
+
+    for (const auto e : edges) {
+        graph.add_edge(e.first, e.second, 1);
     }
     graph.exec(0);
+
+    set<pair<ll, ll>> path_edge;
+    vector<ll> shortest_path = graph.path(N - 1);
+    REP(i, shortest_path.size() - 1) {
+        path_edge.insert({shortest_path[i], shortest_path[i + 1]});
+    }
+
+    for (const auto e : edges) {
+        if (path_edge.count(e) == 0) {
+            if (graph.reachable[N - 1]) {
+                cout << graph.dist[N - 1] << endl;
+            } else {
+                cout << -1 << endl;
+            }
+        } else {
+            Dijkstra graph = Dijkstra(N);
+            for (const auto e2 : edges) {
+                if (e == e2) continue;
+                graph.add_edge(e2.first, e2.second, 1);
+            }
+            graph.exec(0);
+            if (graph.reachable[N - 1]) {
+                cout << graph.dist[N - 1] << endl;
+            } else {
+                cout << -1 << endl;
+            }
+        }
+    }
 }
