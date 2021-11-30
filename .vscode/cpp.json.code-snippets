@@ -87,8 +87,8 @@
 			"}",
 			"",
 			"const ll mod = 998244353;",
-			"ll N, i;",
-			"string S;",
+			"ll N, M, i, j, k, l;",
+			"string S, T;",
 			"",
 			"int main() {",
 			"\tstd::cin.tie(nullptr);",
@@ -172,7 +172,7 @@
 			"}",
 			"",
 			"const ll mod = 998244353;",
-			"ll N, i, j, k, l;",
+			"ll N, M, Q, i, j, k, l;",
 			"vector<ll> A, B;",
 			"",
 			"int main() {",
@@ -305,6 +305,13 @@
 			"}",
 		],
 		"description": "read vector<int>"
+	},
+	"cout_set_precision": {
+		"prefix": "cout_set_precision",
+		"body": [
+			"cout << std::setprecision(15) << ",
+		],
+		"description": "小数の出力桁数指定"
 	},
 	// "print_vector": {
 	// 	"prefix": "print_v",
