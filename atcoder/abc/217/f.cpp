@@ -15,9 +15,11 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-template <typename T>
-void debug_print(const T item) {
-    cout << item << endl;
+void debug_print() { cout << endl; }
+template <class Head, class... Tail>
+void debug_print(Head &&head, Tail &&...tail) {
+    std::cout << head << ", ";
+    debug_print(std::forward<Tail>(tail)...);
 }
 ll DEBUG_PRINT_COUNT = 0;
 void debug_print_count() {
@@ -71,37 +73,80 @@ ll N, M, i, j, k, l;
 vector<vector<bool>> good;
 
 map<pair<ll, ll>, ll> seq;
-map<pair<pair<ll, ll>, pair<ll, ll>>, ll> div2;
+map<pair<ll, ll>, ll> nck;
 
-ll find_div(ll l1, ll r1, ll l2, ll r2) {
-    if (div2.count({{l1, r1}, {l2, r2}})) return div2[{{l1, r1}, {l2, r2}}];
-    ll idx1, idx2;
-    ll res = 0;
-    FOR(idx1, l1, r1) {
-        FOR(idx2, l2, r2) {
-            if (good[idx1][idx2]) {
-                
-            }
+// ax + by = gcd(a,b) を満たす解を x, y に代入し, gcd(a, b) を返す
+ll extgcd(ll a, ll b, ll &x, ll &y) {
+    int d = a;
+    if (b != 0) {
+        d = extgcd(b, a % b, y, x);
+        y -= (a / b) * x;
+    } else {
+        x = 1;
+        y = 0;
+    }
+    return d;
+}
+
+// mod を法とする a の逆元
+ll mod_inverse(ll a, ll mod) {
+    ll x, y;
+    ll gcd = extgcd(a, mod, x, y);
+    if (gcd == 1)
+        return (mod + x) % mod;
+    else
+        return -1;
+}
+
+class Combination {
+    ll mod;
+    vector<ll> factorial;
+
+   public:
+    // n は n_C_k の n の最大値
+    Combination(ll n, ll _mod = 998244353) {
+        mod = _mod;
+        factorial.push_back(1);
+        factorial.push_back(1);
+        for (ll i = 2; i <= n; i++) {
+            factorial.push_back(factorial[i - 1] * i % mod);
         }
     }
-}
+
+    // n_C_k を返す
+    ll comb(ll n, ll k) {
+        ll res = factorial[n] * mod_inverse(factorial[k], mod) % mod;
+        return res * mod_inverse(factorial[n - k], mod) % mod;
+    }
+};
+
+auto comb = Combination(500);
 
 ll find_seq(ll l, ll r) {
     if (l == r) return 1;
-    if (r - l == 1 || r - l == 3) return 0;
+    if ((r - l) % 2 > 0) return 0;
     if (seq.count({l, r}) > 0) return seq[{l, r}];
-    if (r - l == 2) return (good[l][l + 1] ? 1 : 0);
+    if (r - l == 2) {
+        return (good[l][l + 1] ? 1 : 0);
+    }
     ll res = 0;
-    if (good[l][l + 1]) res += find_seq(l + 2, r);
-    if (good[r - 2][r - 1]) res += find_seq(l, r - 2);
     ll idx;
-    FOR(idx, l + 1, r - 2) {
-        if (good[idx][idx + 1]) {
-            res += find_div(l, idx, idx + 2, r);
+    FOR(idx, l + 1, r) {
+        if ((idx - l) % 2 == 0) continue;
+        ll n = (r - l) / 2;
+        ll k = (idx - l + 1) / 2;
+        if (good[l][idx]) {
+            if (nck.count({n, k}) == 0) {
+                nck[{n, k}] = comb.comb(n, k);
+            }
+            ll tmp = find_seq(l + 1, idx) * find_seq(idx + 1, r);
+            tmp %= mod;
+            res += tmp * nck[{n, k}];
+            res %= mod;
         }
     }
-    res %= mod;
     seq[{l, r}] = res;
+    // debug_print(l, r, res);
     return res;
 }
 
@@ -110,11 +155,11 @@ int main() {
     std::ios::sync_with_stdio(false);
 
     cin >> N >> M;
-    good.resize(N, vector<bool>(N, false));
+    good.resize(N * 2, vector<bool>(N * 2, false));
     REP(i, M) {
         cin >> j >> k;
         good[j - 1][k - 1] = true;
         good[k - 1][j - 1] = true;
     }
-    cout << find_seq(0, N) << endl;
+    cout << find_seq(0, N * 2) << endl;
 }

@@ -81,7 +81,7 @@ class Combination {
 
    public:
     // n は n_C_k の n の最大値
-    Combination(ll n, ll _mod = 1000000007) {
+    Combination(ll n, ll _mod = 998244353) {
         mod = _mod;
         factorial.push_back(1);
         factorial.push_back(1);
@@ -97,7 +97,7 @@ class Combination {
     }
 };
 
-ll mod = 1000000007;
+ll mod = 998244353;
 ll N, i;
 
 int main() {
