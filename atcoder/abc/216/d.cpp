@@ -70,7 +70,6 @@ void print_tuple(const tuple<T1, T2, T3> data) {
 
 // - DAG であるかの判定
 // - DAG のトポロジカルソート(辞書順最小 or 任意の順)
-// 動作確認: https://atcoder.jp/contests/abc216/tasks/abc216_d
 class DAG {
     int V;  // 頂点の個数
     vector<vector<ll>> edges;
@@ -151,23 +150,35 @@ class DAG {
 
 ll mod = 1000000007;
 ll N, M, i, j, k, l;
-vector<ll> A, B;
+vector<ll> size_box;
+vector<vector<ll>> box;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
     cin >> N >> M;
+    box.resize(M);
+    REP(i, M) {
+        cin >> j;
+        size_box.push_back(j);
+        REP(k, j) {
+            cin >> l;
+            box[i].push_back(l - 1);
+        }
+    }
+
     DAG dag = DAG(N);
     REP(i, M) {
-        cin >> j >> k;
-        dag.add_edge(j - 1, k - 1);
+        REP(j, size_box[i] - 1) {
+            // debug_print(box[i][j], box[i][j + 1]);
+            dag.add_edge(box[i][j], box[i][j + 1]);
+        }
     }
     auto ans = dag.topological_sort_abc();
-    // if (ans.size() == N) {
-    //     REP(i, N - 1) { cout << ans[i] + 1 << " "; }
-    //     cout << ans[N - 1] + 1 << endl;
-    // } else {
-    //     cout << -1 << endl;
-    // }
+    if (ans.size() == N) {
+        cout << "Yes" << endl;
+    } else {
+        cout << "No" << endl;
+    }
 }
