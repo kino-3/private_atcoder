@@ -80,32 +80,40 @@ int main() {
     A.resize(N);
     REP(i, N) { cin >> A[i]; }
 
-    vector<ll> dp0;  // ...0
-    vector<ll> dp;   // ...not0
+    // n 番目までの数列 ...(A) は相異なる
+    // n + 1 番目までの数列は
+    // ...(A)(B) (相異なる)
+    // ...(A+B) (相異なる)
+    // ...(A)(B) == ...(A+B) となるのは,
+    // 「...(A) == ...(0)」のとき
+    // ...(0) となる数列の個数は, 最も直近の和
+    // が 0 となる区間を除いた ... の数列の個数
 
-    if (A[0] == 0) {
-        dp0.push_back(1);
-        dp.push_back(0);
-    } else {
-        dp0.push_back(0);
-        dp.push_back(1);
-    }
+    vector<ll> dp;  // dp[i]: i 番目までの数列の個数(1-index)
+    dp.push_back(0);
+    dp.push_back(1);
 
+    // 区間和 0
+    map<ll, ll> accum;  // idx = [0, value) の区間和 が key
+    // A[j]+...+A[i] == 0 となる j の最大値 (1-index)
+    // j == 0 の場合や j が存在しない場合は 0
+    // (...(0) の個数はどちらも 0 なので区別不要)
+    vector<ll> zero;
+    accum[0] = 0;
+    ll tmp = 0;
     REP(i, N) {
-        if (A[i] != 0) {
-            break;
+        tmp += A[i];
+        if (accum.count(tmp) > 0) {
+            zero.push_back(accum[tmp]);
+        } else {
+            zero.push_back(0);
         }
-        cout << N << endl;
-        return 0;
+        accum[tmp] = i + 1;
     }
+    // print_v(zero);
+    // print_map(accum);
 
-    FOR(i, 1, N) {
-        ll zero = dp0[i - 1];
-        ll nzero = dp[i - 1];
-        if (A[i] == 0) {
-            dp0.push_back((zero + nzero) % mod);
-            dp.push_back(nzero);
-        }
-    }
-    cout << (dp[N - 1] + dp0[N - 1]) % mod << endl;
+    FOR(i, 1, N) { dp.push_back((dp[i] * 2 - dp[zero[i - 1]] + mod) % mod); }
+    // print_v(dp);
+    cout << dp[N] << endl;
 }
