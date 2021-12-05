@@ -127,11 +127,11 @@ int main() {
         }
     }
     ll tmp = 0;
-    FOR(i, 1, M) {
+    FOR(i, 1, M + 1) {
         if (ans[i]) tmp++;
     }
     cout << tmp << endl;
-    FOR(i, 1, M) {
+    FOR(i, 1, M + 1) {
         if (ans[i]) cout << i << endl;
     }
 }
