@@ -71,6 +71,7 @@ void print_tuple(const tuple<T1, T2, T3> data) {
 const ll mod = 998244353;
 ll N, M, Q, i, j, k, l;
 vector<pair<ll, ll>> pos;
+vector<ll> target;
 
 int main() {
     std::cin.tie(nullptr);
@@ -82,51 +83,57 @@ int main() {
 
     sort(ALL(pos));
 
-    // 条件を満たす最大値を求める
-    ll lb = 0;           // これは条件を満たす必要がある
-    ll ub = 1000000001;  // これは条件を満たさない必要がある
-    while (ub - lb > 1) {
-        ll mid = (ub + lb) / 2;  // mid は ub の初期値にはならない
-        bool possible = false;
+    ll ans = 0;
 
-        ll lower = pos[0].second;
-        ll upper = pos[0].second;
-        ll left_idx = 0;
-        ll right_idx = 0;
-        REP(left_idx, N - 1) {
-            lower = min(lower, pos[left_idx].second);
-            upper = max(upper, pos[left_idx].second);
-            bool end_flg = false;
-            if (pos[right_idx].first >= mid + pos[left_idx + 1].first) continue;
-            while (pos[right_idx].first < mid + pos[left_idx].first) {
-                right_idx++;
-                if (!(right_idx < N)) {
-                    end_flg = true;
-                    break;
-                }
+    target.clear();
+    target.push_back(0);
+    FOR(i, 1, N) {
+        ll lb = 0;  // これは条件を満たす必要がある
+        ll ub = target.size() - 1;  // これは条件を満たさない必要がある
+        while (ub - lb > 1) {
+            ll mid = (ub + lb) / 2;  // mid は ub の初期値にはならない
+            auto P = pos[target[mid]];
+            ll dx = pos[i].first - P.first;
+            ll dy = pos[i].second - P.second;
+            if (dx > dy) {
+                lb = mid;
+            } else {
+                ub = mid;
             }
-            if (end_flg) break;
-            while (pos[right_idx].first < mid + pos[left_idx + 1].first) {
-                if (pos[right_idx].second <= upper - mid ||
-                    pos[right_idx].second >= lower + mid) {
-                    possible = true;
-                    end_flg = true;
-                    break;
-                }
-                right_idx++;
-                if (!(right_idx < N)) {
-                    end_flg = true;
-                    break;
-                }
-            }
-            if (end_flg) break;
         }
-
-        if (possible) {
-            lb = mid;
-        } else {
-            ub = mid;
-        }
+        ans = max(ans, min(pos[i].first - pos[target[lb]].first,
+                           pos[i].second - pos[target[lb]].second));
+        ans = max(ans, min(pos[i].first - pos[target[ub]].first,
+                           pos[i].second - pos[target[ub]].second));
+        if (pos[target[target.size() - 1]].second > pos[i].second)
+            target.push_back(i);
     }
-    cout << lb << endl;
+
+    REP(i, N) { pos[i].second *= -1; }
+
+    target.clear();
+    target.push_back(0);
+    FOR(i, 1, N) {
+        ll lb = 0;  // これは条件を満たす必要がある
+        ll ub = target.size() - 1;  // これは条件を満たさない必要がある
+        while (ub - lb > 1) {
+            ll mid = (ub + lb) / 2;  // mid は ub の初期値にはならない
+            auto P = pos[target[mid]];
+            ll dx = pos[i].first - P.first;
+            ll dy = pos[i].second - P.second;
+            if (dx > dy) {
+                lb = mid;
+            } else {
+                ub = mid;
+            }
+        }
+        ans = max(ans, min(pos[i].first - pos[target[lb]].first,
+                           pos[i].second - pos[target[lb]].second));
+        ans = max(ans, min(pos[i].first - pos[target[ub]].first,
+                           pos[i].second - pos[target[ub]].second));
+        if (pos[target[target.size() - 1]].second > pos[i].second)
+            target.push_back(i);
+    }
+
+    cout << ans << endl;
 }

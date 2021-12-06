@@ -106,4 +106,17 @@ int main() {
         }
     }
     cout << ub << endl;
+
+    // 条件を満たす値を求めるために範囲を狭めていく
+    ll lb = 0;  // 左端
+    ll ub = 10000;  // 右端
+    while (ub - lb > 1) {
+        ll mid = (ub + lb) / 2;
+        if (cond) { // mid は左端側?
+            lb = mid;
+        } else {
+            ub = mid;
+        }
+    }
+    // ub と lb の間(両端含む)
 }
