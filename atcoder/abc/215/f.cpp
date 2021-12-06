@@ -68,140 +68,64 @@ void print_tuple(const tuple<T1, T2, T3> data) {
     // cout << endl;
 }
 
-// 凸包
-// 動作確認
-// - https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=6095106#1
-class ConvexHull {
-    set<pair<ll, ll>> points;  // 重複は除いた全ての点
-
-    // AB に対して, BC が時計回りにあるか
-    // 不等号 > を >= にすれば, 線分上も含む
-    // (動作確認:
-    // https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=6095106#1)
-    bool is_clockwise(const pair<ll, ll>& a, const pair<ll, ll>& b,
-                      const pair<ll, ll>& c) {
-        return (b.first - a.first) * (c.second - b.second) >
-               (b.second - a.second) * (c.first - b.first);
-    }
-
-   public:
-    //  x が最小の点のうち, y が最小の点を始点として, 反時計周り
-    // o
-    // o <- 始点
-    //  o
-    vector<pair<ll, ll>> convex_points;
-    // 候補が複数ある場合は反時計回り
-    vector<ll> left;  // 最も左の点の idx
-    vector<ll> right;
-    vector<ll> upper;
-    vector<ll> lower;
-
-    ConvexHull() {}
-
-    void add_point(pair<ll, ll> p) {
-        points.insert(p);  // x -> y の優先度で昇順に並べられる
-    }
-
-    // 凸包(convex_points), 特徴点 の結果を格納する
-    void exec() {
-        assert(points.size() > 1);
-        vector<pair<ll, ll>> res;  // 形成中の凸包
-        // 下側凸包の作成
-        for (const auto& point : points) {
-            ll sz = res.size();
-            while (sz > 1 && !is_clockwise(res[sz - 2], res[sz - 1], point)) {
-                res.pop_back();
-                sz = res.size();
-            }
-            res.push_back(point);
-        }
-        ll lsz = res.size();
-        // 上側凸包の作成
-        // 最後の点(右端上)は既に追加されているので iter に入れない
-        for (auto iter = next(points.rbegin()); iter != points.rend(); ++iter) {
-            pair<ll, ll> point = *iter;
-            ll sz = res.size();
-            while (sz > lsz && !is_clockwise(res[sz - 2], res[sz - 1], point)) {
-                res.pop_back();
-                sz = res.size();
-            }
-            res.push_back(point);
-        }
-        res.pop_back();  // 始点と終点が重複するので終点を除く
-        convex_points = res;  // 結果
-
-        // 特徴点を調べる
-        ll idx = 0;
-        left.push_back(idx);
-        ll end = res.size() - 1;
-        if (res[end].first == res[0].first) {
-            left.push_back(end);
-        }
-
-        while (res[idx].second > res[idx + 1].second) idx++;
-        lower.push_back(idx);
-        if (res[idx].second == res[idx + 1].second) {
-            lower.push_back(idx + 1);
-            idx++;
-        }
-
-        while (res[idx].first < res[idx + 1].first) idx++;
-        right.push_back(idx);
-        if (res[idx].first == res[idx + 1].first) {
-            right.push_back(idx + 1);
-            idx++;
-        }
-
-        while (res[idx].second < res[idx + 1].second) idx++;
-        upper.push_back(idx);
-        if (res[idx].second == res[idx + 1].second) {
-            upper.push_back(idx + 1);
-            idx++;
-        }
-    }
-};
-
 const ll mod = 998244353;
 ll N, M, Q, i, j, k, l;
-vector<ll> X, Y;
-
-ll dist(pair<ll, ll> p1, pair<ll, ll> p2) {
-    return min(abs(p1.first - p2.first), abs(p1.second - p2.second));
-}
+vector<pair<ll, ll>> pos;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
     cin >> N;
-    X.resize(N);
-    Y.resize(N);
-    REP(i, N) { cin >> X[i] >> Y[i]; }
+    pos.resize(N);
+    REP(i, N) { cin >> pos[i].first >> pos[i].second; }
 
-    ConvexHull convex = ConvexHull();
-    REP(i, N) convex.add_point({X[i], Y[i]});
-    convex.exec();
-    // debug_print(convex.convex_points.size());
-    // for (auto p : convex.convex_points) print_pair(p);
+    sort(ALL(pos));
 
-    ll ans = -1;
+    // 条件を満たす最大値を求める
+    ll lb = 0;           // これは条件を満たす必要がある
+    ll ub = 1000000000;  // これは条件を満たさない必要がある
+    while (ub - lb > 1) {
+        ll mid = (ub + lb) / 2;  // mid は ub の初期値にはならない
+        bool possible = false;
 
-    auto cp = convex.convex_points;
-    ll cnt = convex.upper[0];
-    REP(i, convex.lower[0] + 1) {
-        while (dist(cp[i], cp[cnt]) < dist(cp[i], cp[cnt - 1])) cnt--;
-        // debug_print(i, cnt, dist(cp[i], cp[cnt]));
-        ans = max(ans, dist(cp[i], cp[cnt]));
+        ll lower = pos[0].second;
+        ll upper = pos[0].second;
+        ll left_idx = 0;
+        ll right_idx = 0;
+        REP(left_idx, N - 1) {
+            lower = min(lower, pos[left_idx].second);
+            upper = max(upper, pos[left_idx].second);
+            bool end_flg = false;
+            if (pos[right_idx].first >= mid + pos[left_idx + 1].first) continue;
+            while (pos[right_idx].first < mid + pos[left_idx].first) {
+                right_idx++;
+                if (!(right_idx < N)) {
+                    end_flg = true;
+                    break;
+                }
+            }
+            while (pos[right_idx].first < mid + pos[left_idx + 1].first) {
+                if (pos[right_idx].second <= lower - mid ||
+                    pos[right_idx].second >= upper + mid) {
+                    possible = true;
+                    end_flg = true;
+                    break;
+                }
+                right_idx++;
+                if (!(right_idx < N)) {
+                    end_flg = true;
+                    break;
+                }
+            }
+            if (end_flg) break;
+        }
+
+        if (possible) {
+            lb = mid;
+        } else {
+            ub = mid;
+        }
     }
-
-    cnt = convex.right[convex.right.size() - 1];
-    FOR(i, convex.upper[0], cp.size()) {
-        while (dist(cp[i], cp[cnt]) <
-               dist(cp[i], cp[(cnt + cp.size() - 1) % cp.size()]))
-            cnt--;
-        // debug_print(i, cnt, dist(cp[i], cp[cnt]));
-        ans = max(ans, dist(cp[i], cp[cnt]));
-    }
-
-    cout << ans << endl;
+    cout << lb << endl;
 }
