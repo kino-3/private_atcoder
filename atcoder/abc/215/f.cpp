@@ -94,6 +94,7 @@ int main() {
         ll left_idx = 0;
         ll right_idx = 0;
         REP(left_idx, N - 1) {
+            ll mid = (ub + lb) / 2;  // mid は ub の初期値にはならない
             lower = min(lower, pos[left_idx].second);
             upper = max(upper, pos[left_idx].second);
             bool end_flg = false;
@@ -105,6 +106,7 @@ int main() {
                     break;
                 }
             }
+            if (end_flg) break;
             while (pos[right_idx].first < mid + pos[left_idx + 1].first) {
                 if (pos[right_idx].second <= lower - mid ||
                     pos[right_idx].second >= upper + mid) {
