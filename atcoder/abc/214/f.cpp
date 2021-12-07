@@ -68,7 +68,7 @@ void print_tuple(const tuple<T1, T2, T3> data) {
     // cout << endl;
 }
 
-const ll mod = 998244353;
+const ll mod = 1000000007;
 ll N, M, i, j, k, l;
 string S, T;
 
