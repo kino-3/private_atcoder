@@ -73,6 +73,43 @@ ll N, M, Q, i, j, k, l, m;
 vector<ll> sz;
 vector<vector<pair<ll, ll>>> test;
 
+// 0-indexed
+class BIT {
+   public:
+    ll n;                                // 要素数
+    vector<ll> node;                     // node[0] (=0) は使用しない
+    BIT(ll n) : n(n), node(n + 1, 0) {}  // 配列は 0 で初期化する
+
+    // [0, index] の index + 1 個の和
+    ll sum(ll index) {
+        index++;
+        ll res = 0;
+        while (index > 0) {
+            res += node[index];  // 加算
+            index -= index & (-index);
+        }
+        return res;
+    }
+
+    // [left, right] の 和
+    ll sum(ll left, ll right) { return sum(right) - sum(left - 1); }
+
+    // index 番目に value を加える
+    void add(ll index, ll value) {
+        index++;
+        while (index <= n) {
+            node[index] += value;  // 加算
+            index += index & (-index);
+        }
+    }
+
+    // index 番目を value とする
+    void update(ll index, ll value) {
+        ll cnt = sum(index, index);
+        add(index, value - cnt);
+    }
+};
+
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
@@ -93,15 +130,27 @@ int main() {
         bool ans = true;
 
         sort(ALL(test[i]));
-        ll idx = 1; // 次に入れられる場所
-        for (auto v: test[i]) {
-            if (idx < v.second) {
-                idx = v.second + 1;
-            } else if (idx > v.first) {
+        BIT bit = BIT(1000000002);
+        debug_print_count();
+        for (auto v : test[i]) {
+            if (bit.sum(v.second, v.first) == v.first - v.second + 1) {
                 ans = false;
-            } else {
-                idx ++;
+                break;
             }
+            // できるだけ左にいれる
+            // 条件を満たす最小値を求める
+            ll lb = v.second - 1;  // これは条件を満たさない必要がある
+            ll ub = v.first;  // これは条件を満たす必要がある
+            while (ub - lb > 1) {
+                ll mid = (ub + lb) / 2;  // mid は lb の初期値にはならない
+                if (bit.sum(mid, v.second) > mid - v.second + 1) {
+                    ub = mid;
+                } else {
+                    lb = mid;
+                }
+                debug_print(i, lb, ub);
+            }
+            bit.add(ub, 1);
         }
         if (ans) {
             cout << "Yes" << endl;
