@@ -104,25 +104,27 @@ class UnionFind {
 
 const ll mod = 998244353;
 ll N, i, j, k, l;
-vector<ll> A, B;
+vector<pair<ll, pair<ll, ll>>> A;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
     cin >> N;
-    A.resize(N);
-    B.resize(N);
-    REP(i, N) {
-        cin >> A[i] >> B[i];
+    REP(i, N - 1) {
+        cin >> j >> k >> l;
+        A.push_back({l, {j - 1, k - 1}});
     }
+    sort(ALL(A));
 
-    UnionFind uf = UnionFind(4);
-    cout << uf.unite(0, 1) << endl;
-    cout << uf.unite(0, 1) << endl;
-    cout << uf.size(0) << endl;
-    cout << uf.find(0, 2) << endl;
-    uf.unite(2, 3);
-    uf.unite(0, 2);
-    cout << uf.size(3) << endl;
+    ll ans = 0;
+    UnionFind uf = UnionFind(N);
+    for (auto v : A) {
+        ll x = v.second.first;
+        ll y = v.second.second;
+        ans += v.first * uf.size(x) * uf.size(y);
+        // debug_print(x, y, ans);
+        uf.unite(x, y);
+    }
+    cout << ans << endl;
 }

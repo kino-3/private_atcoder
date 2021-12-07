@@ -68,61 +68,45 @@ void print_tuple(const tuple<T1, T2, T3> data) {
     // cout << endl;
 }
 
-class UnionFind {
-   public:
-    // 根ノードなら -(データ数)
-    // それ以外なら親ノード
-    // が格納される
-    std::vector<ll> data;
-
-    UnionFind(ll size) : data(size, -1) {}
-
-    // 集合を併合する
-    // 併合できたかを返す(すでに同じ木に属するなら併合不要なのでfalse)
-    bool unite(ll x, ll y) {
-        x = root(x);
-        y = root(y);
-        if (x != y) {
-            if (data[y] < data[x]) std::swap(x, y);
-            // 要素数の大きな方(x)へyを合併する
-            data[x] += data[y];
-            data[y] = x;
-        }
-        return x != y;
-    }
-
-    // 同じ木に属するか
-    bool find(ll x, ll y) { return root(x) == root(y); }
-
-    // 属する木の根を返す
-    // (その過程で根まで辿ったノードを根に付ける)
-    ll root(ll x) { return (data[x] < 0) ? x : data[x] = root(data[x]); }
-
-    // 集合の要素数を返す
-    ll size(ll x) { return -data[root(x)]; }
-};
-
 const ll mod = 998244353;
-ll N, i, j, k, l;
-vector<ll> A, B;
+ll N, M, Q, i, j, k, l, m;
+vector<ll> sz;
+vector<vector<pair<ll, ll>>> test;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
     cin >> N;
-    A.resize(N);
-    B.resize(N);
+    sz.resize(N);
+    test.resize(N);
     REP(i, N) {
-        cin >> A[i] >> B[i];
+        cin >> m;
+        sz[i] = m;
+        REP(j, m) {
+            cin >> k >> l;
+            test[i].push_back({l, k});
+        }
     }
 
-    UnionFind uf = UnionFind(4);
-    cout << uf.unite(0, 1) << endl;
-    cout << uf.unite(0, 1) << endl;
-    cout << uf.size(0) << endl;
-    cout << uf.find(0, 2) << endl;
-    uf.unite(2, 3);
-    uf.unite(0, 2);
-    cout << uf.size(3) << endl;
+    REP(i, N) {
+        bool ans = true;
+
+        sort(ALL(test[i]));
+        ll idx = 1; // 次に入れられる場所
+        for (auto v: test[i]) {
+            if (idx < v.second) {
+                idx = v.second + 1;
+            } else if (idx > v.first) {
+                ans = false;
+            } else {
+                idx ++;
+            }
+        }
+        if (ans) {
+            cout << "Yes" << endl;
+        } else {
+            cout << "No" << endl;
+        }
+    }
 }

@@ -68,42 +68,8 @@ void print_tuple(const tuple<T1, T2, T3> data) {
     // cout << endl;
 }
 
-class UnionFind {
-   public:
-    // 根ノードなら -(データ数)
-    // それ以外なら親ノード
-    // が格納される
-    std::vector<ll> data;
-
-    UnionFind(ll size) : data(size, -1) {}
-
-    // 集合を併合する
-    // 併合できたかを返す(すでに同じ木に属するなら併合不要なのでfalse)
-    bool unite(ll x, ll y) {
-        x = root(x);
-        y = root(y);
-        if (x != y) {
-            if (data[y] < data[x]) std::swap(x, y);
-            // 要素数の大きな方(x)へyを合併する
-            data[x] += data[y];
-            data[y] = x;
-        }
-        return x != y;
-    }
-
-    // 同じ木に属するか
-    bool find(ll x, ll y) { return root(x) == root(y); }
-
-    // 属する木の根を返す
-    // (その過程で根まで辿ったノードを根に付ける)
-    ll root(ll x) { return (data[x] < 0) ? x : data[x] = root(data[x]); }
-
-    // 集合の要素数を返す
-    ll size(ll x) { return -data[root(x)]; }
-};
-
 const ll mod = 998244353;
-ll N, i, j, k, l;
+ll N, M, Q, i, j, k, l;
 vector<ll> A, B;
 
 int main() {
@@ -113,16 +79,22 @@ int main() {
     cin >> N;
     A.resize(N);
     B.resize(N);
-    REP(i, N) {
-        cin >> A[i] >> B[i];
-    }
+    REP(i, N) { cin >> A[i]; }
+    REP(i, N) { cin >> B[i]; }
 
-    UnionFind uf = UnionFind(4);
-    cout << uf.unite(0, 1) << endl;
-    cout << uf.unite(0, 1) << endl;
-    cout << uf.size(0) << endl;
-    cout << uf.find(0, 2) << endl;
-    uf.unite(2, 3);
-    uf.unite(0, 2);
-    cout << uf.size(3) << endl;
+    ll tmp = 0;
+    vector<ll> base(2 * N + 1, 0);
+    REP(i, N) { base[i + 1] = base[i] + A[i]; }
+    REP(i, N) { base[i + 1 + N] = base[i + N] + A[i]; }
+
+    vector<ll> diff;
+    REP(i, N) { diff.push_back(B[i] - base[i]); }
+    vector<ll> ans(2 * N);
+    ll tmp_diff = 10000000000;
+    REP(i, N) {
+        tmp_diff = min(tmp_diff, diff[i]);
+        ans[i] = base[i] + tmp_diff;
+    }
+    REP(i, N) { ans[i + N] = base[i + N] + tmp_diff; }
+    REP(i, N) { cout << min(ans[i], ans[i + N]) << endl; }
 }
