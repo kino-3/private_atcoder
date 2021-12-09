@@ -167,6 +167,39 @@ const ll mod = 998244353;
 ll N, M, i, j, k, l;
 string S, T;
 
+// 単調増加数列総和最大
+vector<ll> accum(vector<ll> &vec) {
+    stack<pair<ll, ll>> stk;
+    vector<ll> res;
+    res.push_back(vec[0]);
+    stk.push({vec[0], 0});
+    FOR(i, 1, vec.size()) {
+        auto v = stk.top();
+        if (v.first < vec[i]) {
+            ll tmp = vec[i];
+            tmp += v.first * (i - v.second - 1);
+            res.push_back(tmp + res[v.second]);
+            stk.push({vec[i], i});
+        } else {
+            while (!stk.empty()) {
+                if (stk.top().first > vec[i]) {
+                    stk.pop();
+                } else {
+                    break;
+                }
+            }
+            if (stk.empty()) {
+                res.push_back(vec[i] * (i + 1));
+            } else {
+                res.push_back(res[stk.top().second] +
+                              vec[i] * (i - stk.top().second));
+            }
+            stk.push({vec[i], i});
+        }
+    }
+    return res;
+}
+
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
@@ -185,28 +218,38 @@ int main() {
     // REP(i, N + 1) {
     //     cout << S.substr(sa.sa[i]) << " " << (i != N ? lcp[i] : -1) << endl;
     // }
-    vector<ll> accum;
-    ll tmp = 0;
-    REP(i, lcp.size()) {
-        tmp += lcp[i];
-        accum.push_back(tmp);
-    }
-    // print_v(accum);
+
+    auto accum_lcp = accum(lcp);
+    reverse(ALL(lcp));
+    auto accum_lcp_r = accum(lcp);
+    reverse(ALL(accum_lcp_r));
+    reverse(ALL(lcp));
+    // print_v(lcp);
+    // print_v(accum_lcp);
+    // print_v(accum_lcp_r);
+    accum_lcp_r.push_back(0);
+
     REP(i, N) {
         ll rank = sa.rank[i];
-        ll ans = N - i;
-        k = 100000000;
-        FOR(j, rank, N) {
-            k = min(k, lcp[j]);
-            ans += k;
-            if (lcp[j] == 0) break;
-        }
-        k = 100000000;
-        REP_R(j, rank) {
-            k = min(k, lcp[j]);
-            ans += k;
-            if (lcp[j] == 0) break;
-        }
+        ll ans = N - i + accum_lcp_r[rank] + accum_lcp[rank-1];
         cout << ans << endl;
     }
+
+    // REP(i, N) {
+    //     ll rank = sa.rank[i];
+    //     ll ans = N - i;
+    //     k = 100000000;
+    //     FOR(j, rank, N) {
+    //         k = min(k, lcp[j]);
+    //         ans += k;
+    //         if (lcp[j] == 0) break;
+    //     }
+    //     k = 100000000;
+    //     REP_R(j, rank) {
+    //         k = min(k, lcp[j]);
+    //         ans += k;
+    //         if (lcp[j] == 0) break;
+    //     }
+    //     cout << ans << endl;
+    // }
 }
