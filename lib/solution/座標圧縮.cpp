@@ -15,9 +15,13 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-template <typename T>
-void debug_print(const T item) {
-    cout << item << endl;
+void debug_print() {
+    cout << endl;
+}
+template <class Head, class... Tail>
+void debug_print(Head&& head, Tail&&... tail) {
+    std::cout << head << ", ";
+    debug_print(std::forward<Tail>(tail)...);
 }
 ll DEBUG_PRINT_COUNT = 0;
 void debug_print_count() {
@@ -72,6 +76,7 @@ vector<ll> A, B;
 
 // 破壊的に座標圧縮する
 // vec の要素の種類数を返す
+// 変換規則がほしい場合は memo を返せばよい
 ll compress(vector<ll> &vec) {
     map<ll, ll> memo; // key: 変換前, value: 変換後
     for (const auto v: vec) memo[v] = 0; // key 登録
