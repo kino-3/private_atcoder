@@ -15,14 +15,57 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
+void debug_print() { cout << endl; }
+template <class Head, class... Tail>
+void debug_print(Head &&head, Tail &&...tail) {
+    std::cout << head << ", ";
+    debug_print(std::forward<Tail>(tail)...);
+}
+ll DEBUG_PRINT_COUNT = 0;
+void debug_print_count() {
+    cout << "debug: " << DEBUG_PRINT_COUNT << endl;
+    DEBUG_PRINT_COUNT++;
+    assert(DEBUG_PRINT_COUNT < 10);
+}
 template <typename T>
 void print_v(const vector<T> vec) {
-    cout << "size: " << vec.size() << endl;
     cout << "[";
-    for (auto&& item : vec) {
+    for (auto &&item : vec) {
         cout << item << ",";
     }
     cout << "]" << endl;
+}
+template <typename T>
+void print_vv(const vector<T> vec) {
+    for (auto &&item : vec) {
+        print_v(item);
+    }
+}
+template <typename K, typename V>
+void print_map(const map<K, V> dict) {
+    for (const auto v : dict) {
+        cout << v.first << ":" << v.second << ", ";
+    }
+    cout << endl;
+}
+template <typename T>
+void print_set(const set<T> data) {
+    for (const auto v : data) {
+        cout << v << ", ";
+    }
+    cout << endl;
+}
+template <typename T1, typename T2>
+void print_pair(const pair<T1, T2> data) {
+    cout << "(" << data.first << "," << data.second << ")";
+    // cout << endl;
+}
+template <typename T1, typename T2, typename T3>
+void print_tuple(const tuple<T1, T2, T3> data) {
+    cout << "(";
+    cout << get<0>(data) << "," << get<1>(data) << "," << get<2>(data);
+    cout << ")";
+    // cout << endl;
 }
 
 class Tree {
@@ -31,9 +74,10 @@ class Tree {
     vector<vector<ll>> graph;     // 隣接リスト
     vector<ll> parent;            // 親ノード
     vector<vector<ll>> children;  // 子ノード
-    vector<ll> size;  // 自身を root とする部分木の大きさ
+    vector<ll> size;   // 自身を root とする部分木の大きさ
+    vector<ll> depth;  // 深さ
 
-    Tree(ll v) : V(v), graph(v), parent(v), children(v), size(v) {}
+    Tree(ll v) : V(v), graph(v), parent(v), children(v), size(v), depth(v) {}
 
     void add_edge(ll n1, ll n2) {
         graph[n1].push_back(n2);
@@ -42,11 +86,14 @@ class Tree {
 
     // 頂点 v で吊ったときの木探索
     ll exec(ll v, ll parent_of_v = -1) {
-        // if (parent_of_v == -1) {}
+        if (parent_of_v == -1) {
+            depth[v] = 0;
+        }
         parent[v] = parent_of_v;
         ll s = 1;
-        for (const auto& child : graph[v]) {
+        for (const auto &child : graph[v]) {
             if (child == parent_of_v) continue;
+            depth[child] = depth[v] + 1;
             s += exec(child, v);
             children[v].push_back(child);
         }
