@@ -160,14 +160,20 @@ int main() {
 
     REP(i, H) {
         REP(j, W) {
-            if (!A[i][j]) continue;
+            REP(k, 5) {
+                REP(l, 5) {
+                    if (k % 4 + l % 4 == 0) continue;
+                    dijkstra2d.add_edge({i, j}, {i + k - 2, j + l - 2}, 1);
+                }
+            }
+            // if (!A[i][j]) continue;
             vector<pair<ll, ll>> direction = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
             for (auto d : direction) {
                 ll row = i + d.first;
                 ll col = j + d.second;
                 if (dijkstra2d.is_field({row, col})) {
                     if (A[row][col]) {
-                        dijkstra2d.add_edge({i, j}, {row, col}, 1);
+                        dijkstra2d.add_edge({i, j}, {row, col}, 0);
                     }
                 }
             }
@@ -175,9 +181,9 @@ int main() {
     }
 
     dijkstra2d.exec({0, 0});
-    REP(i, H) {
-        REP(j, W) { cout << dijkstra2d.dist({i, j}); }
-        cout << endl;
-    }
+    // REP(i, H) {
+    //     REP(j, W) { cout << dijkstra2d.dist({i, j}); }
+    //     cout << endl;
+    // }
     cout << dijkstra2d.dist({H - 1, W - 1}) << endl;
 }
