@@ -1,3 +1,3 @@
-g++ -g ./atcoder/abc/214/$1.cpp
+g++ -g ./atcoder/abc/213/$1.cpp
 echo compiled
 ./a.exe
