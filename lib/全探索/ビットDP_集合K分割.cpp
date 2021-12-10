@@ -15,15 +15,6 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-template <typename T>
-void print_v(const vector<T> vec) {
-    cout << "size: " << vec.size() << endl;
-    cout << "[";
-    for (auto &&item : vec) {
-        cout << item << ",";
-    }
-    cout << "]" << endl;
-}
 
 // N 個の集合を K 個の部分集合に分割し,
 // 部分集合に対して定義されるスコア(score)について,

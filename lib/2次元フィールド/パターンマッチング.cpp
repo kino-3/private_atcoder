@@ -15,56 +15,6 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-template <typename T>
-void debug_print(const T item) {
-    cout << item << endl;
-}
-ll DEBUG_PRINT_COUNT = 0;
-void debug_print_count() {
-    cout << "debug: " << DEBUG_PRINT_COUNT << endl;
-    DEBUG_PRINT_COUNT++;
-    assert(DEBUG_PRINT_COUNT < 10);
-}
-template <typename T>
-void print_v(const vector<T> vec) {
-    cout << "[";
-    for (auto &&item : vec) {
-        cout << item << ",";
-    }
-    cout << "]" << endl;
-}
-template <typename T>
-void print_vv(const vector<T> vec) {
-    for (auto &&item : vec) {
-        print_v(item);
-    }
-}
-template <typename K, typename V>
-void print_map(const map<K, V> dict) {
-    for (const auto v : dict) {
-        cout << v.first << ":" << v.second << ", ";
-    }
-    cout << endl;
-}
-template <typename T>
-void print_set(const set<T> data) {
-    for (const auto v : data) {
-        cout << v << ", ";
-    }
-    cout << endl;
-}
-template <typename T1, typename T2>
-void print_pair(const pair<T1, T2> data) {
-    cout << "(" << data.first << "," << data.second << ")";
-    // cout << endl;
-}
-template <typename T1, typename T2, typename T3>
-void print_tuple(const tuple<T1, T2, T3> data) {
-    cout << "(";
-    cout << get<0>(data) << "," << get<1>(data) << "," << get<2>(data);
-    cout << ")";
-    // cout << endl;
-}
 
 // angle: 90, 180, 270 で回転した全領域を返す
 template <typename T>
@@ -170,5 +120,6 @@ int main() {
     // print_vv(rotate_field(A, 90));
     // print_vv(rotate_field(A, 180));
     // print_vv(rotate_field(A, 270));
-    print_vv(clip(A, get_bbox(A)));
+
+    // print_vv(clip(A, get_bbox(A)));
 }

@@ -15,15 +15,6 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-template <typename T>
-void print_v(const vector<T> vec) {
-    cout << "size: " << vec.size() << endl;
-    cout << "[";
-    for (auto &&item : vec) {
-        cout << item << ",";
-    }
-    cout << "]" << endl;
-}
 
 ll N, i, j, k;
 vector<ll> A;
@@ -52,5 +43,5 @@ int main() {
         }
     }
     cout << max_count << endl;
-    print_v(max_value);
+    // print_v(max_value);
 }
