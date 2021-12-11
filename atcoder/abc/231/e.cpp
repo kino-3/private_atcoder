@@ -87,29 +87,56 @@ int main() {
     REP(i, N) { cin >> A[i]; }
 
     // Y に A[i] 以降のみ使う, A[i] は絶対使う
-    ll ans = 1000000000000000000;
-    REP(i, N) {
-        ll cnt = 0;
-        ll Y = 0;
-        FOR_R(j, i, N) {
-            while (Y + A[j] < X) {
-                cnt++;
-                Y += A[j];
+    ll ans = 0;
+    map<ll, ll> res;
+    res[X] = 0;
+    REP_R(i, N) {
+        vector<pair<ll, ll>> tmp;
+        for (auto v : res) {
+            tmp.push_back(v);
+        }
+        for (auto v : tmp) {
+            ll mai = v.first / A[i];
+            ll new1 = v.first - mai * A[i];
+            ll new2 = (mai + 1) * A[i] - v.first;
+            if (res.count(new1) > 0) {
+                res[new1] = min(res[new1], v.second + mai);
+            } else {
+                res[new1] = v.second + mai;
+            }
+            if (res.count(new2) > 0) {
+                res[new2] = min(res[new2], v.second + mai + 1);
+            } else {
+                res[new2] = v.second + mai + 1;
             }
         }
-        while (Y < X) {
-            Y += A[i];
-            cnt++;
-        }
-        Y -= X;
-        ll Z = 0;
-        REP_R(j, i) {
-            while (Z + A[j] <= Y) {
-                cnt++;
-                Z += A[j];
-            }
-        }
-        ans = min(ans, cnt);
     }
-    cout << ans << endl;
+    // REP(i, N) {
+    //     ll cnt = 0;
+    //     ll Y = 0;
+    //     FOR_R(j, i, N) {
+    //         while (Y + A[j] < X) {
+    //             cnt++;
+    //             Y += A[j];
+    //         }
+    //     }
+    //     while (Y < X) {
+    //         Y += A[i];
+    //         cnt++;
+    //     }
+    //     Y -= X;
+    //     debug_print(i, cnt, Y);
+    //     ll t_cnt = 0;
+    //     ll Z = 0;
+    //     REP_R(j, i) {
+    //         while (Z + A[j] <= Y) {
+    //             cnt++;
+    //             t_cnt ++;
+    //             Z += A[j];
+    //         }
+    //     }
+    //     debug_print(t_cnt, cnt);
+    //     ans = min(ans, cnt);
+    // }
+    cout << res[0] << endl;
 }
