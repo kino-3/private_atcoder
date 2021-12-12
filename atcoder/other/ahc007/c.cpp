@@ -161,7 +161,9 @@ class Kruskal {
             edge e = edges[ee.second];
             if (!uf.find(e.from, e.to)) {
                 uf.unite(e.from, e.to);
-                should_use = true;
+                if (ee.second == idx) {
+                    should_use = true;
+                }
             }
         }
 
