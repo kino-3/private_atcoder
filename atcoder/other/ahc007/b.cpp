@@ -114,7 +114,6 @@ struct edge {
     ll from;
     ll to;
     ll cost;
-    ll idx;
 };
 
 // 負の辺があってもよい
@@ -127,42 +126,57 @@ class Kruskal {
     ll V;  // 頂点の個数
     ll E;  // 辺の個数
     vector<edge> edges;
-    vector<pair<ll, ll>> links;
+    set<pair<ll, ll>> remain_edges;
+    vector<bool> used_edge;  // 使うか
+    UnionFind real_uf;
 
     const ll INF = numeric_limits<ll>::max();
 
    public:
-    Kruskal(ll v, ll e) : V(v), E(e) {}
+    Kruskal(ll v, ll e) : V(v), E(e), used_edge(e, false), real_uf(v) {}
 
     // from, to の区別はない(無向グラフ)
-    void add_edge(ll from, ll to, ll cost, ll idx) {
-        edges.push_back({from, to, cost, idx});
+    void add_edge(ll from, ll to, ll cost) {
+        edges.push_back({from, to, cost});
     }
 
-    // 最小全域木の総コストを返す
-    vector<bool> exec() {
-        vector<bool> use(E, false);
-        ll total_cost = 0;
-        sort(edges.begin(), edges.end(), [](const edge& e1, const edge& e2) {
-            return e1.cost < e2.cost;
-        });  // コストの小さい順にソート
-        UnionFind union_find = UnionFind(V);
-        for (const auto& edge : edges) {
-            if (!union_find.find(edge.from, edge.to)) {
-                union_find.unite(edge.from, edge.to);
-                use[edge.idx] = true;
-                total_cost += edge.cost;
-                links.push_back({edge.from, edge.to});
+    void preprocess() {
+        remain_edges.clear();
+        ll i;
+        REP(i, E) { remain_edges.insert({edges[i].cost, i}); }
+    }
+
+    // idx 番目が cost のときに追加するか
+    bool exec(ll idx, ll true_cost) {
+        bool should_use = false;
+        ll param = 2;
+        ll target_cost = true_cost / param;
+        UnionFind uf = UnionFind(V);
+        uf.data = real_uf.data;
+
+        remain_edges.erase(remain_edges.find({edges[idx].cost, idx}));
+        remain_edges.insert({target_cost, idx});
+
+        for (const auto& ee : remain_edges) {
+            edge e = edges[ee.second];
+            if (!uf.find(e.from, e.to)) {
+                uf.unite(e.from, e.to);
+                should_use = true;
             }
         }
-        return use;
+
+        remain_edges.erase(remain_edges.find({target_cost, idx}));
+        if (should_use) {
+            real_uf.unite(edges[idx].from, edges[idx].to);
+        }
+        return should_use;
     }
 };
 
 const ll mod = 998244353;
 ll N, M, i, j, k, l;
 vector<ll> X, Y;
-vector<pair<ll, ll>> graph;
+vector<pair<ll, ll>> graph;  // 並び替えされていない
 
 int main() {
     std::cin.tie(nullptr);
@@ -188,17 +202,20 @@ int main() {
     }
     // print_v(dist);
     Kruskal tree = Kruskal(N, M);
-    REP(i, M) { tree.add_edge(graph[i].first, graph[i].second, dist[i], i); }
-    auto used = tree.exec();
-
+    REP(i, M) { tree.add_edge(graph[i].first, graph[i].second, dist[i]); }
+    tree.preprocess();
     // // クエリ処理
+
+    // ll count = 0;
     REP(i, M) {
         cin >> j;
-        bool should_use = used[i];
+        bool should_use = tree.exec(i, j);
         if (should_use) {
             cout << 1 << endl;
+            // count ++;
         } else {
             cout << 0 << endl;
         }
     }
+    // cout << count << endl;
 }
