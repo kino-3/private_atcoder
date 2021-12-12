@@ -149,10 +149,7 @@ class Kruskal {
     // idx 番目が cost のときに追加するか
     bool exec(ll idx, ll true_cost) {
         bool should_use = false;
-        // run3: 2
-        // run4: 1.7
-        // run5: 1.5
-        // run6
+        // 可変にする
         double param = 1.5;
         ll target_cost = true_cost / param;
         UnionFind uf = UnionFind(V);
