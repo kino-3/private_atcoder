@@ -167,8 +167,8 @@ class Kruskal {
         // run 1.86/0.1688: 1100
         // run 1.8603/0.1694: 1099
         // run 1.8597/0.1682
-        double upper = 1.8603;
-        double diff = 0.1694;
+        double upper = 1.8601;
+        double diff = 0.1688;
         double param = upper - diff * rate_x;
         ll target_cost = true_cost / param;
         UnionFind uf = UnionFind(V);
