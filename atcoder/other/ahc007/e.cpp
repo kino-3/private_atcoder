@@ -151,8 +151,24 @@ class Kruskal {
         bool should_use = false;
         // 可変にする
         double rate_x = 1 - idx / 1995.0;
-        double upper = 1.8;
-        double diff = 0.1;
+        // run 18:40: 1.8/0.1
+        // run 18:45: 1.9/0.3
+        // run 1.9/0.2  : 1002
+        // run 2.0/0.5
+        // run 1.85/0.15: 1049
+        // run 1.83/0.11: 1048
+        // run 1.86/0.17: 1099
+        // run 1.87/0.17: 1081
+        // run 1.86/0.16: 1085
+        // run 1.85/0.16: 1075
+        // run 1.86/0.167: 1092
+        // run 1.86/0.169: 1100
+        // run 1.86/0.1685: 1097
+        // run 1.86/0.1688: 1100
+        // run 1.8603/0.1694: 1099
+        // run 1.8597/0.1682
+        double upper = 1.8603;
+        double diff = 0.1694;
         double param = upper - diff * rate_x;
         ll target_cost = true_cost / param;
         UnionFind uf = UnionFind(V);
