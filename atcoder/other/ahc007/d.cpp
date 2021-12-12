@@ -152,8 +152,13 @@ class Kruskal {
         // run3: 2
         // run4: 1.7
         // run5: 1.5
-        // run6
-        double param = 1.5;
+        // run6: 1.6
+        // run7: 1.75
+        // run8: 1.80
+        // run9: 1.74
+        // run10: 1.73
+        // run11: 1.736: best
+        double param = 1.736;
         ll target_cost = true_cost / param;
         UnionFind uf = UnionFind(V);
         uf.data = real_uf.data;

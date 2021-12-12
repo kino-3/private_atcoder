@@ -150,7 +150,10 @@ class Kruskal {
     bool exec(ll idx, ll true_cost) {
         bool should_use = false;
         // 可変にする
-        double param = 1.5;
+        double rate_x = 1 - idx / 1995.0;
+        double upper = 1.8;
+        double diff = 0.1;
+        double param = upper - diff * rate_x;
         ll target_cost = true_cost / param;
         UnionFind uf = UnionFind(V);
         uf.data = real_uf.data;
