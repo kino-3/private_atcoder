@@ -15,11 +15,9 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-void debug_print() {
-    cout << endl;
-}
+void debug_print() { cout << endl; }
 template <class Head, class... Tail>
-void debug_print(Head&& head, Tail&&... tail) {
+void debug_print(Head &&head, Tail &&...tail) {
     std::cout << head << ", ";
     debug_print(std::forward<Tail>(tail)...);
 }
@@ -45,14 +43,14 @@ void print_vv(const vector<T> vec) {
 }
 template <typename K, typename V>
 void print_map(const map<K, V> dict) {
-    for (const auto v: dict) {
+    for (const auto v : dict) {
         cout << v.first << ":" << v.second << ", ";
     }
     cout << endl;
 }
 template <typename T>
 void print_set(const set<T> data) {
-    for (const auto v: data) {
+    for (const auto v : data) {
         cout << v << ", ";
     }
     cout << endl;
@@ -76,6 +74,10 @@ void print_vp(const vector<pair<T1, T2>> vec) {
     }
 }
 
+const ll mod = 998244353;
+ll N, M, K, Q, i, j, k, l;
+vector<ll> A, B;
+
 // x^n % mod を返す
 ll mod_pow(ll x, ll n, ll mod) {
     ll res = 1;
@@ -89,19 +91,34 @@ ll mod_pow(ll x, ll n, ll mod) {
     return res;
 }
 
-const ll mod = 998244353;
-ll N, M, i, j, k, l;
-string S, T;
-
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N;
-    ll total = (N % mod) * (N % mod) % mod;
+    cin >> N >> M >> K;
+    vector<vector<ll>> graph(N);
+    REP(i, M) {
+        cin >> j >> k;
+        graph[j - 1].push_back(k - 1);
+        graph[k - 1].push_back(j - 1);
+    }
+    REP(i, N) { graph[i].push_back(i); }
 
-    ll ng = 0;
-    // x==0 -> y==0
-    // x==1 -> y==1
-    
+    vector<ll> dp(N);
+    dp[0] = 1;
+    REP(i, K) {
+        ll total = 0;
+        for (auto v : dp) total += v;
+        vector<ll> tdp(N);
+        REP(i, N) {
+            for (auto v : graph[i]) {
+                tdp[v] += dp[i];
+                tdp[v] %= mod;
+            }
+        }
+        REP(i, N) { dp[i] = (total + mod - tdp[i]) % mod; }
+        // print_v(dp);
+    }
+
+    cout << dp[0] % mod << endl;
 }
