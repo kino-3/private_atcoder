@@ -143,6 +143,7 @@ ll carmichael(ll modulo) {
 // modulo と互いに素である任意の自然数 b について
 // b^n ≡ 1 (mod modulo) となる n (最小とは限らない)
 // いわゆるオイラー関数である
+// modulo と互いに素な modulo 以下の自然数の個数でもある
 ll euler(ll modulo) {
     auto primes = get_prime_factor(modulo);
     ll res = 1;
