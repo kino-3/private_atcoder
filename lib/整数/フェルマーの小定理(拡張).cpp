@@ -105,7 +105,7 @@ ll mod_pow(ll x, ll n, ll mod) {
     return res;
 }
 
-// 1 以上 n 以下の自然数のうち, n と互いに素である任意の自然数 b について
+// 1 以上 modulo 以下の自然数のうち, modulo と互いに素である任意の自然数 b について
 // b^n ≡ 1 (mod modulo) となる最小の n
 ll carmichael(ll modulo) {
     auto primes = get_prime_factor(modulo);
@@ -140,7 +140,7 @@ ll carmichael(ll modulo) {
     return lcm;
 }
 
-// n と互いに素である任意の自然数 b について
+// modulo と互いに素である任意の自然数 b について
 // b^n ≡ 1 (mod modulo) となる n (最小とは限らない)
 // いわゆるオイラー関数である
 ll euler(ll modulo) {
