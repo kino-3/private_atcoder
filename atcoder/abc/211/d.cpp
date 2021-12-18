@@ -59,17 +59,15 @@ int main() {
     node.insert(0);
     while (true) {
         set<ll> new_node;
-        vector<ll> new_dp(N, 0);
         for (auto v : node) {
             for (auto vv : graph.conn[v]) {
                 if (flg[vv]) continue;
                 new_node.insert(vv);
-                new_dp[vv] += dp[v];
-                new_dp[vv] %= mod;
+                dp[vv] += dp[v];
+                dp[vv] %= mod;
             }
         }
         node = new_node;
-        dp = new_dp;
         for (auto v : node) {
             flg[v] = true;
         }
