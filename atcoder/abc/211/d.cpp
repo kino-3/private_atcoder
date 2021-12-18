@@ -53,22 +53,25 @@ int main() {
     }
     vector<bool> flg(N, false);
     vector<ll> dp(N, 0);
-    set<ll> node;
+    vector<ll> node;
     flg[0] = true;
     dp[0] = 1;
-    node.insert(0);
+    node.push_back(0);
     while (true) {
-        set<ll> new_node;
+        vector<bool> new_node(N, false);
         vector<ll> new_dp(N, 0);
         for (auto v : node) {
             for (auto vv : graph.conn[v]) {
                 if (flg[vv]) continue;
-                new_node.insert(vv);
+                new_node[vv] = true;
                 new_dp[vv] += dp[v];
                 new_dp[vv] %= mod;
             }
         }
-        node = new_node;
+        node.clear();
+        REP(i, N) {
+            if (new_node[i]) node.push_back(i);
+        }
         dp = new_dp;
         for (auto v : node) {
             flg[v] = true;
