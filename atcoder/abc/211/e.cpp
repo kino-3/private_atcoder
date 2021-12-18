@@ -108,36 +108,45 @@ int main() {
         REP(j, N) { A[i].push_back(S[j] == '.'); }
     }
 
-    ll MAX = 1 << (K * 2 - 2);
+    // K マスのつながり
+    set<set<pair<ll, ll>>> data;
+    set<pair<ll, ll>> tmp;
+    tmp.insert({0, 0});
+    data.insert(tmp);
+    pair<ll, ll> base = {0, 0};
+    REP(i, K - 1) {
+        set<set<pair<ll, ll>>> new_data;
+        for (auto v : data) {
+            for (auto vv : v) {
+                for (auto d : direction) {
+                    pair<ll, ll> cnt = {d.first + vv.first,
+                                        d.second + vv.second};
+                    if (base < cnt) continue;
+                    if (v.count(cnt) == 0) {
+                        auto newv = v;
+                        newv.insert(cnt);
+                        new_data.insert(newv);
+                    }
+                }
+            }
+        }
+        data = new_data;
+    }
+    // debug_print(data.size());
+    // for (auto v : data) {
+    //     print_sp(v);
+    // }
+
     ll ans = 0;
     REP(i, N) {
         REP(j, N) {
-            pair<ll, ll> center = {i, j};
-            // i, j 以下のマス
-            if (!is_field(center)) continue;
-            REP(k, MAX) {
-                set<pair<ll, ll>> data;
-                data.insert(center);
-                ll num = k;
-                pair<ll, ll> cnt = center;
+            for (auto v : data) {
                 bool flg = true;
-                REP(l, K - 1) {
-                    auto dir = direction[num % 4];
-                    pair<ll, ll> npos = {dir.first + cnt.first,
-                                         dir.second + cnt.second};
-                    if (!is_field(npos) || npos > center) {
-                        flg = false;
-                        break;
-                    }
-                    num /= 4;
-                    data.insert(npos);
-                    cnt = npos;
+                for (auto vv: v) {
+                    pair<ll, ll> cnt = {i + vv.first, j + vv.second};
+                    if (!is_field(cnt)) flg = false;
                 }
-                // if (i == 2 && j == 0) print_sp(data);
-                if (flg && data.size() == K) {
-                    ans++;
-                    // print_sp(data);
-                }
+                if (flg) ans ++;
             }
         }
     }
