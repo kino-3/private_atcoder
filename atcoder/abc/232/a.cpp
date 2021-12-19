@@ -15,11 +15,9 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-void debug_print() {
-    cout << endl;
-}
+void debug_print() { cout << endl; }
 template <class Head, class... Tail>
-void debug_print(Head&& head, Tail&&... tail) {
+void debug_print(Head &&head, Tail &&...tail) {
     std::cout << head << ", ";
     debug_print(std::forward<Tail>(tail)...);
 }
@@ -45,14 +43,14 @@ void print_vv(const vector<T> vec) {
 }
 template <typename K, typename V>
 void print_map(const map<K, V> dict) {
-    for (const auto v: dict) {
+    for (const auto v : dict) {
         cout << v.first << ":" << v.second << ", ";
     }
     cout << endl;
 }
 template <typename T>
 void print_set(const set<T> data) {
-    for (const auto v: data) {
+    for (const auto v : data) {
         cout << v << ", ";
     }
     cout << endl;
@@ -84,6 +82,6 @@ int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N;
-    cout << N << endl;
+    cin >> S;
+    cout << (S[0] - '0') * (S[2] - '0') << endl;
 }
