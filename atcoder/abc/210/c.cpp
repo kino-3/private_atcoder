@@ -102,7 +102,7 @@ int main() {
         if (candy[A[i]] == 0) {
             tmp--;
         }
-        if (candy.count(A[i + K]) == 0) {
+        if (candy.count(A[i + K]) == 0 || candy[A[i + K]] == 0) {
             candy[A[i + K]] = 1;
             tmp += 1;
         } else {
