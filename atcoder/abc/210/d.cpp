@@ -137,6 +137,9 @@ int main() {
         REP(j, M) { B[i][j] = A[i][M - j - 1]; }
     }
     REP(i, N) {
+        REP(j, M) { A[i][j] = B[i][j]; }
+    }
+    REP(i, N) {
         REP(j, M) { B[i][j] -= C * (i + j); }
     }
     // print_vv(B);
