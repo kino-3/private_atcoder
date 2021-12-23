@@ -73,6 +73,38 @@ void print_vp(const vector<pair<T1, T2>> vec) {
         print_pair(item);
     }
 }
+template <typename T>
+void print_queue(queue<T> que) {
+    while (!que.empty()) {
+        cout << que.front() << " ";
+        que.pop();
+    }
+    cout << endl;
+}
+template <typename T>
+void print_deque(deque<T> que) {
+    while (!que.empty()) {
+        cout << que.front() << " ";
+        que.pop_front();
+    }
+    cout << endl;
+}
+template <typename T>
+void print_stack(stack<T> que) {
+    while (!que.empty()) {
+        cout << que.top() << " ";
+        que.pop();
+    }
+    cout << endl;
+}
+template <typename T>
+void print_priority_queue(priority_queue<T> que) {
+    while (!que.empty()) {
+        cout << que.top() << " ";
+        que.pop();
+    }
+    cout << endl;
+}
 
 const ll mod = 998244353;
 ll N, M, Q, i, j, k, l;
@@ -88,6 +120,7 @@ int main() {
 
     map<string, ll> out;               // 出次数
     map<string, vector<string>> prev;  // 流入元
+    map<string, vector<string>> next;  // 流出先
     REP(i, N) {
         string start = S[i].substr(0, 3);
         string end = S[i].substr(S[i].size() - 3, 3);
@@ -100,6 +133,7 @@ int main() {
             out[end] = 0;
         }
         prev[end].push_back(start);
+        next[start].push_back(end);
     }
 
     // print_map(out);
@@ -110,23 +144,51 @@ int main() {
 
     map<string, bool> win;
     map<string, bool> lose;
+    map<string, ll> grundy;
+
+    vector<string> win_list;
+    for (auto v : out) {
+        if (v.second == 0) win_list.push_back(v.first);
+    }
+    for (auto v : win_list) {
+        win[v] = true;
+        for (auto vv : prev[v]) {
+            out[vv]--;
+        }
+    }
 
     queue<string> zero;
     for (auto v : out) {
-        if (v.second == 0) zero.push(v.first);
+        if (v.second == 0) {
+            zero.push(v.first);
+        }
     }
 
     while (!zero.empty()) {
         auto cnt = zero.front();
         zero.pop();
-        win[cnt] = true;
+        // grundy 決め
+        set<ll> g;
+        for (auto v : next[cnt]) {
+            if (grundy.count(v) > 0) {
+                g.insert(grundy[v]);
+            }
+        }
+        REP(i, N + 1) {
+            if (g.count(i) == 0) {
+                grundy[cnt] = i;
+                if (i == 0) {
+                    lose[cnt] = true;
+                } else {
+                    win[cnt] = true;
+                }
+                break;
+            }
+        }
         for (auto v : prev[cnt]) {
             out[v]--;
             if (out[v] == 0) {
-                lose[v] = true;
-                for (auto vv : prev[v]) {
-                    zero.push(vv);
-                }
+                zero.push(v);
             }
         }
     }
