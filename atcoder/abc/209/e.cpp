@@ -108,7 +108,6 @@ int main() {
     //     print_v(v.second);
     // }
 
-
     map<string, bool> win;
     map<string, bool> lose;
 
@@ -120,12 +119,12 @@ int main() {
     while (!zero.empty()) {
         auto cnt = zero.front();
         zero.pop();
-        lose[cnt] = true;
+        win[cnt] = true;
         for (auto v : prev[cnt]) {
-            win[v] = true;
-            for (auto vv : prev[v]) {
-                out[vv]--;
-                if (out[vv] == 0) {
+            out[v]--;
+            if (out[v] == 0) {
+                lose[v] = true;
+                for (auto vv : prev[v]) {
                     zero.push(vv);
                 }
             }
@@ -135,9 +134,9 @@ int main() {
     REP(i, N) {
         string end = S[i].substr(S[i].size() - 3, 3);
         if (win.count(end) > 0) {
-            cout << "Aoki" << endl;
-        } else if (lose.count(end) > 0) {
             cout << "Takahashi" << endl;
+        } else if (lose.count(end) > 0) {
+            cout << "Aoki" << endl;
         } else {
             cout << "Draw" << endl;
         }
