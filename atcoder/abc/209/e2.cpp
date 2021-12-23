@@ -124,7 +124,7 @@ int main() {
     REP(i, N) {
         string start = S[i].substr(0, 3);
         string end = S[i].substr(S[i].size() - 3, 3);
-        if (out.count(start) > 0) {
+        if (out.count(start) == 0) {
             out[start] = 1;
         } else {
             out[start]++;
@@ -135,7 +135,7 @@ int main() {
         prev[end].push_back(start);
         next[start].push_back(end);
     }
-
+    // print_map(out);
     // print_map(out);
     // for (auto v: prev) {
     //     debug_print(v.first);
@@ -150,21 +150,20 @@ int main() {
     for (auto v : out) {
         if (v.second == 0) win_list.push_back(v.first);
     }
+    queue<string> zero;
     for (auto v : win_list) {
         win[v] = true;
         for (auto vv : prev[v]) {
             out[vv]--;
+            if (out[vv] == 0) {
+                zero.push(vv);
+            }
         }
     }
-
-    queue<string> zero;
-    for (auto v : out) {
-        if (v.second == 0) {
-            zero.push(v.first);
-        }
-    }
+    // print_map(out);
 
     while (!zero.empty()) {
+        // print_queue(zero);
         auto cnt = zero.front();
         zero.pop();
         // grundy 決め

@@ -91,7 +91,7 @@ int main() {
     REP(i, N) {
         string start = S[i].substr(0, 3);
         string end = S[i].substr(S[i].size() - 3, 3);
-        if (out.count(start) > 0) {
+        if (out.count(start) == 0) {
             out[start] = 1;
         } else {
             out[start]++;
@@ -121,10 +121,10 @@ int main() {
         zero.pop();
         win[cnt] = true;
         for (auto v : prev[cnt]) {
-            out[v]--;
-            if (out[v] == 0) {
-                lose[v] = true;
-                for (auto vv : prev[v]) {
+            lose[v] = true;
+            for (auto vv : prev[v]) {
+                out[vv]--;
+                if (out[vv] == 0) {
                     zero.push(vv);
                 }
             }
