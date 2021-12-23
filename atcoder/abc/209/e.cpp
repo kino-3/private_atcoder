@@ -121,11 +121,13 @@ int main() {
         zero.pop();
         win[cnt] = true;
         for (auto v : prev[cnt]) {
-            lose[v] = true;
-            for (auto vv : prev[v]) {
-                out[vv]--;
-                if (out[vv] == 0) {
-                    zero.push(vv);
+            if (lose.count(v) == 0 && win.count(v) == 0) {
+                lose[v] = true;
+                for (auto vv : prev[v]) {
+                    out[vv]--;
+                    if (out[vv] == 0) {
+                        zero.push(vv);
+                    }
                 }
             }
         }
