@@ -15,7 +15,6 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-
 class Tree {
    public:
     ll V;                         // 頂点の個数
@@ -47,6 +46,38 @@ class Tree {
         }
         size[v] = s;
         return s;
+    }
+
+    // LCA (O(n))
+    ll lca(ll n1, ll n2) {
+        while (depth[n1] > depth[n2]) n1 = parent[n1];
+        while (depth[n1] < depth[n2]) n2 = parent[n2];
+        while (n1 != n2) {
+            n1 = parent[n1];
+            n2 = parent[n2];
+        }
+        return n1;
+    }
+
+    // (始点と終点を含む)経路
+    vector<ll> path(ll from_node, ll to_node) {
+        vector<ll> res;
+        ll path_lca = lca(from_node, to_node);
+        while (from_node != path_lca) {
+            res.push_back(from_node);
+            from_node = parent[from_node];
+        }
+        vector<ll> rev_path;
+        while (to_node != path_lca) {
+            rev_path.push_back(to_node);
+            to_node = parent[to_node];
+        }
+        reverse(rev_path.begin(), rev_path.end());
+        res.push_back(path_lca);
+        for (auto v : rev_path) {
+            res.push_back(v);
+        }
+        return res;
     }
 };
 
