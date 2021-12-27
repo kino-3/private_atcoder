@@ -37,7 +37,8 @@ class WarshallFloyd {
         dist[from][to] = edge_cost;  // k = -1 (i,j のみ使う)
     }
 
-    void exec() {
+    ll exec() {
+        ll ans = 0;
         for (ll k = 0; k < V; ++k) {
             // i,j と k 番目までの頂点を使ったときの, i -> j の最短距離
             for (ll i = 0; i < V; ++i) {
@@ -47,9 +48,11 @@ class WarshallFloyd {
                     // (i,k を含むので両者は同じ)
                     // の頂点を使ったときの, i -> k の最短距離
                     dist[i][j] = std::min(dist[i][j], dist[i][k] + dist[k][j]);
+                    ans += (dist[i][j] == INF ? 0 : dist[i][j]);
                 }
             }
         }
+        return ans;
     }
 };
 
@@ -66,4 +69,5 @@ int main() {
         cin >> j >> k >> l;
         graph.add_edge(j - 1, k - 1, l);
     }
+    cout << graph.exec() << endl;
 }
