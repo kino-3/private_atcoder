@@ -15,9 +15,11 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-void debug_print() { cout << endl; }
+void debug_print() {
+    cout << endl;
+}
 template <class Head, class... Tail>
-void debug_print(Head &&head, Tail &&...tail) {
+void debug_print(Head&& head, Tail&&... tail) {
     std::cout << head << ", ";
     debug_print(std::forward<Tail>(tail)...);
 }
@@ -43,14 +45,14 @@ void print_vv(const vector<T> vec) {
 }
 template <typename K, typename V>
 void print_map(const map<K, V> dict) {
-    for (const auto v : dict) {
+    for (const auto v: dict) {
         cout << v.first << ":" << v.second << ", ";
     }
     cout << endl;
 }
 template <typename T>
 void print_set(const set<T> data) {
-    for (const auto v : data) {
+    for (const auto v: data) {
         cout << v << ", ";
     }
     cout << endl;
@@ -74,60 +76,70 @@ void print_vp(const vector<pair<T1, T2>> vec) {
     }
 }
 
-class Graph {
-   public:
-    ll V;                               // 頂点の個数
-    vector<vector<pair<ll, ll>>> conn;  // 隣接リスト(vector)
-    vector<vector<pair<ll, ll>>> prev;  // 有向グラフの場合の逆辺
-
-    Graph(ll v) : V(v), conn(v), prev(v) {}
-
-    // 有向グラフ
-    void add_directed_edge(ll from, ll to, ll cost) {
-        conn[from].push_back({to, cost});
-        prev[to].push_back({from, cost});
-    }
-};
-
 const ll mod = 998244353;
-ll N, M, Q, i, j, k, l, s, t;
-vector<ll> A, B, C;
+ll N, K, Q, i, j, k, l;
+vector<ll> A, B;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
-    const ll INF = 100000000000;
 
-    cin >> N >> M;
-    A.resize(M);
-    B.resize(M);
-    C.resize(M);
-    REP(i, M) {
-        cin >> A[i] >> B[i] >> C[i];
-        A[i]--;
-        B[i]--;
-    }
-
-    Graph G = Graph(N);
-    REP(i, M) { G.add_directed_edge(A[i], B[i], C[i]); }
-
+    cin >> N >> K;
     ll ans = 0;
-    REP(s, N) {
-        vector<ll> tmp_cost(N, INF);
-        for (auto v : G.conn[s]) {
-            tmp_cost[v.first] = v.second;
-        }
-        REP(k, N) {
-            for (auto v : G.conn[k]) {
-                tmp_cost[v.first] =
-                    min(tmp_cost[v.first], tmp_cost[k] + v.second);
-            }
-            REP(t, N) {
-                if (tmp_cost[t] != INF && s != t) {
-                    ans += tmp_cost[t];
+
+    // 0 を含むもの
+    vector<ll> number;
+    ll tmp_N = N;
+    while (tmp_N > 0) {
+        number.push_back(tmp_N % 10);
+        tmp_N /= 10;
+    }
+    // example 7654321
+    ll keta = number.size();
+    ll total = 1; // keta - 1 桁以下
+    REP(i, keta - 1) total *= 10;
+    total -= 1;
+    ll tmp_9 = 1;
+    REP(i, keta - 1) {
+        tmp_9 *= 9;
+        total -= tmp_9;
+    }
+    ans += total;
+
+
+
+
+    // 0 を含まないもの
+    vector<map<ll, ll>> prod;
+    map<ll, ll> tmp;
+    FOR(i, 1, 10) tmp[i] = 1;
+    prod.push_back(tmp);
+    REP(i, 17) {
+        auto prev = prod[i];
+        map<ll, ll> tmp;
+        FOR(j, 1, 10) {
+            for (auto v : prev) {
+                ll p = v.first * j;
+                if (tmp.count(p) > 0) {
+                    tmp[p] += v.second;
+                } else {
+                    tmp[p] = v.second;
                 }
             }
         }
+        prod.push_back(tmp);
+    }
+
+    ll ans_low = 0;
+    REP(i, keta - 1) {
+        for (auto v: prod[i]) {
+            if (v.first <= K) ans_low += v.second;
+        }
+    }
+    ans += ans_low;
+
+    REP_R(i, keta) {
+        debug_print(number[i]);
     }
     cout << ans << endl;
 }

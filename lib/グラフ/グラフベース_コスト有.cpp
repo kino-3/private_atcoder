@@ -16,7 +16,7 @@ using ll = long long;
 // sort(ALL(v));
 
 
-// コスト無しグラフ
+// コスト有りグラフ
 class Graph {
    public:
     ll V;                               // 頂点の個数
