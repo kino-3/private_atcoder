@@ -114,10 +114,12 @@ int main() {
     ll ans = 0;
     REP(s, N) {
         vector<ll> tmp_cost(N, INF);
+        tmp_cost[s] = 0;
         for (auto v : G.conn[s]) {
             tmp_cost[v.first] = v.second;
         }
         REP(k, N) {
+            // Dijkstra とかだと O(N^4) が必要
             for (auto v : G.conn[k]) {
                 tmp_cost[v.first] =
                     min(tmp_cost[v.first], tmp_cost[k] + v.second);
