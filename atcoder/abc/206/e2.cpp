@@ -132,26 +132,29 @@ int main() {
     ll ans = 0;
     FOR(g, 2, R / 3 + 2) {
         auto fact = get_prime_factor(g);
-        // bool flg = false;
-        // for(auto v: fact) {
-        //     if (v.second > 1) {
-        //         flg = true;
-        //         break;
-        //     }
-        // }
-        // if (flg) continue;
-        ll sz = 0;
-        for(auto v: fact) sz += v.second;
-        ll count = R / g - max(1LL, (L - 1) / g);
-        ll count2 = R / g - max(0LL, (L - 1) / g);
-        // debug_print(g, count);
-        if (sz == 1) {
-            ans += count * (count - 1);
-        } else {
+        bool flg = false;
+        for(auto v: fact) {
+            if (v.second > 1) {
+                flg = true;
+                break;
+            }
+        }
+        if (flg) {
+            ll sz = fact.size();
+            ll count = R / g - max(1LL, (L - 1) / g);
             if (sz % 2 == 1) {
-                ans += count2 * (count2 - 1);
+                ans -= count * 2;
             } else {
-                ans -= count2 * (count2 - 1);
+                ans += count * 2;
+                // assert(ans >= 0);
+            }
+        } else {
+            ll sz = fact.size();
+            ll count = R / g - max(1LL, (L - 1) / g);
+            if (sz % 2 == 1) {
+                ans += count * (count - 1);
+            } else {
+                ans -= count * (count - 1);
                 // assert(ans >= 0);
             }
         }
