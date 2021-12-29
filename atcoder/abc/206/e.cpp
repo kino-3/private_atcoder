@@ -15,109 +15,138 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
+void debug_print() { cout << endl; }
+template <class Head, class... Tail>
+void debug_print(Head &&head, Tail &&...tail) {
+    std::cout << head << ", ";
+    debug_print(std::forward<Tail>(tail)...);
+}
+ll DEBUG_PRINT_COUNT = 0;
+void debug_print_count() {
+    cout << "debug: " << DEBUG_PRINT_COUNT << endl;
+    DEBUG_PRINT_COUNT++;
+    assert(DEBUG_PRINT_COUNT < 10);
+}
+template <typename T>
+void print_v(const vector<T> vec) {
+    cout << "[";
+    for (auto &&item : vec) {
+        cout << item << ",";
+    }
+    cout << "]" << endl;
+}
+template <typename T>
+void print_vv(const vector<T> vec) {
+    for (auto &&item : vec) {
+        print_v(item);
+    }
+}
+template <typename K, typename V>
+void print_map(const map<K, V> dict) {
+    for (const auto v : dict) {
+        cout << v.first << ":" << v.second << ", ";
+    }
+    cout << endl;
+}
+template <typename T>
+void print_set(const set<T> data) {
+    for (const auto v : data) {
+        cout << v << ", ";
+    }
+    cout << endl;
+}
+template <typename T1, typename T2>
+void print_pair(const pair<T1, T2> data) {
+    cout << "(" << data.first << "," << data.second << ")";
+    // cout << endl;
+}
+template <typename T1, typename T2, typename T3>
+void print_tuple(const tuple<T1, T2, T3> data) {
+    cout << "(";
+    cout << get<0>(data) << "," << get<1>(data) << "," << get<2>(data);
+    cout << ")";
+    // cout << endl;
+}
+template <typename T1, typename T2>
+void print_vp(const vector<pair<T1, T2>> vec) {
+    for (auto &&item : vec) {
+        print_pair(item);
+    }
+}
 
-// 正の整数 n は素数か
-// O(√n)
-bool is_prime(ll n) {
-    for (ll i = 2; i * i <= n; i++) {
-        if (n % i == 0) {
-            return false;
+// n 以下の素数を列挙する
+// 素数で割れるか考えるよりも, エラトステネスの篩の方が速かった
+// https://atcoder.jp/contests/typical90/tasks/typical90_ad
+vector<ll> list_primes(ll n) {
+    if (n == 1) {
+        return vector<ll>(0);
+    }
+    vector<bool> is_prime(n + 1, true);
+    is_prime[0] = false;
+    is_prime[1] = false;
+    for (ll i = 2; i <= n; i++) {
+        if (is_prime[i]) {
+            for (ll idx = i * i; idx <= n; idx += i) {
+                is_prime[idx] = false;
+            }
         }
     }
-    if (n == 1) {
-        return false;
+    vector<ll> primes;
+    for (ll i = 2; i <= n; i++) {
+        if (is_prime[i]) {
+            primes.push_back(i);
+        }
     }
-    return true;
+    return primes;
 }
 
 const ll mod = 998244353;
-const ll RANGE = 1000000;
-ll N, M, Q, i, j, k, l;
-vector<ll> A;
-vector<ll> spf(RANGE + 1, 0);  // spf[i]: i の最小の素因数
-vector<ll> primes;             // RANGE 以下の素数のリスト
+ll L, R, i, j, k, l;
+string S, T;
+vector<ll> primes;
 
-// RANGE 以下の n の素因数分解
-// spf を用いる
-map<ll, ll> get_prime_factor(ll n) {
-    map<ll, ll> prime_factor;
-    while(n > 1) {
-        ll prime = spf[n];
-        if (prime_factor.count(prime) > 0) {
-            prime_factor[prime] += 1;
-        } else {
-            prime_factor[prime] = 1;
-        }
-        n /= prime;
+vector<ll> dfs(ll count, ll prime = 2, ll tmp = 1) {
+    // prime 以上の素数の count 個の積
+    vector<ll> res;
+    if (count == 0) {
+        res.push_back(1);
+        return res;
     }
-    return prime_factor;
-}
-
-// modulo と互いに素である任意の自然数 b について
-// b^n ≡ 1 (mod modulo) となる n (最小とは限らない)
-// いわゆるオイラー関数である
-// modulo と互いに素な modulo 以下の自然数の個数でもある
-ll euler(ll modulo) {
-    auto primes = get_prime_factor(modulo);
-    ll res = 1;
-    for (auto it = primes.begin(); it != primes.end(); ++it) {
-        ll pp = it->first;
-        ll nn = it->second;
-        res *= pp - 1;
-        REP(i, nn - 1) res *= pp;
+    for (auto p : primes) {
+        if (p < prime) continue;
+        if (p * tmp > R * 3) break;
+        for (auto vv : dfs(count - 1, p + 1, tmp * p)) {
+            if (vv * tmp <= R * 3) {
+                res.push_back(vv * p);
+            } else {
+                break;
+            }
+        }
     }
     return res;
-}
-
-// {3: 1, 5: 2} なら
-// [1*1, 3*1, 1*5, 3*5, 1*25, 3*25] を返す
-vector<ll> create_product(map<ll, ll> m) {
-    vector<ll> result;
-    if (m.size() == 0) {
-        result.push_back(1);
-        return result;
-    }
-    auto itr = m.begin();
-    ll prime = itr->first;
-    ll count = itr->second;
-    m.erase(itr);
-    ll p = 1;
-    for (int i = 0; i <= count; i++) {
-        for (const auto& q : create_product(m)) {
-            result.push_back(p * q);
-        }
-        p *= prime;
-    }
-    return result;
-}
-
-// n の約数を列挙する
-// 動作確認: https://atcoder.jp/contests/typical90/tasks/typical90_cg
-vector<ll> list_factor(ll n) {
-    vector<ll> list_factor = create_product(get_prime_factor(n));
-    sort(list_factor.begin(), list_factor.end());
-    return list_factor;
 }
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N;
-    A.resize(N);
-    REP(i, N) { cin >> A[i]; }
-
-    // 線形篩 O(N)
-    FOR(i, 2, RANGE + 1) {
-        if (spf[i] == 0) {
-            spf[i] = i;
-            primes.push_back(i);
+    cin >> L >> R;
+    primes = list_primes(R / 3 + 1);
+    ll pair_ans = 0;
+    ll count = 1;
+    while (true) {
+        // 素数が count 個
+        auto prod = dfs(count);
+        // print_v(prod);
+        debug_print(prod.size());
+        if (prod.size() == 0) break;
+        ll ans = 0;
+        if (count % 2 == 1) {
+            pair_ans += ans;
+        } else {
+            pair_ans -= ans;
         }
-        for (const auto p : primes) {
-            if (p > spf[i] || p * i > RANGE) break;
-            spf[p * i] = p;
-        }
+        count ++;
     }
-    // print_v(primes);
-    // print_v(spf);
+    cout << pair_ans * 2 << endl;
 }
