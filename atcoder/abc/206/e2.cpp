@@ -89,7 +89,7 @@ bool is_prime(ll n) {
 }
 
 const ll mod = 998244353;
-const ll RANGE = 333334;
+const ll RANGE = 333334 * 3;
 ll L, R, Q, i, j, k, l, g;
 vector<ll> A;
 vector<ll> spf(RANGE + 1, 0);  // spf[i]: i の最小の素因数
@@ -130,27 +130,31 @@ int main() {
     }
 
     ll ans = 0;
-    FOR(g, 2, R / 3 + 2) {
+    FOR(g, 2, R + 1) {
+        if (L <= g) {
+            ans -= (R / g - 1) * 2;
+        }
         auto fact = get_prime_factor(g);
         bool flg = false;
-        for(auto v: fact) {
+        for (auto v : fact) {
             if (v.second > 1) {
                 flg = true;
                 break;
             }
         }
         if (flg) {
-            ll sz = fact.size();
-            ll count = R / g - max(1LL, (L - 1) / g);
-            if (sz % 2 == 1) {
-                ans -= count * 2;
-            } else {
-                ans += count * 2;
-                // assert(ans >= 0);
-            }
+            continue;
+            // ll sz = fact.size();
+            // ll count = R / g - max(1LL, (L - 1) / g);
+            // if (sz % 2 == 1) {
+            //     ans -= count * 2;
+            // } else {
+            //     ans += count * 2;
+            //     // assert(ans >= 0);
+            // }
         } else {
             ll sz = fact.size();
-            ll count = R / g - max(1LL, (L - 1) / g);
+            ll count = R / g - (L - 1) / g;
             if (sz % 2 == 1) {
                 ans += count * (count - 1);
             } else {
