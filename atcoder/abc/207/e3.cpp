@@ -117,12 +117,16 @@ int main() {
             // tot[j][k] == Σ dp[u][j - 1] とする
             dp[i][j] = tot[j][ruiseki[i] % j];
         }
-        FOR(j, 1, N + 2) { tot[j][ruiseki[i] % j] += dp[i][j - 1]; }
+        FOR(j, 1, N + 2) {
+            tot[j][ruiseki[i] % j] += dp[i][j - 1];
+            tot[j][ruiseki[i] % j] %= mod;
+        }
     }
 
     ll ans = 0;
     for (auto v : dp[N - 1]) {
         ans += v;
+        ans %= mod;
     }
     cout << ans << endl;
 }

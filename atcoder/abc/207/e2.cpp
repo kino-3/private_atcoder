@@ -111,7 +111,7 @@ int main() {
     // assert(false);
     // print_map(prev[4]);
 
-    vector<map<ll, ll>> dp(N);
+    vector<vector<ll>> dp(N, vector<ll>(N + 1, 0));
     REP(i, N) dp[i][1] = 1;
 
     FOR(i, 1, N) {
@@ -119,15 +119,16 @@ int main() {
             ll pos = prev[i][j];
             if (pos == -1) continue;
             ll tmp = 0;
-            if (dp[pos].count(j)) tmp += dp[pos][j];
-            if (dp[pos].count(j - 1)) tmp += dp[pos][j - 1];
+            tmp += dp[pos][j];
+            tmp += dp[pos][j - 1];
+            tmp %= mod;
             dp[i][j] = tmp;
         }
     }
 
     ll ans = 0;
     for (auto v : dp[N - 1]) {
-        ans += v.second;
+        ans += v;
         ans %= mod;
     }
     cout << ans << endl;
