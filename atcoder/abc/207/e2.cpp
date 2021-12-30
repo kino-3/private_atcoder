@@ -95,30 +95,33 @@ int main() {
 
     // 前計算
     // prev[i][j]: ruiseki[i] ≡ ruiseki[k] (mod j) and (k < j) となる最大の k
-    vector<map<ll, ll>> prev(N);
+    vector<vector<ll>> prev(N, vector<ll>(N + 1, -1));
     FOR(i, 1, N + 1) {
-        map<ll, ll> amari;  // amari[k]: i で割った余りが k である直近の場所
+        // amari[k]: i で割った余りが k である直近の場所
+        vector<ll> amari(N, -1);
         REP(j, N) {
             ll cnt = ruiseki[j] % i;
-            if (amari.count(cnt) > 0) {
+            if (amari[cnt] >= 0) {
                 prev[j][i] = amari[cnt];
             }
             amari[cnt] = j;
         }
     }
 
-    assert(false);
+    // assert(false);
     // print_map(prev[4]);
 
     vector<map<ll, ll>> dp(N);
     REP(i, N) dp[i][1] = 1;
 
     FOR(i, 1, N) {
-        for (auto v: prev[i]) {
+        FOR(j, 1, N + 1) {
+            ll pos = prev[i][j];
+            if (pos == -1) continue;
             ll tmp = 0;
-            if (dp[v.second].count(v.first)) tmp += dp[v.second][v.first];
-            if (dp[v.second].count(v.first - 1)) tmp += dp[v.second][v.first - 1];
-            dp[i][v.first] = tmp;
+            if (dp[pos].count(j)) tmp += dp[pos][j];
+            if (dp[pos].count(j - 1)) tmp += dp[pos][j - 1];
+            dp[i][j] = tmp;
         }
     }
 
