@@ -39,6 +39,7 @@ vector<ll> primes;             // RANGE 以下の素数のリスト
 
 // RANGE 以下の n の素因数分解
 // spf を用いる
+// 動作確認: https://atcoder.jp/contests/abc206/tasks/abc206_e
 map<ll, ll> get_prime_factor(ll n) {
     map<ll, ll> prime_factor;
     while(n > 1) {
