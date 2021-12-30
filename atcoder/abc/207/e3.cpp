@@ -93,22 +93,31 @@ int main() {
 
     // dp[i][j] = i 番目までを j 分割する方法の個数
     vector<vector<ll>> dp(N, vector<ll>(N + 1, 0));
+    vector<vector<ll>> tot(N + 2, vector<ll>(N + 2, 0));
 
-    REP(i, N) dp[i][1] = 1;
+    dp[0][1] = 1;
+    tot[2][ruiseki[0] % 2] = 1;
 
     // print_map(dp[0]);
     FOR(i, 1, N) {
-        FOR(j, 1, N + 1) {
+        dp[i][1] = 1;
+        FOR(j, 2, N + 1) {
             // dp[i][j] を求めたい
             // dp[i][j] = Σ dp[u][j - 1]
             // (ただし, ruiseki[u] ≡ ruiseki[i] mod j)
-            ll u;
-            REP(u, i) {
-                if (ruiseki[u] % j == ruiseki[i] % j) {
-                    dp[i][j] += dp[u][j - 1];
-                }
-            }
+
+            // ll u;
+            // REP(u, i) {
+            //     if (ruiseki[u] % j == ruiseki[i] % j) {
+            //         dp[i][j] += dp[u][j - 1];
+            //     }
+            // }
+            // この足し合わせを高速化したい
+            // k == ruiseki[u] % j となる u の現時点の足し合わせをメモして
+            // tot[j][k] == Σ dp[u][j - 1] とする
+            dp[i][j] = tot[j][ruiseki[i] % j];
         }
+        FOR(j, 1, N + 2) { tot[j][ruiseki[i] % j] += dp[i][j - 1]; }
     }
 
     ll ans = 0;
