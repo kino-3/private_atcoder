@@ -58,6 +58,7 @@ class FordFulkerson {
             }
             max_flow += flow;
         }
+        return max_flow;
     }
 };
 

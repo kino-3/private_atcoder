@@ -105,6 +105,10 @@ int main() {
     std::ios::sync_with_stdio(false);
 
     cin >> N >> M >> K;
+    if (N > M + K) {
+        cout << 0 << endl;
+        return 0;
+    }
 
     if (N == K) {
         Combination comb = Combination(N + M, mod);
