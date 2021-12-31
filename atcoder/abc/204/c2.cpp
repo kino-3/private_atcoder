@@ -1,0 +1,76 @@
+#include <bits/stdc++.h>
+#define REP(var, n) for (decltype(n) var = 0; var < (n); var++)
+#define REP_R(var, n) \
+    for (auto var = (n)-1; var != static_cast<decltype(var)>(-1); var--)
+#define FOR(var, a, b) for (auto var = (a); var < (b); var++)
+#define FOR_R(var, a, b) for (auto var = (b - 1); var > (a - 1); var--)
+#define ALL(c) std::begin(c), std::end(c)
+
+using namespace std;
+using ll = long long;
+
+// REP(idx, 3) { cout << idx; }  // 012
+// REP_R(idx, 3) { cout << idx; }  // 210
+// FOR(idx, 4, 7) { cout << idx; }  // 456
+// FOR_R(idx, 4, 7) { cout << idx; }  // 654
+// sort(ALL(v));
+
+// コスト無しグラフ
+class Graph {
+   public:
+    ll V;                     // 頂点の個数
+    vector<vector<ll>> conn;  // 隣接リスト(vector)
+    vector<vector<ll>> prev;  // 有向グラフの場合の逆辺
+
+    Graph(ll v) : V(v), conn(v), prev(v) {}
+
+    // 有向グラフ
+    void add_directed_edge(ll from, ll to) {
+        conn[from].push_back(to);
+        prev[to].push_back(from);
+    }
+
+    // 無向グラフ
+    void add_undirected_edge(ll v1, ll v2) {
+        add_directed_edge(v1, v2);
+        add_directed_edge(v2, v1);
+    }
+};
+
+ll mod = 998244353;
+ll N, M, i, j, k, l;
+
+int main() {
+    std::cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+
+    cin >> N >> M;
+    Graph graph = Graph(N);
+    REP(i, M) {
+        cin >> j >> k;
+        graph.add_directed_edge(j - 1, k - 1);
+        // graph.add_undirected_edge(j - 1, k - 1);
+    }
+
+    ll ans = 0;
+
+    REP(i, N) {
+        vector<bool> visited(N, false);
+        ans++;
+        visited[i] = true;
+        queue<ll> que;
+        que.push(i);
+        while (!que.empty()) {
+            ll cnt = que.front();
+            que.pop();
+            for (auto v : graph.conn[cnt]) {
+                if (!visited[v]) {
+                    visited[v] = true;
+                    ans++;
+                    que.push(v);
+                }
+            }
+        }
+    }
+    cout << ans << endl;
+}
