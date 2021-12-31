@@ -111,13 +111,14 @@ int main() {
     C.resize(N);
     D.resize(N);
     REP(i, N) { cin >> A[i] >> B[i] >> C[i] >> D[i]; }
-    Dinic max_flow = Dinic(1 + H + N + W + 1);
-    ll sink = 1 + H + N + W;
+    Dinic max_flow = Dinic(1 + H + N * 2+ W + 1);
+    ll sink = 1 + H + N * 2 + W;
     REP(i, H) { max_flow.add_edge(0, 1 + i, 1); }
-    REP(i, W) { max_flow.add_edge(1 + H + N + i, sink, 1); }
+    REP(i, W) { max_flow.add_edge(1 + H + N * 2 + i, sink, 1); }
     REP(i, N) {
+        max_flow.add_edge(1 + H + i, 1 + H + N + i, 1);
         FOR(j, A[i], C[i] + 1) { max_flow.add_edge(j, 1 + H + i, 1); }
-        FOR(k, B[i], D[i] + 1) { max_flow.add_edge(1 + H + i, H + N + k, 1); }
+        FOR(k, B[i], D[i] + 1) { max_flow.add_edge(1 + H + N + i, H + N * 2 + k, 1); }
     }
     cout << max_flow.exec(0, sink) << endl;
 }
