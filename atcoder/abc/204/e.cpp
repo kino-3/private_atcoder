@@ -52,10 +52,13 @@ class Dijkstra {
                 continue;
             }
             for (auto &&edge : edges[node]) {
-                ll wait = max(
-                    0LL, int(sqrt(edge.second.second) + 0.5) - 1 - dist[node]);
-                ll cost = wait + edge.second.first +
-                          edge.second.second / (1 + wait + dist[node]);
+                ll wait = max(0LL, ll(sqrt(edge.second.second) + 0.00000001) -
+                                       1 - dist[node]);
+                ll wait2 = wait + 1;
+                ll cost =
+                    edge.second.first +
+                    min(wait + edge.second.second / (1 + wait + dist[node]),
+                        wait2 + edge.second.second / (1 + wait2 + dist[node]));
                 if (dist[edge.first] > dist[node] + cost) {
                     dist[edge.first] = dist[node] + cost;
                     que.push({dist[edge.first], edge.first});
@@ -93,6 +96,7 @@ int main() {
     REP(i, M) {
         cin >> j >> k >> l >> m;
         graph.add_edge(j - 1, k - 1, {l, m});
+        graph.add_edge(k - 1, j - 1, {l, m});
     }
     graph.exec(0);
     if (graph.reachable[N - 1]) {
