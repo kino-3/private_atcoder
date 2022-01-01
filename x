@@ -1,10 +1,6 @@
+#!/bin/bash
 TYPE=abc
 TIME=205
-g++ -g -Wall -Wextra -pedantic -std=c++17 -O2 -Wshadow -Wformat=2 -Wfloat-equal \
-    -Wconversion -Wlogical-op -Wshift-overflow=2 -Wduplicated-cond -Wcast-qual -Wcast-align \
-    -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -D_FORTIFY_SOURCE=2 \
-    -fsanitize=address -fsanitize=undefined -fno-sanitize-recover -fstack-protector \
-    ./atcoder/$TYPE/$TIME/$1.cpp
-# https://codeforces.com/blog/entry/15547
+g++ -g -std=c++17 -Wall -O2 -D_GLIBCXX_DEBUG ./atcoder/$TYPE/$TIME/$1.cpp
 echo compiled
 ./a.out

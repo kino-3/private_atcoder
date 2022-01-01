@@ -10,7 +10,17 @@ MinGW で https://github.com/msys2/MINGW-packages/issues/3163 の問題が解決
 sudo apt update
 sudo apt upgrade
 sudo apt install build-essential
+sudo apt install gdb
+ulimit -c unlimited
 g++ --version  # g++ (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
+```
+
+```
+$ gdb a.out # デバッガの起動
+(gdb) r # デバッグモードでの実行
+(gdb) bt # 関数呼び出し情報のトレース
+(gdb) f 5 # bt の # 5 に移動
+(gdb) q # デバッグモードの終了
 ```
 
 - VSCode の Remote WSL で /mnt/c/.../private_atcoder を開く
