@@ -92,6 +92,8 @@ class Combination {
 
     // n_C_k を返す
     ll comb(ll n, ll k) {
+        assert(k >= 0);
+        assert(n - k >= 0);
         ll res = factorial[n] * mod_inverse(factorial[k], mod) % mod;
         return res * mod_inverse(factorial[n - k], mod) % mod;
     }
