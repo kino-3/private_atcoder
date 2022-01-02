@@ -122,8 +122,8 @@ int main() {
     }
     print_v(trans);
 
-    vector<vector<ll>> dp(32, vector<ll>(N, -1));
-    vector<vector<ll>> best(32, vector<ll>(N, -1));
+    vector<vector<ll>> dp(32, vector<ll>(max(N, K + 1), -1));
+    vector<vector<ll>> best(32, vector<ll>(max(N, K + 1), -1));
 
     REP(i, 32) {
         REP(k, K + 1) {
