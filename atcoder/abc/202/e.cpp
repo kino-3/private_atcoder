@@ -241,14 +241,19 @@ int main() {
     }
 
     REP(i, Q) {
+        if (tree.depth_node.size() <= D[i] || tree.depth.size() <= U[i]) {
+            std::cout << 0 << '\n';
+            continue;
+        }
         auto &nodes = tree.depth_node[D[i]];
         ll u_dist = tree.depth[U[i]];
         ll dist = D[i] - u_dist;
-        if (dist < 0) {
-            cout << 0 << '\n';
+        // debug_print(dist);
+        if (dist < 0 || nodes.size() == 0) {
+            std::cout << 0 << '\n';
             continue;
         }
-        ll ans = 0;
+        ll ans = 1;
         {
             // 条件を満たす最小値を求める
             ll lb = -1;  // これは条件を満たさない必要がある
@@ -257,6 +262,7 @@ int main() {
             while (ub - lb > 1) {
                 ll mid = (ub + lb) / 2;  // mid は lb の初期値にはならない
                 ll anc = tree.get_ancestor(nodes[mid], dist);
+                // debug_print(anc, mid);
                 if (lmap[anc] >= lmap[D[i]]) {
                     ub = mid;
                 } else {
@@ -281,7 +287,7 @@ int main() {
             }
             ans += lb;
         }
-        cout << ans << '\n';
+        std::cout << ans << '\n';
     }
-    cout << endl;
+    std::cout << endl;
 }
