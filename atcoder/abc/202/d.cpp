@@ -120,11 +120,13 @@ int main() {
 
     REP(i, B - 1) {
         // i 番目の B の位置
-        FOR(j, 1, A + 1) {
+        REP(j, A + 1) {
             debug_print(comb(j + B - i, j));
             if (comb(j + B - i, j) >= K) {
                 pos.push_back(j + B - i - 1);
-                K -= comb(j - 1 + B - i, j - 1);
+                if (j > 0) {
+                    K -= comb(j - 1 + B - i, j - 1);
+                }
                 debug_print(i, j, K);
                 break;
             }
