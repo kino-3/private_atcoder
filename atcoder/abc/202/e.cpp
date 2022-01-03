@@ -220,8 +220,8 @@ int main() {
         tree.add_edge(i + 1, j);
     }
     cin >> Q;
-    U.resize(N);
-    D.resize(N);
+    U.resize(Q);
+    D.resize(Q);
     REP(i, Q) {
         cin >> U[i];
         cin >> D[i];
@@ -229,9 +229,9 @@ int main() {
     }
     tree.exec(0);
     tree.calc_ancestor();
-    // print_v(tree.parent);
-    // print_v(tree.depth);
-    // print_vv(tree.ancestor);
+    print_v(tree.parent);
+    print_v(tree.depth);
+    print_vv(tree.ancestor);
     print_vv(tree.depth_node);
     vector<map<ll, ll>> depth_node_index;
     for (auto v : tree.depth_node) {
