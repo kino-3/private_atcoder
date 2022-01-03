@@ -16,11 +16,9 @@ using ll = long long;
 // sort(ALL(v));
 
 #ifdef _DEBUG
-void debug_print() {
-    cout << endl;
-}
+void debug_print() { cout << endl; }
 template <class Head, class... Tail>
-void debug_print(Head&& head, Tail&&... tail) {
+void debug_print(Head &&head, Tail &&...tail) {
     std::cout << head << ", ";
     debug_print(std::forward<Tail>(tail)...);
 }
@@ -46,14 +44,14 @@ void print_vv(const vector<T> vec) {
 }
 template <typename K, typename V>
 void print_map(const map<K, V> dict) {
-    for (const auto v: dict) {
+    for (const auto v : dict) {
         cout << v.first << ":" << v.second << ", ";
     }
     cout << endl;
 }
 template <typename T>
 void print_set(const set<T> data) {
-    for (const auto v: data) {
+    for (const auto v : data) {
         cout << v << ", ";
     }
     cout << endl;
@@ -103,10 +101,19 @@ class Tree {
     vector<vector<ll>> graph;     // 隣接リスト
     vector<ll> parent;            // 親ノード
     vector<vector<ll>> children;  // 子ノード
-    vector<ll> size;   // 自身を root とする部分木の大きさ
-    vector<ll> depth;  // 深さ
+    vector<ll> size;  // 自身を root とする部分木の大きさ
+    vector<vector<ll>> ancestor;  // ancestor[i][j]: j の 2^i 階層上の祖先
+    vector<ll> depth;             // 深さ
+    vector<vector<ll>> depth_node;  // その深さの node
 
-    Tree(ll v) : V(v), graph(v), parent(v), children(v), size(v), depth(v) {}
+    Tree(ll v)
+        : V(v),
+          graph(v),
+          parent(v),
+          children(v),
+          size(v),
+          depth(v),
+          depth_node(v) {}
 
     void add_edge(ll n1, ll n2) {
         graph[n1].push_back(n2);
@@ -127,7 +134,35 @@ class Tree {
             children[v].push_back(child);
         }
         size[v] = s;
+        depth_node[depth[v]].push_back(v);
         return s;
+    }
+
+    void calc_ancestor() {
+        ancestor.push_back(parent);
+        REP(i, 19) {
+            ancestor.push_back(vector<ll>(V, -1));
+            REP(j, V) {
+                if (ancestor[i][j] == -1) {
+                    ancestor[i + 1][j] = -1;
+                } else {
+                    ancestor[i + 1][j] = ancestor[i][ancestor[i][j]];
+                }
+            }
+        }
+    }
+
+    ll get_ancestor(ll node, ll distance) {
+        ll cnt = node;
+        ll step = 0;
+        while (distance > 0) {
+            if (distance % 2 == 1) {
+                cnt = ancestor[step][cnt];
+            }
+            distance /= 2;
+            step++;
+        }
+        return cnt;
     }
 
     // LCA (O(n))
@@ -181,7 +216,7 @@ int main() {
     Tree tree = Tree(N);
     REP(i, N - 1) {
         cin >> j;
-        j --;
+        j--;
         tree.add_edge(i + 1, j);
     }
     cin >> Q;
@@ -190,9 +225,63 @@ int main() {
     REP(i, Q) {
         cin >> U[i];
         cin >> D[i];
-        U[i] --;
+        U[i]--;
     }
     tree.exec(0);
-    print_v(tree.parent);
-    print_v(tree.depth);
+    tree.calc_ancestor();
+    // print_v(tree.parent);
+    // print_v(tree.depth);
+    // print_vv(tree.ancestor);
+    print_vv(tree.depth_node);
+    vector<map<ll, ll>> depth_node_index;
+    for (auto v : tree.depth_node) {
+        map<ll, ll> tmp;
+        REP(i, v.size()) { tmp[v[i]] = i; }
+        depth_node_index.push_back(tmp);
+    }
+
+    REP(i, Q) {
+        auto &nodes = tree.depth_node[D[i]];
+        ll u_dist = tree.depth[U[i]];
+        ll dist = D[i] - u_dist;
+        if (dist < 0) {
+            cout << 0 << '\n';
+            continue;
+        }
+        ll ans = 0;
+        {
+            // 条件を満たす最小値を求める
+            ll lb = -1;  // これは条件を満たさない必要がある
+            ll ub = nodes.size() - 1;  // これは条件を満たす必要がある
+            auto &lmap = depth_node_index[u_dist];
+            while (ub - lb > 1) {
+                ll mid = (ub + lb) / 2;  // mid は lb の初期値にはならない
+                ll anc = tree.get_ancestor(nodes[mid], dist);
+                if (lmap[anc] >= lmap[D[i]]) {
+                    ub = mid;
+                } else {
+                    lb = mid;
+                }
+            }
+            ans -= ub;
+        }
+        {
+            // 条件を満たす最大値を求める
+            ll lb = 0;  // これは条件を満たす必要がある
+            ll ub = nodes.size();  // これは条件を満たさない必要がある
+            auto &lmap = depth_node_index[u_dist];
+            while (ub - lb > 1) {
+                ll mid = (ub + lb) / 2;  // mid は ub の初期値にはならない
+                ll anc = tree.get_ancestor(nodes[mid], dist);
+                if (lmap[anc] <= lmap[D[i]]) {
+                    lb = mid;
+                } else {
+                    ub = mid;
+                }
+            }
+            ans += lb;
+        }
+        cout << ans << '\n';
+    }
+    cout << endl;
 }
