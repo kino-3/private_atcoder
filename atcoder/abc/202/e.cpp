@@ -255,6 +255,25 @@ int main() {
         }
         ll ans = 1;
         {
+            auto &lmap = depth_node_index[u_dist];
+            ll anc = tree.get_ancestor(nodes[nodes.size() - 1], dist);
+            // debug_print(anc, lmap[anc] < lmap[U[i]]);
+            if (lmap[anc] < lmap[U[i]]) {
+                std::cout << 0 << '\n';
+                continue;
+            } 
+        }
+        {
+            auto &lmap = depth_node_index[u_dist];
+            ll anc = tree.get_ancestor(nodes[0], dist);
+            // debug_print(anc);
+            if (lmap[anc] > lmap[U[i]]) {
+                std::cout << 0 << '\n';
+                continue;
+            } 
+        }
+        // debug_print_count();
+        {
             // 条件を満たす最小値を求める
             ll lb = -1;  // これは条件を満たさない必要がある
             ll ub = nodes.size() - 1;  // これは条件を満たす必要がある
@@ -263,7 +282,7 @@ int main() {
                 ll mid = (ub + lb) / 2;  // mid は lb の初期値にはならない
                 ll anc = tree.get_ancestor(nodes[mid], dist);
                 // debug_print(anc, mid);
-                if (lmap[anc] >= lmap[D[i]]) {
+                if (lmap[anc] >= lmap[U[i]]) {
                     ub = mid;
                 } else {
                     lb = mid;
@@ -279,7 +298,7 @@ int main() {
             while (ub - lb > 1) {
                 ll mid = (ub + lb) / 2;  // mid は ub の初期値にはならない
                 ll anc = tree.get_ancestor(nodes[mid], dist);
-                if (lmap[anc] <= lmap[D[i]]) {
+                if (lmap[anc] <= lmap[U[i]]) {
                     lb = mid;
                 } else {
                     ub = mid;
