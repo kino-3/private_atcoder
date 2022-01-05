@@ -99,7 +99,6 @@ void print_vp(const vector<pair<T1, T2>> vec) {}
 struct subtree_info {
     ll sz_s;  // root と偶奇が同じ
     ll sz_d;  // root と偶奇が異なる
-    ll sz;    // サイズ
 };
 // 親ノードから伝播される情報
 // 自身 -> 親 -> 自身 と伝播される可能性に注意する必要がある
@@ -171,33 +170,27 @@ class Tree {
         // 子ノードの部分木から subtree_i を求める
         if (children[v].size() == 0) {
             // TODO: 葉の場合
-            subtree_i[v].sz = 1;    // 例
             subtree_i[v].sz_s = 1;  // 例
             subtree_i[v].sz_d = 0;
         } else {
             // TODO: 葉以外の場合
-            subtree_i[v].sz = 1;    // 例
             subtree_i[v].sz_s = 1;  // 例
             subtree_i[v].sz_d = 0;
             for (const auto &cv : children[v]) {
-                subtree_i[v].sz += subtree_i[cv].sz;
                 if (graph[v][cv] == 0) {
                     subtree_i[v].sz_s += subtree_i[cv].sz_s;
                     subtree_i[v].sz_d += subtree_i[cv].sz_d;
                 } else {
-                    subtree_i[v].sz_s += subtree_i[v].sz_d;
-                    subtree_i[v].sz_d += subtree_i[v].sz_s;
+                    subtree_i[v].sz_s += subtree_i[cv].sz_d;
+                    subtree_i[v].sz_d += subtree_i[cv].sz_s;
                 }
             }
         }
     }
 
     ll compute_ans(ll v) {
+        // debug_print(v, subtree_i[v].sz_s, subtree_i[v].sz_d);
         // 子ノード
-        ll ans = 0;
-        for (const auto &child : graph[v]) {
-            ans += compute_ans(child.first);
-        }
         // 親情報
         if (parent[v] == -1) {
             parent_i[v].sz_s = subtree_i[v].sz_s;
@@ -211,12 +204,21 @@ class Tree {
                 parent_i[v].sz_d = parent_i[parent[v]].sz_s;
             }
         }
+        ll ans = 0;
+        for (const auto &child : graph[v]) {
+            if (child.first == parent[v]) continue;
+            ans += compute_ans(child.first);
+        }
+        // debug_print(v, parent_i[v].sz_s, parent_i[v].sz_d);
         // v - parent[v] について加算
         if (parent[v] != -1 && graph[v][parent[v]] > 0) {
-            auto pv1 = parent_i[v];
-            auto pv2 = parent_i[parent[v]];
-            ans += pv1.sz_s * pv2.sz_s + pv1.sz_d * pv2.sz_d;
+            auto pv = parent_i[parent[v]];
+            auto st = subtree_i[v];
+            ll ans1 = st.sz_s * (pv.sz_s - st.sz_d);
+            ll ans2 = st.sz_d * (pv.sz_d - st.sz_s);
+            ans += ans1 + ans2;
         }
+        // debug_print(v, ans);
         return ans;
     }
 };
@@ -255,6 +257,7 @@ int main() {
             tree.add_edge(A[j], B[j], int(C[j][i]));
         }
         ll res = tree.exec();
+        debug_print(res);
         res %= mod;
         ans += res * pow;
         ans %= mod;
