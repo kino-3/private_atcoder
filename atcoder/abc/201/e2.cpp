@@ -97,15 +97,15 @@ void print_vp(const vector<pair<T1, T2>> vec) {}
 
 // 自身を root とする部分木以外が存在しない考えた時の情報
 struct subtree_info {
-    ll d;
+    ll sz_s;  // root と偶奇が同じ
+    ll sz_d;  // root と偶奇が異なる
+    ll sz;    // サイズ
 };
 // 親ノードから伝播される情報
 // 自身 -> 親 -> 自身 と伝播される可能性に注意する必要がある
 struct parent_info {
-    // first はどの接続 node 情報によるものか
-    pair<ll, ll> best;
-    pair<ll, ll> best2;
-    ll ans;
+    ll sz_s;  // 全体で偶奇が同じ
+    ll sz_d;  // 全体で偶奇が異なる
 };
 
 // 全方位木DP (例は全始点最長距離)
@@ -137,18 +137,12 @@ class Tree {
         parent_i.resize(V);
     }
 
-    void exec() {
+    ll exec() {
         // 頂点数が 2 以下のとき
         if (V == 1) {
-            // TODO
-            assert(false);
-            return;
+            return 0;
         } else if (V == 2) {
-            // TODO
-            reset_data();
-            parent_i[0].ans = graph[0][1];
-            parent_i[1].ans = graph[0][1];
-            return;
+            return graph[0][1];
         }
         reset_data();
         // 頂点数が 3 以上のとき, 接続数が 2 以上の頂点を探す
@@ -162,7 +156,7 @@ class Tree {
         // 部分木情報を求める
         compute_subtree(root);
         // 答を求める
-        compute_ans(root);
+        return compute_ans(root);
     }
 
     // 頂点 v 以下の部分木情報を求める
@@ -177,48 +171,53 @@ class Tree {
         // 子ノードの部分木から subtree_i を求める
         if (children[v].size() == 0) {
             // TODO: 葉の場合
-            subtree_i[v].d = 0;  // 例
+            subtree_i[v].sz = 1;    // 例
+            subtree_i[v].sz_s = 1;  // 例
+            subtree_i[v].sz_d = 0;
         } else {
             // TODO: 葉以外の場合
+            subtree_i[v].sz = 1;    // 例
+            subtree_i[v].sz_s = 1;  // 例
+            subtree_i[v].sz_d = 0;
             for (const auto &cv : children[v]) {
-                subtree_i[v].d =
-                    max(subtree_i[v].d, subtree_i[cv].d + graph[v][cv]);  // 例
+                subtree_i[v].sz += subtree_i[cv].sz;
+                if (graph[v][cv] == 0) {
+                    subtree_i[v].sz_s += subtree_i[cv].sz_s;
+                    subtree_i[v].sz_d += subtree_i[cv].sz_d;
+                } else {
+                    subtree_i[v].sz_s += subtree_i[v].sz_d;
+                    subtree_i[v].sz_d += subtree_i[v].sz_s;
+                }
             }
         }
     }
 
-    // 頂点 v の答を求める
-    // 使える情報は v の子ノードの subtree_i と v の親ノードの parent_i
-    void compute_ans(ll v) {
-        ll pv = parent[v];  // v の親ノード
-        // 隣接ノードが 1 の時のための初期化
-        parent_i[v].best = {v, 0};
-        parent_i[v].best2 = {v, 0};
-        if (pv != -1) {
-            // v が親ノードを持つとき, 親ノードからの伝播
-            if (parent_i[pv].best.first != v) {
-                parent_i[v].best = {pv,
-                                    parent_i[pv].best.second + graph[v][pv]};
+    ll compute_ans(ll v) {
+        // 子ノード
+        ll ans = 0;
+        for (const auto &child : graph[v]) {
+            ans += compute_ans(child.first);
+        }
+        // 親情報
+        if (parent[v] == -1) {
+            parent_i[v].sz_s = subtree_i[v].sz_s;
+            parent_i[v].sz_d = subtree_i[v].sz_d;
+        } else {
+            if (graph[v][parent[v]] == 0) {
+                parent_i[v].sz_s = parent_i[parent[v]].sz_s;
+                parent_i[v].sz_d = parent_i[parent[v]].sz_d;
             } else {
-                parent_i[v].best = {pv,
-                                    parent_i[pv].best2.second + graph[v][pv]};
+                parent_i[v].sz_s = parent_i[parent[v]].sz_d;
+                parent_i[v].sz_d = parent_i[parent[v]].sz_s;
             }
         }
-        // 子ノードからの伝播
-        for (const auto cv : children[v]) {
-            ll cvl = subtree_i[cv].d + graph[v][cv];
-            if (cvl > parent_i[v].best.second) {
-                parent_i[v].best2 = parent_i[v].best;
-                parent_i[v].best = {cv, cvl};
-            } else if (cvl > parent_i[v].best2.second) {
-                parent_i[v].best2 = {cv, cvl};
-            }
+        // v - parent[v] について加算
+        if (parent[v] != -1 && graph[v][parent[v]] > 0) {
+            auto pv1 = parent_i[v];
+            auto pv2 = parent_i[parent[v]];
+            ans += pv1.sz_s * pv2.sz_s + pv1.sz_d * pv2.sz_d;
         }
-        parent_i[v].ans = parent_i[v].best.second;
-        // DFS
-        for (const auto &child : children[v]) {
-            compute_ans(child);
-        }
+        return ans;
     }
 };
 
@@ -255,6 +254,10 @@ int main() {
             // debug_print(A[j], B[j], int(C[j][i]));
             tree.add_edge(A[j], B[j], int(C[j][i]));
         }
+        ll res = tree.exec();
+        res %= mod;
+        ans += res * pow;
+        ans %= mod;
         pow *= 2;
         pow %= mod;
     }
