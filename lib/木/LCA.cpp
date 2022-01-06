@@ -15,16 +15,25 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
+// LCA の動作確認: https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=6185167#1
 class Tree {
    public:
     ll V;                         // 頂点の個数
     vector<vector<ll>> graph;     // 隣接リスト
     vector<ll> parent;            // 親ノード
+    vector<vector<ll>> ancestor;  // ancestor[i][j]: j の 2^i 階層上
     vector<vector<ll>> children;  // 子ノード
     vector<ll> size;   // 自身を root とする部分木の大きさ
     vector<ll> depth;  // 深さ
 
-    Tree(ll v) : V(v), graph(v), parent(v), children(v), size(v), depth(v) {}
+    Tree(ll v)
+        : V(v),
+          graph(v),
+          parent(v),
+          children(v),
+          size(v),
+          depth(v),
+          ancestor(ll(log2(v)) + 2, vector<ll>(v, -1)) {}
 
     void add_edge(ll n1, ll n2) {
         graph[n1].push_back(n2);
@@ -45,39 +54,55 @@ class Tree {
             children[v].push_back(child);
         }
         size[v] = s;
+        if (parent_of_v == -1) {
+            ancestor[0] = parent;
+            ll i, j;
+            REP(i, ancestor.size() - 1) {
+                REP(j, V) {
+                    if (ancestor[i][j] == -1) {
+                        ancestor[i + 1][j] = -1;
+                    } else {
+                        ancestor[i + 1][j] = ancestor[i][ancestor[i][j]];
+                    }
+                }
+            }
+        }
         return s;
     }
 
-    // LCA (O(n))
+    // node の distance だけ親のノード
+    // O(log V)
+    ll get_ancestor(ll node, ll distance) {
+        ll cnt = node;
+        ll i;
+        REP(i, ancestor.size()) {
+            if (distance == 0) {
+                return cnt;
+            }
+            if (distance % 2 == 1) {
+                cnt = ancestor[i][cnt];
+            }
+            distance /= 2;
+        }
+        return cnt;
+    }
+
+    // LCA (O(log V))
     ll lca(ll n1, ll n2) {
-        while (depth[n1] > depth[n2]) n1 = parent[n1];
-        while (depth[n1] < depth[n2]) n2 = parent[n2];
-        while (n1 != n2) {
+        if (depth[n1] > depth[n2]) n1 = get_ancestor(n1, depth[n1] - depth[n2]);
+        if (depth[n1] < depth[n2]) n2 = get_ancestor(n2, depth[n2] - depth[n1]);
+        ll i;
+        REP_R(i, ancestor.size()) {
+            if (ancestor[i][n1] != ancestor[i][n2]) {
+                n1 = ancestor[i][n1];
+                n2 = ancestor[i][n2];
+            }
+        }
+        if (n1 != n2) {
             n1 = parent[n1];
             n2 = parent[n2];
         }
         return n1;
-    }
-
-    // (始点と終点を含む)経路
-    vector<ll> path(ll from_node, ll to_node) {
-        vector<ll> res;
-        ll path_lca = lca(from_node, to_node);
-        while (from_node != path_lca) {
-            res.push_back(from_node);
-            from_node = parent[from_node];
-        }
-        vector<ll> rev_path;
-        while (to_node != path_lca) {
-            rev_path.push_back(to_node);
-            to_node = parent[to_node];
-        }
-        reverse(rev_path.begin(), rev_path.end());
-        res.push_back(path_lca);
-        for (auto v : rev_path) {
-            res.push_back(v);
-        }
-        return res;
     }
 };
 
@@ -88,17 +113,31 @@ class Tree {
 //  :
 // a_N-1 a_N-1
 
-ll N, i, j, k;
+const ll mod = 998244353;  // 1000000007;
+ll N, M, Q, i, j, k, l;
+vector<ll> A, B;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N;
-    Tree tree = Tree(N);
-    REP(i, N - 1) {
-        cin >> j >> k;
-        tree.add_edge(j - 1, k - 1);
-    }
-    tree.exec(0);
+    // cin >> N;
+    // Tree tree = Tree(N);
+    // REP(i, N - 1) {
+    //     cin >> j >> k;
+    //     tree.add_edge(j - 1, k - 1);
+    // }
+
+    // cin >> Q;
+    // A.resize(Q);
+    // B.resize(Q);
+    // REP(i, Q) {
+    //     cin >> A[i];
+    //     cin >> B[i];
+    // }
+
+    // tree.exec(0);
+    // REP(i, Q) {
+    //     cout << tree.lca(A[i], B[i]) << endl;
+    // }
 }
