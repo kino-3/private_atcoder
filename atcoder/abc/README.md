@@ -51,5 +51,4 @@
 ## TODO
 
 - Wavelet Matrix: abc 231 F
-- LCA
 - 高速ゼータ変換, gcd 畳み込み: abc 206 E
