@@ -162,7 +162,7 @@ int main() {
         REP(i, v.second + 1) {
             tmp.push_back(rev_frac[i]);
         }
-        res = atcoder::convolution_ll(res, tmp);
+        res = atcoder::convolution(res, tmp);
     }
 
     ll ans = 0;

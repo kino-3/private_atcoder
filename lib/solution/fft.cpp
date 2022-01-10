@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+
 #include <atcoder/all>
 #define REP(var, n) for (decltype(n) var = 0; var < (n); var++)
 #define REP_R(var, n) \
@@ -33,8 +34,13 @@ int main() {
     }
 
     // 実装は NTT らしい
-    vector<ll> res = atcoder::convolution_ll(A, B);
-    for (auto v: res) {
+    // convolution_ll は 戻り値が ll に収まっている必要があるが,
+    // mod * mod が ll に収まっても Σ (mod * mod) は ll
+    // に収まらないことがあるので 使わないほうが良い気がする。
+    // ref.
+    // https://atcoder.github.io/ac-library/production/document_ja/convolution.html
+    vector<ll> res = atcoder::convolution(A, B);
+    for (auto v : res) {
         cout << v << " ";
     }
 
