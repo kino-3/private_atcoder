@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <atcoder/all>
 #define REP(var, n) for (decltype(n) var = 0; var < (n); var++)
 #define REP_R(var, n) \
     for (auto var = (n)-1; var != static_cast<decltype(var)>(-1); var--)
@@ -16,28 +17,31 @@ using ll = long long;
 // sort(ALL(v));
 
 const ll mod = 998244353;  // 1000000007;
-ll N, M, i, j, k, l;
-string S, T;
-vector<vector<ll>> comb;  // comb[i][j] == i_C_j
+ll N, M, Q, i, j, k, l;
+vector<ll> A, B;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    // 最大は N_C_M
-    N = 60;
-    M = 60;
-    comb = vector<vector<ll>>(N + 1, vector<ll>(M + 1, 0));
-    FOR(i, 1LL, N + 1) {
-        ll j_max = min(M, i);
-        REP(j, j_max + 1) {
-            // 考え方は格子の最短経路と同じ
-            if (j == 0 || i == j) {
-                comb[i][j] = 1;
-            } else {
-                comb[i][j] = comb[i - 1][j] + comb[i - 1][j - 1];
-            }
-        }
+    cin >> N;
+    A.resize(N);
+    B.resize(N);
+    REP(i, N) {
+        cin >> A[i];
+        cin >> B[i];
     }
-    // print_vv(comb);
+
+    // 実装は NTT らしい
+    vector<ll> res = atcoder::convolution_ll(A, B);
+    for (auto v: res) {
+        cout << v << " ";
+    }
+
+    // REP(i, N) cin >> A[i];
+    // REP(i, N) cin >> B[i];
+    // REP(i, N) {
+    //     A[i]--;
+    //     B[i]--;
+    // }
 }
