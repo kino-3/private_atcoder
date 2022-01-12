@@ -69,6 +69,7 @@ map の key を累積和とする
 
 - N 要素の最善な swap 操作を得る
 - O(N!) ではなく O(2^N) で行いたい
+- 順列など
 
 ## 解法
 
@@ -86,3 +87,4 @@ bitDP
 ## 参考問題
 
 - [問題](https://atcoder.jp/contests/abc232/tasks/abc232_f)
+- [問題](https://atcoder.jp/contests/abc199/tasks/abc199_e)
