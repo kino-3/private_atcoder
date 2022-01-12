@@ -55,3 +55,4 @@
 
 - Wavelet Matrix: abc 231 F
 - 高速ゼータ変換, gcd 畳み込み: abc 206 E
+- ABC200E 形式的べき級数(https://maspypy.com/category/%e5%bd%a2%e5%bc%8f%e7%9a%84%e3%81%b9%e3%81%8d%e7%b4%9a%e6%95%b0%e8%a7%a3%e8%aa%ac)
