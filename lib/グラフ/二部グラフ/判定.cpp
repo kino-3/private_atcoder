@@ -16,6 +16,7 @@ using ll = long long;
 // sort(ALL(v));
 
 // 森の二部グラフ判定と構成
+// 動作確認: https://atcoder.jp/contests/abc199/tasks/abc199_d
 class Graph {
    public:
     ll V;                      // 頂点の個数

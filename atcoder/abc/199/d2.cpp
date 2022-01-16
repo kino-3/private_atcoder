@@ -166,23 +166,42 @@ class Graph {
 // a_N-1 a_N-1
 
 ll N, M, i, j, k;
+vector<pair<ll, ll>> edge;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
     cin >> N >> M;
-    Graph graph = Graph(N);
     REP(i, M) {
         cin >> j >> k;
-        graph.add_edge(j - 1, k - 1);
+        edge.push_back({j - 1, k - 1});
     }
-    graph.exec();
 
-    for (auto v : graph.result) {
-        for (auto vv : v.first) cout << vv;
-        cout << ";";
-        for (auto vv : v.second) cout << vv;
-        cout << endl;
+    ll ans = 0;
+    REP(i, 1 << N) {
+        std::bitset<100> bs(i); // 赤で塗るところ
+        Graph g = Graph(N);
+        bool possible = true;
+        for (auto e: edge) {
+            if (bs[e.first] && bs[e.second]) {
+                possible = false;
+                break;
+            }
+            if (!bs[e.first] && !bs[e.second]) {
+                g.add_edge(e.first, e.second);
+            }
+        }
+        if (!possible) continue;
+        if (g.exec()) {
+            ll sz = g.result.size();
+            REP(j, N) {
+                if (bs[j]) sz--;
+            }
+            ll tmp = 1;
+            REP(j, sz) tmp *= 2;
+            ans += tmp;
+        }
     }
+    cout << ans << endl;
 }
