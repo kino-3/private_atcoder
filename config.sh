@@ -1,2 +1,2 @@
 TYPE=abc
-TIME=234
+TIME=199
