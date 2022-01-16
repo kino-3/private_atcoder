@@ -1,0 +1,2 @@
+TYPE=abc
+TIME=234
