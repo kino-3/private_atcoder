@@ -23,7 +23,7 @@ int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    // ある自然数 S について, S 以下の自然数の個数
+    // ある自然数 S について, S 以下の各桁に 0 を含まない自然数の個数
     // 文字列で受け取る方が扱いやすい
     cin >> S;
 
