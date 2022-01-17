@@ -59,10 +59,12 @@ int main() {
         dp[i + 1][0][0] += dp[i][0][0] * digit;  // 123XXX -> 1234XXX
 
         REP(j, S[i] - '0') {
+            if (i == 0 && j == 0) continue;
             dp[i + 1][1][0] += dp[i][0][0] * j;  // 123XXX -> 123jXXX
         }
 
         REP(j, 10) {
+            if (i == 0) continue;
             dp[i + 1][1][0] += dp[i][1][0] * j;  // @@@XXX -> @@@jXXX
         }
 
@@ -72,6 +74,8 @@ int main() {
             }
 
             0;  // 000XXX -> 0000XX
+        } else {
+            0;  // 0XXXXX
         }
     }
     cout << dp[S.size()][0][0] << endl;  // 123456 の結果
