@@ -16,11 +16,9 @@ using ll = long long;
 // sort(ALL(v));
 
 #ifdef _DEBUG
-void debug_print() {
-    cout << endl;
-}
+void debug_print() { cout << endl; }
 template <class Head, class... Tail>
-void debug_print(Head&& head, Tail&&... tail) {
+void debug_print(Head &&head, Tail &&...tail) {
     std::cout << head << ", ";
     debug_print(std::forward<Tail>(tail)...);
 }
@@ -46,14 +44,14 @@ void print_vv(const vector<T> vec) {
 }
 template <typename K, typename V>
 void print_map(const map<K, V> dict) {
-    for (const auto v: dict) {
+    for (const auto v : dict) {
         cout << v.first << ":" << v.second << ", ";
     }
     cout << endl;
 }
 template <typename T>
 void print_set(const set<T> data) {
-    for (const auto v: data) {
+    for (const auto v : data) {
         cout << v << ", ";
     }
     cout << endl;
@@ -137,21 +135,17 @@ int main() {
 
         for (auto v : dp[i][0][0]) {
             // 123XXX -> 1234XXX
-            if (v.first * digit <= K) {
-                dp[i + 1][0][0][v.first * digit] = v.second;
-            }
+            dp[i + 1][0][0][min(v.first * digit, K + 1)] = v.second;
         }
 
         REP(j, S[i] - '0') {
             if (i == 0 && j == 0) continue;
             for (auto v : dp[i][0][0]) {
-                if (v.first * j <= K) {
-                    // 123XXX -> 123jXXX
-                    if (dp[i + 1][1][0].count(v.first * j) > 0) {
-                        dp[i + 1][1][0][v.first * j] += v.second;
-                    } else {
-                        dp[i + 1][1][0][v.first * j] = v.second;
-                    }
+                // 123XXX -> 123jXXX
+                if (dp[i + 1][1][0].count(min(v.first * j, K + 1)) > 0) {
+                    dp[i + 1][1][0][min(v.first * j, K + 1)] += v.second;
+                } else {
+                    dp[i + 1][1][0][min(v.first * j, K + 1)] = v.second;
                 }
             }
         }
@@ -159,39 +153,40 @@ int main() {
         REP(j, 10) {
             if (i == 0) continue;
             for (auto v : dp[i][1][0]) {
-                if (v.first * j <= K) {
-                    // @@@XXX -> @@@jXXX
-                    if (dp[i + 1][1][0].count(v.first * j) > 0) {
-                        dp[i + 1][1][0][v.first * j] += v.second;
-                    } else {
-                        dp[i + 1][1][0][v.first * j] = v.second;
-                    }
+                // @@@XXX -> @@@jXXX
+                if (dp[i + 1][1][0].count(min(v.first * j, K + 1)) > 0) {
+                    dp[i + 1][1][0][min(v.first * j, K + 1)] += v.second;
+                } else {
+                    dp[i + 1][1][0][min(v.first * j, K + 1)] = v.second;
                 }
             }
         }
 
         if (i != 0) {  // i == 0 のときは上と初期条件で考える
-            FOR(j, 1, 10) {
+            FOR(j, 1LL, 10LL) {
                 // 000XXX -> 000jXX
-                if (j <= K) {
-                    if (dp[i + 1][1][0].count(j) > 0) {
-                        dp[i + 1][1][0][j] += 1;
-                    } else {
-                        dp[i + 1][1][0][j] = 1;
-                    }
+                if (dp[i + 1][1][0].count(min(j, K + 1)) > 0) {
+                    dp[i + 1][1][0][min(j, K + 1)] += 1;
+                } else {
+                    dp[i + 1][1][0][min(j, K + 1)] = 1;
                 }
             }
         }
+        // debug_print(i);
         // print_map(dp[i + 1][0][0]);
         // print_map(dp[i + 1][1][0]);
         // print_map(dp[i + 1][1][1]);
     }
     ll ans = 0;
-    for (auto v: dp[S.size()][1][0]) {
-        ans += v.second;
+    for (auto v : dp[S.size()][1][0]) {
+        if (v.first <= K) {
+            ans += v.second;
+        }
     }
-    for (auto v: dp[S.size()][0][0]) {
-        ans += v.second;
+    for (auto v : dp[S.size()][0][0]) {
+        if (v.first <= K) {
+            ans += v.second;
+        }
     }
     cout << ans << endl;
 }
