@@ -19,6 +19,7 @@ const ll mod = 998244353;  // 1000000007;
 ll N, M, i, j, k, l;
 string S, T;
 
+// 参考問題: https://atcoder.jp/contests/abc235/tasks/abc235_f
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
@@ -37,7 +38,7 @@ int main() {
     // 1. dp[4][0] <- dp[3][0] // 123XXX -> 1234XXX (4)
     // 1. dp[4][1] <- dp[3][0] // 123XXX -> 123@XXX (@ < 4)
     // 2. dp[4][1] <- dp[3][1] // @@@XXX -> @@@#XXX (# < 10) (※ 0 < @@@)
-    // 3. dp[4][1] <- new      // 000XXX -> 000#XXX (0 < # < 10)
+    // 3. dp[4][1] <- new      //           000#XXX (0 < # < 10)
     vector<vector<ll>> dp(S.size() + 1, vector<ll>(2, 0));
 
     // 1 桁目

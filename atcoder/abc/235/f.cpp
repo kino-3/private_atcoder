@@ -117,110 +117,80 @@ int main() {
     }
     debug_print(sup);
 
-    // dp[digit][less][zero]: digit 桁まで決めた状態における暫定的な答
+    // dp[digit][less]: digit 桁まで決めた状態における暫定的な答
     // (例: S=123456 のとき dp[4] は 1234 の問題の答)
     // (less: 確定部分に S 未満を含むか)
-    // (zero: 確定部分が 0 以外を含むか)
     // S = 123456 のとき
-    // dp[2][0][0] は 12XXXX を考える
-    // dp[2][0][1] はあり得ない
-    // dp[4][1][0] は @@@@XX を考える (0 < @@@@ < 1234)
-    // dp[4][1][1] は 0000XX を考える
+    // dp[2][0] は 12XXXX を考える
+    // dp[4][1] は @@@@XX を考える (0 < @@@@ < 1234)
     // 遷移は配る DP のイメージで
-    // 1. dp[4][0][0] <- dp[3][0][0] // 123XXX -> 1234XXX (4)
-    // 1. dp[4][1][0] <- dp[3][0][0] // 123XXX -> 123@XXX (@ < 4)
-    // 2. dp[4][1][0] <- dp[3][1][0] // @@@XXX -> @@@#XXX (# < 10 and 0 < @@@)
-    // 3. dp[4][1][0] <- dp[3][1][1] // 000XXX -> 000#XXX (0 < # < 10)
-    // 3. dp[4][1][1] <- dp[3][1][1] // 000XXX -> 0000XXX (0)
-    // それ以外はあり得ない
-    vector<vector<vector<vector<ll>>>> dp(
-        S.size() + 1, vector<vector<vector<ll>>>(
-                          2, vector<vector<ll>>(2, vector<ll>(1 << 10, -1))));
+    // 1. dp[4][0] <- dp[3][0] // 123XXX -> 1234XXX (4)
+    // 1. dp[4][1] <- dp[3][0] // 123XXX -> 123@XXX (@ < 4)
+    // 2. dp[4][1] <- dp[3][1] // @@@XXX -> @@@#XXX (# < 10) (※ 0 < @@@)
+    // 3. dp[4][1] <- new      // 000XXX -> 000#XXX (0 < # < 10)
 
-    // TODO: 初期条件
-    dp[0][0][0][sup] = 0;
-    dp[0][1][0][sup];
-    dp[0][1][1][sup];
-    REP(i, S.size()) {
+    // dp[][][S] の S は使用したか ?
+    vector<vector<vector<ll>>> dp(S.size() + 1,
+                                  vector<vector<ll>>(2, vector<ll>(1024, 0)));
+    vector<vector<vector<ll>>> count(S.size() + 1,
+                                     vector<vector<ll>>(2, vector<ll>(1024, 0)));
+
+    // 1 桁目
+    ll digit = S[0] - '0';
+    dp[1][0][1 << digit] = digit;
+    count[1][0][1 << digit] = 1;
+    FOR(j, 1, digit) {
+        dp[1][1][1 << j] = j;
+        count[1][1][1 << j] = 1;
+    }  // 1 桁目が 1 の場合は loop は 0 回
+
+    // 2 桁目以降
+    FOR(i, 1, S.size()) {
         ll digit = S[i] - '0';
+        ll flg = 1 << digit;
+        REP(j, 1024) {
+            // 123XXX -> 1234XXX
+            count[i + 1][0][j | flg] += count[i][0][j];
+            count[i + 1][0][j | flg] %= mod;
+            dp[i + 1][0][j | flg] += dp[i][0][j] * 10 + count[i][0][j] * digit;
+            dp[i + 1][0][j | flg] %= mod;
 
-        // ll sub = sup;
-        // do {  // 辞書と逆順にループ
-        //     std::bitset<100> bs(sub);
-        //     sub = (sub - 1) & sup;  // see. 蟻本 p.144
-        // } while (sub != sup);
-
-        // 123XXX -> 1234XXX
-        // dp[i + 1][0][0] += dp[i][0][0] * digit;
-        sub = sup;
-        do {  // 辞書と逆順にループ
-            std::bitset<100> bs(sub);
-            if (dp[i][0][0][sub] >= 0) {
-                ll to = sub;
-                if (dp[i + 1][0][0][to] < 0) dp[i + 1][0][0][to] = 0;
-                if (bs[digit]) to -= 1 << digit;
-                dp[i + 1][0][0][to] += dp[i][0][0][sub] * 10 + digit;
-                dp[i + 1][0][0][to] %= mod;
+            // 123XXX -> 123jXXX
+            REP(k, digit) {
+                ll flg2 = 1 << k;
+                count[i + 1][1][j | flg2] += count[i][0][j];
+                count[i + 1][1][j | flg2] %= mod;
+                dp[i + 1][1][j | flg2] += dp[i][0][j] * 10 + count[i][0][j] * k;
+                dp[i + 1][1][j | flg2] %= mod;
             }
-            sub = (sub - 1) & sup;  // see. 蟻本 p.144
-        } while (sub != sup);
 
-        // 123XXX -> 123jXXX
-        sub = sup;
-        do {  // 辞書と逆順にループ
-            std::bitset<100> bs(sub);
-            REP(j, S[i] - '0') {
-                if (dp[i][0][0][sub] < 0) continue;
-                ll to = sub;
-                if (dp[i + 1][1][0][to] < 0) dp[i + 1][1][0][to] = 0;
-                if (bs[j]) to -= 1 << j;
-                if (i == 0 && j == 0) continue;
-                dp[i + 1][1][0][to] += dp[i][0][0][sub] * 10 + j;
-                dp[i + 1][1][0][to] %= mod;
+            // @@@XXX -> @@@jXXX (@@@ ≠ 0)
+            REP(k, 10) {
+                ll flg2 = 1 << k;
+                count[i + 1][1][j | flg2] += count[i][1][j];
+                count[i + 1][1][j | flg2] %= mod;
+                dp[i + 1][1][j | flg2] += dp[i][1][j] * 10 + count[i][1][j] * k;
+                dp[i + 1][1][j | flg2] %= mod;
             }
-            sub = (sub - 1) & sup;  // see. 蟻本 p.144
-        } while (sub != sup);
-
-        // @@@XXX -> @@@jXXX
-        sub = sup;
-        do {  // 辞書と逆順にループ
-            std::bitset<100> bs(sub);
-            REP(j, 10) {
-                if (dp[i][1][0][sub] < 0) continue;
-                ll to = sub;
-                if (dp[i + 1][1][0][to] < 0) dp[i + 1][1][0][to] = 0;
-                if (bs[j]) to -= 1 << j;
-                if (i == 0) continue;
-                dp[i + 1][1][0][to] += dp[i][1][0][sub] * 10 + j;
-                dp[i + 1][1][0][to] %= mod;
-            }
-            sub = (sub - 1) & sup;  // see. 蟻本 p.144
-        } while (sub != sup);
-
-        if (i != 0) {  // i == 0 のときは上と初期条件で考える
-            // 000XXX -> 000jXX (0 < j < 10)
-            sub = sup;
-            do {  // 辞書と逆順にループ
-                std::bitset<100> bs(sub);
-                FOR(j, 1, 10) {
-                    ll to = sub;
-                    if (dp[i + 1][1][0][to] < 0) dp[i + 1][1][0][to] = 0;
-                    if (bs[j]) to -= 1 << j;
-                    dp[i + 1][1][0][to] += j;
-                    dp[i + 1][1][0][to] %= mod;
-                }
-                sub = (sub - 1) & sup;  // see. 蟻本 p.144
-            } while (sub != sup);
-
-            0;  // 000XXX -> 0000XX
-        } else {
-            0;  // 0XXXXX
         }
-
-        debug_print_count();
-        print_v(dp[i + 1][0][0]);
-        print_v(dp[i + 1][1][0]);
+        // 000XXX -> 000#XXX (0 < # < 10)
+        FOR(k, 1, 10) {
+            ll flg2 = 1 << k;
+            count[i + 1][1][flg2] += 1;
+            count[i + 1][1][flg2] %= mod;
+            dp[i + 1][1][flg2] += k;
+            dp[i + 1][1][flg2] %= mod;
+        }
+        // print_v(dp[i + 1][1]);
     }
-    ll ans = max(0LL, dp[S.size()][0][0][0]) + max(0LL, dp[S.size()][1][0][0]);
-    cout << ans % mod << endl;
+    ll ans = 0;
+    REP(i, 1024) {
+        if (~(~sup|i) == 0) {
+            ans += dp[S.size()][0][i];
+            ans += dp[S.size()][1][i];
+            ans %= mod;
+            // debug_print(i);
+        }
+    }
+    cout << ans << endl;
 }
