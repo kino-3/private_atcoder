@@ -22,9 +22,9 @@ using ll = long long;
 class BFS {
     ll V;                      // 頂点の個数
     vector<vector<ll>> edges;  // to
-    const ll INF = numeric_limits<ll>::max();
 
    public:
+    const ll INF = numeric_limits<ll>::max();
     vector<ll> dist;  // dist[v]: v までの最短距離のメモ(途中で打ち切り)
     vector<ll> prev;  // prev[v]: v までの最短経路における直前の node
 
@@ -32,7 +32,7 @@ class BFS {
 
     void add_edge(ll from, ll to) { edges[from].push_back(to); }
 
-    // 最短距離(到達不可能なら-1)
+    // 単一始点単一終点の最短距離(到達不可能なら-1)
     ll exec(ll start_node, ll end_node) {
         deque<ll> que;
         dist.resize(V, INF);
@@ -52,6 +52,26 @@ class BFS {
             }
         }
         return -1;
+    }
+
+    // 単一始点全終点の最短距離
+    void exec_all(ll start_node) {
+        deque<ll> que;
+        dist.resize(V, INF);
+        prev.resize(V, -1);
+        dist[start_node] = 0;
+        que.push_back(start_node);
+        while (!que.empty()) {
+            ll node = que.front();
+            que.pop_front();
+            for (const auto v : edges[node]) {
+                if (dist[v] == INF) {
+                    dist[v] = dist[node] + 1;
+                    prev[v] = node;
+                    que.push_back(v);
+                }
+            }
+        }
     }
 
     // 経路復元(最短経路の1つ)
@@ -97,5 +117,28 @@ int main() {
             }
         }
     }
-    cout << graph.exec(N - 1, 1000 * (N - 1)) << endl;
+    graph.exec_all(N - 1);
+
+    ll ans = graph.INF;
+    REP(i, N) {
+        // 偶数長
+        if (graph.dist[1001 * i] < graph.INF) {
+            ans = min(ans, graph.dist[1001 * i] * 2);
+        }
+    }
+    REP(i, M) {
+        // 奇数長
+        if (graph.dist[1000 * A[i] + B[i]] < graph.INF) {
+            ans = min(ans, graph.dist[1000 * A[i] + B[i]] * 2 + 1);
+        }
+        if (graph.dist[1000 * B[i] + A[i]] < graph.INF) {
+            ans = min(ans, graph.dist[1000 * B[i] + A[i]] * 2 + 1);
+        }
+    }
+
+    if (ans == graph.INF) {
+        cout << -1 << endl;
+    } else {
+        cout << ans << endl;
+    }
 }
