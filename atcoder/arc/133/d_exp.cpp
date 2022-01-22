@@ -16,9 +16,11 @@ using ll = long long;
 // sort(ALL(v));
 
 #ifdef _DEBUG
-void debug_print() { cout << endl; }
+void debug_print() {
+    cout << endl;
+}
 template <class Head, class... Tail>
-void debug_print(Head &&head, Tail &&...tail) {
+void debug_print(Head&& head, Tail&&... tail) {
     std::cout << head << ", ";
     debug_print(std::forward<Tail>(tail)...);
 }
@@ -44,14 +46,14 @@ void print_vv(const vector<T> vec) {
 }
 template <typename K, typename V>
 void print_map(const map<K, V> dict) {
-    for (const auto v : dict) {
+    for (const auto v: dict) {
         cout << v.first << ":" << v.second << ", ";
     }
     cout << endl;
 }
 template <typename T>
 void print_set(const set<T> data) {
-    for (const auto v : data) {
+    for (const auto v: data) {
         cout << v << ", ";
     }
     cout << endl;
@@ -96,50 +98,17 @@ void print_vp(const vector<pair<T1, T2>> vec) {}
 #endif
 
 const ll mod = 998244353;  // 1000000007;
-ll N, M, Q, i, j, k, l;
-vector<ll> A, B, Bi;
+ll N, M, i, j, k, l;
+string S, T;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N;
-    A.resize(N);
-    B.resize(N);
-    REP(i, N) { cin >> A[i]; }
-    REP(i, N) { cin >> B[i]; }
-    Bi.resize(N + 1);
-    REP(i, N) { Bi[B[i]] = i; }
-    // print_v(Bi);
-    vector<vector<ll>> bai(N);
-    REP(i, N) {
-        for (ll idx = A[i]; idx <= N; idx += A[i]) {
-            bai[i].push_back(Bi[idx]);
-        }
-        sort(ALL(bai[i]));
-        reverse(ALL(bai[i]));
-    }
-
-    // print_vv(bai);
-
-    ll MAX = N + 3;
-    vector<ll> dp(N + 1, MAX);
-    REP(i, N) {
-        for (auto v : bai[i]) {
-            ll idx = distance(dp.begin(), lower_bound(ALL(dp), v));
-            if (idx == 0) {
-                if (v < dp[0]) dp[0] = v;
-            } else if (dp[idx - 1] < v && v < dp[idx]) {
-                dp[idx] = v;
-            }
-        }
-        // print_v(dp);
-    }
-    // print_v(dp);
-    REP(i, N + 1) {
-        if (dp[i] == MAX) {
-            cout << i << endl;
-            return 0;
-        }
+    cin >> N >> M;
+    ll tmp = 0;
+    FOR(i, N, M + 1) {
+        tmp ^= i;
+        debug_print(tmp);
     }
 }
