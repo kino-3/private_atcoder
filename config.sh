@@ -1,2 +1,2 @@
-TYPE=abc
-TIME=197
+TYPE=arc
+TIME=133
