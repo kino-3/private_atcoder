@@ -125,24 +125,22 @@ int main() {
             shift += A[i];
         } else if (T[i] == 2) {
             low = max(low, A[i] - shift);
-            if (low > high) high = low;
             last_low = true;
         } else {
             high = min(high, A[i] - shift);
-            if (low > high) low = high;
             last_low = false;
         }
-        debug_print(low, high, shift);
+        // debug_print(low, high, shift);
     }
     // debug_print(low + shift, high + shift);
-    // if (low > high) {
-    //     if (last_low) {
-    //         REP(i, Q) { cout << low + shift << endl; }
-    //     } else {
-    //         REP(i, Q) { cout << high + shift << endl; }
-    //     }
-    //     return 0;
-    // }
+    if (low > high) {
+        if (last_low) {
+            REP(i, Q) { cout << low + shift << endl; }
+        } else {
+            REP(i, Q) { cout << high + shift << endl; }
+        }
+        return 0;
+    }
     REP(i, Q) {
         ll ans = X[i] + shift;
         cout << min(high + shift, max(ans, low + shift)) << endl;

@@ -114,37 +114,24 @@ int main() {
     X.resize(Q);
     REP(i, Q) { cin >> X[i]; }
 
-    ll shift = 0;
-    ll INF = numeric_limits<ll>::max() / 4;
-    ll low = - INF;
-    ll high = INF;
-    bool last_low = true;
-
     REP(i, N) {
         if (T[i] == 1) {
-            shift += A[i];
+            REP(j, Q) {
+                X[j] += A[i];
+            }
         } else if (T[i] == 2) {
-            low = max(low, A[i] - shift);
-            if (low > high) high = low;
-            last_low = true;
+            REP(j, Q) {
+                X[j] = max(A[i], X[j]);
+            }
         } else {
-            high = min(high, A[i] - shift);
-            if (low > high) low = high;
-            last_low = false;
+            REP(j, Q) {
+                X[j] = min(A[i], X[j]);
+            }
         }
-        debug_print(low, high, shift);
+        print_v(X);
     }
-    // debug_print(low + shift, high + shift);
-    // if (low > high) {
-    //     if (last_low) {
-    //         REP(i, Q) { cout << low + shift << endl; }
-    //     } else {
-    //         REP(i, Q) { cout << high + shift << endl; }
-    //     }
-    //     return 0;
-    // }
+
     REP(i, Q) {
-        ll ans = X[i] + shift;
-        cout << min(high + shift, max(ans, low + shift)) << endl;
+        cout << X[i] << endl;
     }
 }
