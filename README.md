@@ -44,19 +44,3 @@ g++.exe (MinGW.org GCC-8.2.0-3) 8.2.0
 
 - [VSCode拡張機能](https://qiita.com/AokabiC/items/af685bfd205dda44ec45)
 - [競技プログラミング(C++)](https://koturn.hatenablog.com/entry/2018/07/29/180000)
-
-## C++ 実行
-
-```txt
-$ g++ -g hoge.cpp
-$ ./a.exe # 通常実行
-$ gdb a.exe # デバッガの起動
-(gdb) r # デバッグモードでの実行
-(gdb) bt # 関数呼び出し情報のトレース
-(gdb) f 5 # bt の # 5 に移動
-(gdb) q # デバッグモードの終了
-```
-
-## sample
-
-C++ のサンプル

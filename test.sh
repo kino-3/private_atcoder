@@ -7,6 +7,10 @@ g++ -g -std=c++17 ./atcoder/$TYPE/$TIME/$1.cpp -o ./a1.out
 g++ -g -std=c++17 ./atcoder/$TYPE/$TIME/$2.cpp -o ./a2.out
 echo compiled
 
+# テスト形式
+echo SAMPLE_TESTCASE
+python ./atcoder/$TYPE/$TIME/$3.py
+
 # テスト
 run=1
 while true; do
