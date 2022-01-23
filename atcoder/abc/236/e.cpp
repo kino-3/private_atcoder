@@ -112,7 +112,7 @@ double q1() {
         vector<double> tmp;
         REP(i, N) {
             if (A[i] >= mid) {
-                if (tmp.size() >= 3) {
+                if (tmp.size() >= 2) {
                     low.push_back(tmp);
                 }
                 tmp.resize(0);
@@ -121,7 +121,7 @@ double q1() {
                 tmp.push_back(A[i] - mid);
             }
         }
-        if (tmp.size() >= 3) {
+        if (tmp.size() >= 2) {
             low.push_back(tmp);
         }
         // debug_print(mid, sum);
@@ -146,6 +146,39 @@ double q1() {
     return lb;
 }
 
+ll q2() {
+    // mid 以上 > mid 未満
+    // 条件を満たす最大値を求める
+    ll lb = 0;           // これは条件を満たす必要がある
+    ll ub = 1000000001;  // これは条件を満たさない必要がある
+    while (ub - lb > 1) {
+        ll mid = (ub + lb) / 2;  // mid は ub の初期値にはならない
+
+        // mid 以上は全部選ぶ
+        ll large = 0;
+        ll small = 0;
+        ll tmp = 0;
+        REP(i, N) {
+            if (A[i] >= mid) {
+                small += tmp / 2;
+                tmp = 0;
+                large++;
+            } else {
+                tmp++;
+            }
+        }
+
+        small += tmp / 2;
+
+        if (large > small) {
+            lb = mid;
+        } else {
+            ub = mid;
+        }
+    }
+    return lb;
+}
+
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
@@ -155,4 +188,5 @@ int main() {
     REP(i, N) cin >> A[i];
 
     cout << std::setprecision(15) << q1() << endl;
+    cout << q2() << endl;
 }
