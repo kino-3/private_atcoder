@@ -134,6 +134,10 @@ int main() {
     ll comb = (1 << A) - 1;
     ll end_comb = 1 << N;
     ll ans = 0;
+    if (A == 0) {
+        cout << 1 << endl;
+        return 0;
+    }
     while (comb < end_comb) {
         std::bitset<100> bs(comb);
         REP(i, 1 << A) {
