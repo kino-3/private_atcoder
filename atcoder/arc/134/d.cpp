@@ -142,13 +142,14 @@ int main() {
         } else if (v.first == r_init) {
             bool should_add = false;
             for (auto ansv : answer) {
-                if (ansv < r_init) {
+                if (A[N + ansv] < r_init) {
                     break;
-                } else if (ansv > r_init) {
+                } else if (A[N + ansv] > r_init) {
                     should_add = true;
                     break;
                 }
             }
+            debug_print(should_add);
             if (should_add) {
                 for (auto vv : v.second) {
                     if (vv > answer[answer.size() - 1]) {
