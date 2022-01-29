@@ -16,9 +16,7 @@ using ll = long long;
 // sort(ALL(v));
 
 #ifdef _DEBUG
-void debug_print() {
-    cout << endl;
-}
+void debug_print() { cout << endl; }
 template <class Head, class... Tail>
 void debug_print(Head&& head, Tail&&... tail) {
     std::cout << head << ", ";
@@ -33,27 +31,27 @@ void debug_print_count() {
 template <typename T>
 void print_v(const vector<T> vec) {
     cout << "[";
-    for (auto &&item : vec) {
+    for (auto&& item : vec) {
         cout << item << ",";
     }
     cout << "]" << endl;
 }
 template <typename T>
 void print_vv(const vector<T> vec) {
-    for (auto &&item : vec) {
+    for (auto&& item : vec) {
         print_v(item);
     }
 }
 template <typename K, typename V>
 void print_map(const map<K, V> dict) {
-    for (const auto v: dict) {
+    for (const auto v : dict) {
         cout << v.first << ":" << v.second << ", ";
     }
     cout << endl;
 }
 template <typename T>
 void print_set(const set<T> data) {
-    for (const auto v: data) {
+    for (const auto v : data) {
         cout << v << ", ";
     }
     cout << endl;
@@ -72,7 +70,7 @@ void print_tuple(const tuple<T1, T2, T3> data) {
 }
 template <typename T1, typename T2>
 void print_vp(const vector<pair<T1, T2>> vec) {
-    for (auto &&item : vec) {
+    for (auto&& item : vec) {
         print_pair(item);
     }
 }
@@ -102,19 +100,26 @@ ll N, M, i, j, k, l;
 string S, T;
 
 void f(string& s, char c, ll& begin, ll& end) {
+    ll tmp_end = end;
     ll count = 0;
     FOR(j, begin, end) {
-        if (s[j] == c) count ++;
+        if (s[j] == c) count++;
     }
     if (count == 0) return;
     ll pos = end - 1;
+    bool changed = false;
     REP(j, count) {
         if (s[begin + j] == c) continue;
-        while(s[pos] != c) pos--;
+        while (s[pos] != c) pos--;
         swap(s[begin + j], s[pos]);
+        if (s[begin + j] != s[pos]) changed = true;
     }
     begin += count;
-    end = pos;
+    if (changed) {
+        end = pos;
+    } else {
+        end = tmp_end;
+    }
 }
 
 int main() {
@@ -126,7 +131,7 @@ int main() {
     ll end = N;
     REP(i, 26) {
         f(S, 'a' + i, begin, end);
-        debug_print(S, begin, end);
+        debug_print(S, begin, end, (char)('a' + i));
     }
     cout << S << endl;
 }

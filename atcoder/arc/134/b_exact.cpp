@@ -98,37 +98,32 @@ void print_vp(const vector<pair<T1, T2>> vec) {}
 #endif
 
 const ll mod = 998244353;  // 1000000007;
-ll N, M, Q, i, j, k, l;
-vector<ll> A, B;
+ll N, M, i, j, k, l;
+string S, T;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N;
-    A.resize(2 * N);
-    REP(i, N * 2) {
-        cin >> A[i];
-    }
-    
-    map<ll, vector<ll>> former;
-    REP(i, N) {
-        former[A[i]].push_back(i);
-    }
-
-    // A1
-    auto v = *former.begin();
-    // debug_print(v.first);
-    // print_v(v.second);
-    ll init = v.first;
-    ll tmp = init + 1;
-    for (auto vv: v.second) {
-        if (A[vv + N] < tmp) {
-            tmp = A[vv + N];
+    cin >> N >> S;
+    string ans = S;
+    REP(i, 1 << N) {
+        // i = 0...2^N-1 (N 桁の辞書順)
+        std::bitset<100> bs(i);
+        ll count = bs.count();
+        // debug_print(i, count);
+        if (count % 2 == 1) continue;
+        vector<ll> idx;
+        REP_R(j, N) {
+            if (bs[j]) {
+                idx.push_back(j);
+            }
         }
+        string T = S;
+        REP(j, count / 2) {
+            swap(T[idx[j]], T[idx[count - j - 1]]);
+        }
+        ans = min(ans, T);
     }
-    if (tmp <= init) {
-        cout << init << " " << tmp << endl;
-        return 0;
-    }
+    cout << ans << endl;
 }
