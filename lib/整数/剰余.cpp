@@ -80,7 +80,8 @@ class Combination {
     vector<ll> factorial;
 
    public:
-    // n は n_C_k の n の最大値
+    // comb  を使う場合は, n は n_C_k の n の最大値
+    // comb2 を使う場合は, n は n_C_k の k の最大値
     Combination(ll n, ll _mod = 998244353) {
         mod = _mod;
         factorial.push_back(1);
@@ -97,6 +98,18 @@ class Combination {
         ll res = factorial[n] * mod_inverse(factorial[k], mod) % mod;
         return res * mod_inverse(factorial[n - k], mod) % mod;
     }
+
+    // n_C_k を返す O(k)
+    ll comb2(ll n, ll k) {
+        assert(k >= 0);
+        assert(n - k >= 0);
+        ll res = 1;
+        for (ll i = 0; i < k; i++) {
+            res *= n - i;
+            res %= mod;
+        }
+        return res * mod_inverse(factorial[k], mod) % mod;
+    }
 };
 
 ll mod = 998244353;
@@ -108,4 +121,8 @@ int main() {
 
     cin >> N;
     cout << N << endl;
+
+    Combination comb = Combination(N);
+    cout << comb.comb(N, N / 2) << endl;
+    cout << comb.comb2(N * 3, N) << endl;
 }
