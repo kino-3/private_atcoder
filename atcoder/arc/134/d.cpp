@@ -16,11 +16,9 @@ using ll = long long;
 // sort(ALL(v));
 
 #ifdef _DEBUG
-void debug_print() {
-    cout << endl;
-}
+void debug_print() { cout << endl; }
 template <class Head, class... Tail>
-void debug_print(Head&& head, Tail&&... tail) {
+void debug_print(Head &&head, Tail &&...tail) {
     std::cout << head << ", ";
     debug_print(std::forward<Tail>(tail)...);
 }
@@ -46,14 +44,14 @@ void print_vv(const vector<T> vec) {
 }
 template <typename K, typename V>
 void print_map(const map<K, V> dict) {
-    for (const auto v: dict) {
+    for (const auto v : dict) {
         cout << v.first << ":" << v.second << ", ";
     }
     cout << endl;
 }
 template <typename T>
 void print_set(const set<T> data) {
-    for (const auto v: data) {
+    for (const auto v : data) {
         cout << v << ", ";
     }
     cout << endl;
@@ -107,14 +105,10 @@ int main() {
 
     cin >> N;
     A.resize(2 * N);
-    REP(i, N * 2) {
-        cin >> A[i];
-    }
-    
+    REP(i, N * 2) { cin >> A[i]; }
+
     map<ll, vector<ll>> former;
-    REP(i, N) {
-        former[A[i]].push_back(i);
-    }
+    REP(i, N) { former[A[i]].push_back(i); }
 
     // A1
     auto v = *former.begin();
@@ -122,7 +116,7 @@ int main() {
     // print_v(v.second);
     ll init = v.first;
     ll tmp = init + 1;
-    for (auto vv: v.second) {
+    for (auto vv : v.second) {
         if (A[vv + N] < tmp) {
             tmp = A[vv + N];
         }
@@ -131,4 +125,46 @@ int main() {
         cout << init << " " << tmp << endl;
         return 0;
     }
+
+    // a2
+    vector<ll> answer = v.second;
+    ll r_init = A[v.second[0] + N];
+    // debug_print(r_init);
+    // print_v(answer);
+    for (auto v : former) {
+        if (v.first == init) continue;
+        if (v.first < r_init) {
+            for (auto vv : v.second) {
+                if (vv > answer[answer.size() - 1]) {
+                    answer.push_back(vv);
+                }
+            }
+        } else if (v.first == r_init) {
+            bool should_add = false;
+            for (auto ansv : answer) {
+                if (ansv < r_init) {
+                    break;
+                } else if (ansv > r_init) {
+                    should_add = true;
+                    break;
+                }
+            }
+            if (should_add) {
+                for (auto vv : v.second) {
+                    if (vv > answer[answer.size() - 1]) {
+                        answer.push_back(vv);
+                    }
+                }
+            }
+        } else {
+            break;
+        }
+    }
+    for (auto v : answer) {
+        cout << A[v] << " ";
+    }
+    for (auto v : answer) {
+        cout << A[v + N] << " ";
+    }
+    cout << endl;
 }
