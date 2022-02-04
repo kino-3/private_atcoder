@@ -16,11 +16,9 @@ using ll = long long;
 // sort(ALL(v));
 
 #ifdef _DEBUG
-void debug_print() {
-    cout << endl;
-}
+void debug_print() { cout << endl; }
 template <class Head, class... Tail>
-void debug_print(Head&& head, Tail&&... tail) {
+void debug_print(Head &&head, Tail &&...tail) {
     std::cout << head << ", ";
     debug_print(std::forward<Tail>(tail)...);
 }
@@ -46,14 +44,14 @@ void print_vv(const vector<T> vec) {
 }
 template <typename K, typename V>
 void print_map(const map<K, V> dict) {
-    for (const auto v: dict) {
+    for (const auto v : dict) {
         cout << v.first << ":" << v.second << ", ";
     }
     cout << endl;
 }
 template <typename T>
 void print_set(const set<T> data) {
-    for (const auto v: data) {
+    for (const auto v : data) {
         cout << v << ", ";
     }
     cout << endl;
@@ -99,7 +97,7 @@ void print_vp(const vector<pair<T1, T2>> vec) {}
 
 const ll mod = 998244353;  // 1000000007;
 ll N, M, Q, i, j, k, l;
-vector<ll> A, B;
+vector<pair<ll, ll>> A;
 
 int main() {
     std::cin.tie(nullptr);
@@ -109,20 +107,22 @@ int main() {
     ll num = (1LL << N) - 1;
     A.resize(num);
     REP(i, num) {
-        cin >> A[i];
+        cin >> A[i].first;
+        A[i].second = i + 1;
     }
+    vector<bool> possible(num + 1, false);
+    possible[0] = true;
+    sort(ALL(A));
     ll ans = 0;
-    REP(i, N) {
-        ll pos = (1LL << i) - 1;
-        ll tmp = A[pos];
-        vector<ll> debug;
-        debug.push_back(tmp);
-        FOR(j, 1, (1LL << i)) {
-            tmp = min(tmp, A[pos + j]);
-            debug.push_back(A[pos + j]);
+    for (auto v : A) {
+        if (possible[v.second]) continue;
+        ans += v.first;
+        vector<bool> tmp = possible;
+        REP(i, num + 1) {
+            if (tmp[i]) {
+                possible[i ^ v.second] = true;
+            }
         }
-        print_v(debug);
-        ans += tmp;
     }
     cout << ans << endl;
 }
