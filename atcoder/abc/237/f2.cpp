@@ -16,11 +16,9 @@ using ll = long long;
 // sort(ALL(v));
 
 #ifdef _DEBUG
-void debug_print() {
-    cout << endl;
-}
+void debug_print() { cout << endl; }
 template <class Head, class... Tail>
-void debug_print(Head&& head, Tail&&... tail) {
+void debug_print(Head &&head, Tail &&...tail) {
     std::cout << head << ", ";
     debug_print(std::forward<Tail>(tail)...);
 }
@@ -46,14 +44,14 @@ void print_vv(const vector<T> vec) {
 }
 template <typename K, typename V>
 void print_map(const map<K, V> dict) {
-    for (const auto v: dict) {
+    for (const auto v : dict) {
         cout << v.first << ":" << v.second << ", ";
     }
     cout << endl;
 }
 template <typename T>
 void print_set(const set<T> data) {
-    for (const auto v: data) {
+    for (const auto v : data) {
         cout << v << ", ";
     }
     cout << endl;
@@ -97,23 +95,52 @@ template <typename T1, typename T2>
 void print_vp(const vector<pair<T1, T2>> vec) {}
 #endif
 
-typedef vector<ll> vi;
-typedef vector<vi> vvi;
-typedef vector<vvi> vvvi;
-typedef vector<vvvi> vvvvi;
-
 const ll mod = 998244353;  // 1000000007;
-ll N, M, i, j, k, l;
+ll N, M, i, j, k, l, a1, a2, a3;
 string S, T;
+ll dp[1001][11][11][11];
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
     cin >> N >> M;
-    // M = 7 とする
-    // dp[i][a1][a2][a3]
-    // dp[123][3][7][7]: 長さ 123 の数列のうち, |LIS|=1 かつそれが 3
-    // dp[123][0][5][7]: 長さ 123 の数列のうち, |LIS|=2 かつそれが 3
-    cout << N << endl;
+
+    // - LIS の状態は蟻本 p.65 の配列で管理できる
+    //   - 全ての配列状態に対して場合の数を計算する
+    dp[0][M][M][M] = 1;
+
+    REP(i, N) {
+        REP(j, M) {
+            // i 番目の値は j
+            REP(a1, M + 1) {
+                REP(a2, M + 1) {
+                    REP(a3, M + 1) {
+                        // a1, a2, a3
+                        ll v = dp[i][a1][a2][a3];
+                        if (j <= a1) {
+                            dp[i + 1][j][a2][a3] += v;
+                            dp[i + 1][j][a2][a3] %= mod;
+                        } else if (j <= a2) {
+                            dp[i + 1][a1][j][a3] += v;
+                            dp[i + 1][a1][j][a3] %= mod;
+                        } else if (j <= a3) {
+                            dp[i + 1][a1][a2][j] += v;
+                            dp[i + 1][a1][a2][j] %= mod;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ll ans = 0;
+    REP(a1, M) {
+        REP(a2, M) {
+            REP(a3, M) {
+                ans += dp[N][a1][a2][a3];
+                ans %= mod;
+            }
+        }
+    }
+    cout << ans << endl;
 }
