@@ -97,21 +97,51 @@ template <typename T1, typename T2>
 void print_vp(const vector<pair<T1, T2>> vec) {}
 #endif
 
-const ll mod = 998244353;  // 1000000007;
+// コスト無しグラフ
+class Graph {
+   public:
+    ll V;                     // 頂点の個数
+    vector<vector<ll>> conn;  // 隣接リスト(vector)
+    vector<vector<ll>> prev;  // 有向グラフの場合の逆辺
+
+    Graph(ll v) : V(v), conn(v), prev(v) {}
+
+    // 有向グラフ
+    void add_directed_edge(ll from, ll to) {
+        conn[from].push_back(to);
+        prev[to].push_back(from);
+    }
+
+    // 無向グラフ
+    void add_undirected_edge(ll v1, ll v2) {
+        add_directed_edge(v1, v2);
+        add_directed_edge(v2, v1);
+    }
+};
+
+ll mod = 998244353;
 ll N, M, i, j, k, l;
-string S, T;
+vector<ll> cost;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N;
-    if (N >= 0) {
-        cout << N / 10 << endl;
-    } else {
-        ll tmp = - N;
-        tmp += 9;
-        tmp /= 10;
-        cout << - tmp << endl;
+    cin >> N >> M;
+    Graph graph = Graph(N);
+    REP(i, M) {
+        cin >> j >> k;
+        graph.add_undirected_edge(j - 1, k - 1);
+    }
+    cost.resize(N);
+    REP(i, N) {
+        cin >> cost[i];
+    }
+    
+    vector<ll> cost;
+    cost.push_back(0);
+    REP(i, N - 1) {
+        ll tmp_cost = 0;
+        for (auto v: graph.add_undirected_edge)
     }
 }

@@ -97,21 +97,84 @@ template <typename T1, typename T2>
 void print_vp(const vector<pair<T1, T2>> vec) {}
 #endif
 
-const ll mod = 998244353;  // 1000000007;
+// https://atcoder.jp/contests/typical90/tasks/typical90_u で確認済み
+class StronglyConnectedComponents {
+    int V;  // 頂点の個数
+    vector<vector<ll>> graph;
+    vector<vector<ll>> rev_graph;  // 逆辺
+    vector<vector<ll>> scc;  // 結果を(execの戻り値とは別形式で)保存するだけ
+
+    void dfs(ll v, vector<bool>& used, vector<ll>& nodes) {
+        used[v] = true;
+        for (const auto& to : graph[v]) {
+            if (!used[to]) {
+                dfs(to, used, nodes);
+            }
+        }
+        nodes.push_back(v);  // 帰りがけ順
+    }
+
+    void rev_dfs(ll v, ll current_order, vector<bool>& used, vector<ll>& res) {
+        used[v] = true;
+        res[v] = current_order;
+        scc[current_order].push_back(v);
+        for (const auto& to : rev_graph[v]) {
+            if (!used[to]) {
+                rev_dfs(to, current_order, used, res);
+            }
+        }
+    }
+
+   public:
+    StronglyConnectedComponents(int v) : V(v), graph(v), rev_graph(v) {}
+
+    void add_edge(ll from, ll to) {
+        graph[from].push_back(to);
+        rev_graph[to].push_back(from);
+    }
+
+    // O(V + E)
+    vector<ll> exec() {
+        vector<bool> used(V, false);
+        vector<ll> nodes;
+        for (ll v = 0; v < V; v++) {
+            if (!used[v]) dfs(v, used, nodes);
+        }
+        fill(used.begin(), used.end(), false);
+        ll current_order = 0;
+        vector<ll> res(V);
+        scc.clear();
+        for (ll i = V - 1; i >= 0; i--) {
+            if (!used[nodes[i]]) {
+                scc.push_back(vector<ll>(0));
+                rev_dfs(nodes[i], current_order, used, res);
+                current_order++;
+            }
+        }
+        return res;
+    }
+
+    vector<vector<ll>> get_scc() { return scc; }
+};
+
+ll mod = 998244353;
 ll N, M, i, j, k, l;
-string S, T;
+vector<ll> cost;
 
 int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N;
-    if (N >= 0) {
-        cout << N / 10 << endl;
-    } else {
-        ll tmp = - N;
-        tmp += 9;
-        tmp /= 10;
-        cout << - tmp << endl;
+    cin >> N >> M;
+    StronglyConnectedComponents scc = StronglyConnectedComponents(N);
+    REP(i, M) {
+        cin >> j >> k;
+        scc.add_edge(j - 1, k - 1);
+        scc.add_edge(k - 1, j - 1);
     }
+    cost.resize(N);
+    REP(i, N) {
+        cin >> cost[i];
+    }
+    print_v(cost);
 }
