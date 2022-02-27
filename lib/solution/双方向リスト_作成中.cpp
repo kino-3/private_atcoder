@@ -15,86 +15,6 @@ using ll = long long;
 // FOR_R(idx, 4, 7) { cout << idx; }  // 654
 // sort(ALL(v));
 
-#ifdef _DEBUG
-void debug_print() { cout << endl; }
-template <class Head, class... Tail>
-void debug_print(Head &&head, Tail &&...tail) {
-    std::cout << head << ", ";
-    debug_print(std::forward<Tail>(tail)...);
-}
-ll DEBUG_PRINT_COUNT = 0;
-void debug_print_count() {
-    cout << "debug: " << DEBUG_PRINT_COUNT << endl;
-    DEBUG_PRINT_COUNT++;
-    assert(DEBUG_PRINT_COUNT < 10);
-}
-template <typename T>
-void print_v(const vector<T> vec) {
-    cout << "[";
-    for (auto &&item : vec) {
-        cout << item << ",";
-    }
-    cout << "]" << endl;
-}
-template <typename T>
-void print_vv(const vector<T> vec) {
-    for (auto &&item : vec) {
-        print_v(item);
-    }
-}
-template <typename K, typename V>
-void print_map(const map<K, V> dict) {
-    for (const auto v : dict) {
-        cout << v.first << ":" << v.second << ", ";
-    }
-    cout << endl;
-}
-template <typename T>
-void print_set(const set<T> data) {
-    for (const auto v : data) {
-        cout << v << ", ";
-    }
-    cout << endl;
-}
-template <typename T1, typename T2>
-void print_pair(const pair<T1, T2> data) {
-    cout << "(" << data.first << "," << data.second << ")";
-    // cout << endl;
-}
-template <typename T1, typename T2, typename T3>
-void print_tuple(const tuple<T1, T2, T3> data) {
-    cout << "(";
-    cout << get<0>(data) << "," << get<1>(data) << "," << get<2>(data);
-    cout << ")";
-    // cout << endl;
-}
-template <typename T1, typename T2>
-void print_vp(const vector<pair<T1, T2>> vec) {
-    for (auto &&item : vec) {
-        print_pair(item);
-    }
-}
-#else
-void debug_print() {}
-template <class Head, class... Tail>
-void debug_print(Head &&head, Tail &&...tail) {}
-void debug_print_count() {}
-template <typename T>
-void print_v(const vector<T> vec) {}
-template <typename T>
-void print_vv(const vector<T> vec) {}
-template <typename K, typename V>
-void print_map(const map<K, V> dict) {}
-template <typename T>
-void print_set(const set<T> data) {}
-template <typename T1, typename T2>
-void print_pair(const pair<T1, T2> data) {}
-template <typename T1, typename T2, typename T3>
-void print_tuple(const tuple<T1, T2, T3> data) {}
-template <typename T1, typename T2>
-void print_vp(const vector<pair<T1, T2>> vec) {}
-#endif
-
 struct Node {
     Node *prev;
     Node *next;
@@ -103,37 +23,63 @@ struct Node {
 
 class LinkedList {
    public:
-    Node *front;  // 番兵
-    Node *back;   // 番兵
+    Node *nil;  // 番兵(始点と終点を兼ねる)
     ll size;
 
     LinkedList() : size(0) {
-        (*front).next = back;
-        (*back).prev = front;
+        nil = (Node *)malloc(sizeof(Node));
+        nil->next = nil;
+        nil->prev = nil;
     }
 
-    void set_vector(vector<ll> vec) {
-        for (auto v : vec) push_back(v);
-    }
+    // void set_vector(vector<ll> vec) {
+    //     for (auto v : vec) push_back(v);
+    // }
 
     void push_back(ll val) {
         size++;
-        Node new_node;
-        auto tmp_last = (*back).prev;
-        new_node.value = val;
-        new_node.prev = tmp_last;
-        new_node.next = back;
-        (*back).prev = &new_node;
-        (*tmp_last).next = &new_node;
+        Node *new_node = (Node *)malloc(sizeof(Node));
+        new_node->value = val;
+        nil->prev->next = new_node;
+        new_node->prev = nil->prev;
+        new_node->next = nil;
+        nil->prev = new_node;
+    }
+
+    void push_front(ll val) {
+        size++;
+        Node *new_node = (Node *)malloc(sizeof(Node));
+        new_node->value = val;
+        nil->next->prev = new_node;
+        new_node->next = nil->next;
+        new_node->prev = nil;
+        nil->next = new_node;
+    }
+
+    ll pop_back() {
+        assert(size > 0);
+        size--;
+        ll res = nil->prev->value;
+        nil->prev->prev->next = nil;
+        nil->prev = nil->prev->prev;
+        return res;
+    }
+
+    ll pop_front() {
+        assert(size > 0);
+        size--;
+        ll res = nil->next->value;
+        nil->next->next->prev = nil;
+        nil->next = nil->next->next;
+        return res;
     }
 
     vector<ll> to_vector() {
         vector<ll> res;
-        Node *tmp = front;
-        ll loop_count;
-        REP(loop_count, size) {
-            tmp = (*tmp).next;
-            res.push_back((*tmp).value);
+        Node *tmp = nil;
+        while (tmp->next != nil) {
+            tmp = tmp->next;
+            res.push_back(tmp->value);
         }
         return res;
     }
@@ -147,28 +93,21 @@ int main() {
     std::cin.tie(nullptr);
     std::ios::sync_with_stdio(false);
 
-    cin >> N;
-    A.resize(N);
-    B.resize(N);
-    REP(i, N) {
-        cin >> A[i];
-        cin >> B[i];
-    }
-
     LinkedList la = LinkedList();
     la.push_back(1);
     la.push_back(2);
-    la.push_back(2);
-    la.push_back(2);
-    la.push_back(2);
-    // debug_print("hoge");
-    la.push_back(2);
-    debug_print_count();
-    // la.push_back(3);
-    // debug_print_count();
-    // print_v(la.to_vector());
-    // la.set_vector(A);
-    // print_v(la.to_vector());
-    // LinkedList lb = LinkedList();
-    // lb.set_vector(B);
+    la.push_back(3);
+    la.push_back(4);
+    la.push_back(5);
+    la.push_front(6);
+    la.push_front(7);
+    la.push_front(8);
+    for (auto v : la.to_vector()) cout << v;
+    cout << endl;
+    cout << la.pop_back();
+    cout << la.pop_back();
+    cout << la.pop_front();
+    cout << la.pop_front();
+    cout << endl;
+    for (auto v : la.to_vector()) cout << v;
 }
