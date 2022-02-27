@@ -23,7 +23,10 @@ struct Node {
 
 class LinkedList {
    public:
-    Node *nil;  // 番兵(始点と終点を兼ねる)
+    // 番兵(始点と終点を兼ねる)
+    // nil -> next が先頭
+    // nil -> prev が末尾
+    Node *nil;
     ll size;
 
     LinkedList() : size(0) {
@@ -32,9 +35,9 @@ class LinkedList {
         nil->prev = nil;
     }
 
-    // void set_vector(vector<ll> vec) {
-    //     for (auto v : vec) push_back(v);
-    // }
+    void set_vector(vector<ll> vec) {
+        for (auto v : vec) push_back(v);
+    }
 
     void push_back(ll val) {
         size++;
@@ -83,6 +86,34 @@ class LinkedList {
         }
         return res;
     }
+
+    void concat_back(LinkedList link_list) {
+        // {1,2,3}concat_front({4,5,6}) -> {1,2,3,4,5,6}
+        Node *link_nil = link_list.nil;
+        size += link_list.size;
+        nil->prev->next = link_nil->next;
+        link_nil->next->prev = nil->prev;
+        link_nil->prev->next = nil;
+        nil->prev = link_nil->prev;
+        // link_list は空にする;
+        link_list.size = 0;
+        link_nil->next = link_nil;
+        link_nil->prev = link_nil;
+    }
+
+    void concat_front(LinkedList link_list) {
+        // {1,2,3}concat_front({4,5,6}) -> {4,5,6,1,2,3}
+        Node *link_nil = link_list.nil;
+        size += link_list.size;
+        nil->next->prev = link_nil->prev;
+        link_nil->prev->next = nil->next;
+        link_nil->next->prev = nil;
+        nil->next = link_nil->next;
+        // link_list は空にする;
+        link_list.size = 0;
+        link_nil->next = link_nil;
+        link_nil->prev = link_nil;
+    }
 };
 
 const ll mod = 998244353;  // 1000000007;
@@ -110,4 +141,23 @@ int main() {
     cout << la.pop_front();
     cout << endl;
     for (auto v : la.to_vector()) cout << v;
+    cout << endl;
+    {
+        LinkedList lb = LinkedList();
+        LinkedList lc = LinkedList();
+        lb.set_vector({1, 2, 3});
+        lc.set_vector({4, 5, 6, 7});
+        lb.concat_back(lc);
+        for (auto v : lb.to_vector()) cout << v;
+        cout << endl;
+    }
+    {
+        LinkedList lb = LinkedList();
+        LinkedList lc = LinkedList();
+        lb.set_vector({1, 2, 3});
+        lc.set_vector({4, 5, 6, 7});
+        lb.concat_front(lc);
+        for (auto v : lb.to_vector()) cout << v;
+        cout << endl;
+    }
 }
