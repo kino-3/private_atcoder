@@ -1,2 +1,2 @@
-TYPE=arc
-TIME=137
+TYPE=other
+TIME=ahc010
